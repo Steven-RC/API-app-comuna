@@ -92,17 +92,33 @@ const obtenerUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function*
             where: {
                 NOM_USER: usuario
             },
-            attributes: ['ID_ROL', 'NOM_USER', 'ESTADO_USER'],
+            attributes: ['ID_ROL', 'NOM_USER', 'ESTADO_USER', 'ID_COMUNERO'],
             include: {
                 model: init_models_2.rol_user,
                 as: 'ID_ROL_rol_user',
                 attributes: ['NOM_ROL'],
             }
         });
-        // generar el token
-        res.json({
-            user
-        });
+        //si existe el usuario 
+        if (user) {
+            //buscar el comunero al que pertenece este usuario
+            const comunero = yield init_models_1.comuneros.findOne({
+                where: {
+                    ID_COMUNERO: user.ID_COMUNERO
+                },
+                attributes: ['ID_COMUNERO'],
+                include: {
+                    model: init_models_1.personas,
+                    as: 'ID_PERSONA_persona',
+                    attributes: ['NOMBRE', 'APELLIDOS']
+                }
+            });
+            // generar el token
+            res.json({
+                user,
+                comunero
+            });
+        }
     }
 });
 exports.obtenerUsuario = obtenerUsuario;

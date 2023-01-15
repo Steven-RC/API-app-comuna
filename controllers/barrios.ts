@@ -43,3 +43,20 @@ export const obtenerBarrios = async (req: Request, res: Response) => {
         listbarrios
     })
 }
+
+//eliminar barrio
+export const eliminarBarrio = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const barrio = await barrios.findByPk(id);
+    if (!barrio) {
+        return res.status(404).json({
+            msg: 'No existe el barrio'
+        })
+    } else {
+        await barrio.destroy();
+        res.json({
+            msg: 'Barrio eliminado'
+        })
+    }
+}
+

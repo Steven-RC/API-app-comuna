@@ -5,5 +5,6 @@ const barrios_1 = require("../controllers/barrios");
 const router = (0, express_1.Router)();
 router.post('/crear', barrios_1.crearBarrio);
 router.get('/obtener', barrios_1.obtenerBarrios);
+router.delete('/eliminar/:id', barrios_1.eliminarBarrio);
 exports.default = router;
 //# sourceMappingURL=barrios.js.map

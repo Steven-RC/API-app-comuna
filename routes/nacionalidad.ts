@@ -4,7 +4,7 @@ import { crearNacionalidad, getNacionalidades } from '../controllers/nacionalida
 const router = Router();
 
 router.post('/crear', crearNacionalidad)
-router.get('/listar', getNacionalidades)
+router.get('/obtener', getNacionalidades)
 
 
 

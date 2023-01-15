@@ -1,4 +1,4 @@
-import { initModels, usuarios, usuariosCreationAttributes } from "../models/init-models";
+import { initModels, usuarios, comuneros, usuariosCreationAttributes, personas } from "../models/init-models";
 import db from '../db/connection';
 import { Request, Response } from "express";
 import * as bcrypt from 'bcrypt';
@@ -33,7 +33,7 @@ export const obtenerUsuario = async (req: Request, res: Response) => {
             NOM_USER: usuario,
         },
         attributes: [
-            'PASS_USER','ESTADO_USER'
+            'PASS_USER', 'ESTADO_USER'
         ]
     });
     // si no existe el usuario
@@ -50,16 +50,16 @@ export const obtenerUsuario = async (req: Request, res: Response) => {
         return res.status(400).json({
             msg: 'Contraseña no valida'
         })
-    }else if(busUser.ESTADO_USER == 0){
+    } else if (busUser.ESTADO_USER == 0) {
         return res.status(404).json({
             msg: 'El usuario esta deshabilitado'
         })
-    }else {
+    } else {
         const user = await usuarios.findOne({
             where: {
                 NOM_USER: usuario
             },
-            attributes: ['ID_ROL', 'NOM_USER','ESTADO_USER'],
+            attributes: ['ID_ROL', 'NOM_USER', 'ESTADO_USER', 'ID_COMUNERO'],
 
             include: {
                 model: rol_user,
@@ -67,10 +67,27 @@ export const obtenerUsuario = async (req: Request, res: Response) => {
                 attributes: ['NOM_ROL'],
             }
         });
-        // generar el token
-        res.json({
-            user
-        })
+        //si existe el usuario 
+        if (user) {
+            //buscar el comunero al que pertenece este usuario
+            const comunero = await comuneros.findOne({
+                where: {
+                    ID_COMUNERO: user.ID_COMUNERO
+                },
+                attributes: ['ID_COMUNERO'],
+                include: {
+                    model: personas,
+                    as: 'ID_PERSONA_persona',
+                    attributes: ['NOMBRE', 'APELLIDOS']
+                }
+            });
+
+            // generar el token
+            res.json({
+                user,
+                comunero
+            })
+        }
     }
 
 
