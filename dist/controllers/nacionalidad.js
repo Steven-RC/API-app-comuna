@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNacionalidades = exports.crearNacionalidad = void 0;
+exports.getNacionalidad = exports.actualizarNacionalidad = exports.eliminarNacionalidad = exports.getNacionalidades = exports.crearNacionalidad = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
 (0, init_models_1.initModels)(connection_1.default);
@@ -52,4 +52,55 @@ const getNacionalidades = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getNacionalidades = getNacionalidades;
+//crear metodo para eliminar una nacionalidad
+const eliminarNacionalidad = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const encontrarNacionalidad = yield init_models_1.nacionalidad.findByPk(id);
+    if (!encontrarNacionalidad) {
+        return res.status(404).json({
+            msg: 'Nacionalidad no encontrada'
+        });
+    }
+    yield encontrarNacionalidad.destroy();
+    res.json({
+        msg: 'Nacionalidad eliminada'
+    });
+});
+exports.eliminarNacionalidad = eliminarNacionalidad;
+//crear metodo para actualizar una nacionalidad
+const actualizarNacionalidad = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const encontrarNacionalidad = yield init_models_1.nacionalidad.findByPk(id);
+    if (!encontrarNacionalidad) {
+        return res.status(404).json({
+            msg: 'Nacionalidad no encontrada'
+        });
+    }
+    const nacionalidadUp = {
+        NACIONALIDAD: req.body.nacionalidad,
+    };
+    yield encontrarNacionalidad.update(nacionalidadUp);
+    res.json({
+        msg: 'Nacionalidad actualizada'
+    });
+});
+exports.actualizarNacionalidad = actualizarNacionalidad;
+//crear metodo para retornar una nacionalidad por nombre
+const getNacionalidad = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { nombre } = req.params;
+    const encontrarNacionalidad = yield init_models_1.nacionalidad.findOne({
+        where: {
+            NACIONALIDAD: nombre
+        }
+    });
+    if (encontrarNacionalidad) {
+        res.json({ encontrarNacionalidad });
+    }
+    else {
+        res.status(404).json({
+            msg: 'Nacionalidad no encontrada'
+        });
+    }
+});
+exports.getNacionalidad = getNacionalidad;
 //# sourceMappingURL=nacionalidad.js.map

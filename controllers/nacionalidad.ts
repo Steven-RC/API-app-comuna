@@ -41,3 +41,52 @@ export const getNacionalidades = async (req: Request, res: Response) => {
     }
 
 }
+
+//crear metodo para eliminar una nacionalidad
+export const eliminarNacionalidad = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const encontrarNacionalidad = await nacionalidad.findByPk(id);
+    if (!encontrarNacionalidad) {
+        return res.status(404).json({
+            msg: 'Nacionalidad no encontrada'
+        })
+    }
+    await encontrarNacionalidad.destroy();
+    res.json({
+        msg: 'Nacionalidad eliminada'
+    })
+}
+//crear metodo para actualizar una nacionalidad
+export const actualizarNacionalidad = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const encontrarNacionalidad = await nacionalidad.findByPk(id);
+    if (!encontrarNacionalidad) {
+        return res.status(404).json({
+            msg: 'Nacionalidad no encontrada'
+        })
+    }
+    const nacionalidadUp: nacionalidadCreationAttributes = {
+        NACIONALIDAD: req.body.nacionalidad,
+    }
+    await encontrarNacionalidad.update(nacionalidadUp);
+    res.json({
+        msg: 'Nacionalidad actualizada'
+    })
+}
+//crear metodo para retornar una nacionalidad por nombre
+export const getNacionalidad = async (req: Request, res: Response) => {
+    const { nombre } = req.params;
+    const encontrarNacionalidad = await nacionalidad.findOne({
+        where: {
+            NACIONALIDAD: nombre
+        }
+    })
+    if (encontrarNacionalidad) {
+        res.json({ encontrarNacionalidad });
+    }
+    else {
+        res.status(404).json({
+            msg: 'Nacionalidad no encontrada'
+        })
+    }
+}
