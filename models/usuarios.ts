@@ -13,12 +13,11 @@ export interface usuariosAttributes {
   NOM_USER: string;
   PASS_USER: string;
   ESTADO_USER?: number;
-  TOKEN?: string;
 }
 
 export type usuariosPk = "ID_USUARIO";
 export type usuariosId = usuarios[usuariosPk];
-export type usuariosOptionalAttributes = "ID_USUARIO" | "ID_COMUNERO" | "ID_ROL" | "ESTADO_USER" | "TOKEN";
+export type usuariosOptionalAttributes = "ID_USUARIO" | "ID_COMUNERO" | "ID_ROL" | "ESTADO_USER";
 export type usuariosCreationAttributes = Optional<usuariosAttributes, usuariosOptionalAttributes>;
 
 export class usuarios extends Model<usuariosAttributes, usuariosCreationAttributes> implements usuariosAttributes {
@@ -31,7 +30,6 @@ export class usuarios extends Model<usuariosAttributes, usuariosCreationAttribut
   NOM_USER!: string;
   PASS_USER!: string;
   ESTADO_USER?: number;
-  TOKEN?: string;
 
   // usuarios belongsTo comuneros via ID_COMUNERO
   ID_COMUNERO_comunero!: comuneros;
@@ -93,10 +91,6 @@ export class usuarios extends Model<usuariosAttributes, usuariosCreationAttribut
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: 1
-    },
-    TOKEN: {
-      type: DataTypes.STRING(20),
-      allowNull: true
     }
   }, {
     sequelize,

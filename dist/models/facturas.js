@@ -43,6 +43,15 @@ class facturas extends sequelize_1.Model {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
+            },
+            ID_FORMA_PAGO: {
+                type: sequelize_1.DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: 1,
+                references: {
+                    model: 'forma_pago',
+                    key: 'ID_FORMA_PAGO'
+                }
             }
         }, {
             sequelize,
@@ -62,6 +71,13 @@ class facturas extends sequelize_1.Model {
                     using: "BTREE",
                     fields: [
                         { name: "ID_COMUNERO" },
+                    ]
+                },
+                {
+                    name: "fk_facturas_forma_pago1_idx",
+                    using: "BTREE",
+                    fields: [
+                        { name: "ID_FORMA_PAGO" },
                     ]
                 },
             ]

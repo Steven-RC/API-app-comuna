@@ -35,11 +35,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cambiarEstado = exports.actualizarContrasena = exports.obtenerUsuario = exports.crearUsuario = void 0;
+exports.obtenerPersona = exports.cambiarEstado = exports.actualizarContrasena = exports.obtenerUsuario = exports.crearUsuario = void 0;
 const init_models_1 = require("../models/init-models");
-const connection_1 = __importDefault(require("../db/connection"));
-const bcrypt = __importStar(require("bcrypt"));
 const init_models_2 = require("../models/init-models");
+const bcrypt = __importStar(require("bcrypt"));
+const connection_1 = __importDefault(require("../db/connection"));
 (0, init_models_1.initModels)(connection_1.default);
 const crearUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const usuarioCr = {
@@ -53,7 +53,7 @@ const crearUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     };
     yield init_models_1.usuarios.create(usuarioCr);
     res.json({
-        msg: 'Usuario creado'
+        msg: 'Usuario creado con exito'
     });
 });
 exports.crearUsuario = crearUsuario;
@@ -72,14 +72,14 @@ const obtenerUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function*
     // si no existe el usuario
     if (!busUser) {
         return res.status(404).json({
-            msg: 'Usuario no encontrado'
+            errorName: 'Usuario no encontrado'
         });
     }
     // si existe el usuario comparar contraseñas
     const validPassword = bcrypt.compareSync(contrasena, busUser.PASS_USER);
     if (!validPassword) {
         return res.status(400).json({
-            msg: 'Contraseña no valida'
+            errorPass: 'Contraseña no valida'
         });
     }
     else if (busUser.ESTADO_USER == 0) {
@@ -199,4 +199,23 @@ const cambiarEstado = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.cambiarEstado = cambiarEstado;
+//obtener los datos de la persona a la que pertenece el usuario
+const obtenerPersona = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const persona = yield init_models_1.comuneros.findOne({
+        where: {
+            ID_COMUNERO: id
+        },
+        attributes: ['ID_COMUNERO'],
+        include: {
+            model: init_models_1.personas,
+            as: 'ID_PERSONA_persona',
+            attributes: ['NOMBRE', 'APELLIDOS']
+        }
+    });
+    res.json({
+        persona
+    });
+});
+exports.obtenerPersona = obtenerPersona;
 //# sourceMappingURL=usuarios.js.map

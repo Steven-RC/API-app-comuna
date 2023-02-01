@@ -27,14 +27,6 @@ class comuneros extends sequelize_1.Model {
                     key: 'ID_ASO'
                 }
             },
-            ID_CUOTA: {
-                type: sequelize_1.DataTypes.INTEGER,
-                allowNull: true,
-                references: {
-                    model: 'cuota_anual',
-                    key: 'ID_CUOTA'
-                }
-            },
             ID_PERSONA: {
                 type: sequelize_1.DataTypes.INTEGER,
                 allowNull: true,
@@ -86,13 +78,6 @@ class comuneros extends sequelize_1.Model {
                     using: "BTREE",
                     fields: [
                         { name: "ID_BARRIO" },
-                    ]
-                },
-                {
-                    name: "FK_REL_CUOTA_COM",
-                    using: "BTREE",
-                    fields: [
-                        { name: "ID_CUOTA" },
                     ]
                 },
                 {

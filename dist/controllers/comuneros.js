@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.obtenerComuneros = exports.crearComunero = exports.getComuneros = void 0;
+exports.cambiarEstadoComunero = exports.obtenerPersonasNoComuneros = exports.obtenerPersonasComunerosBarrio = exports.crearComunero = exports.getComuneros = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
 const personas_1 = require("../models/personas");
@@ -30,12 +30,37 @@ const getComuneros = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.getComuneros = getComuneros;
 const crearComunero = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //si la persona esta en estado inactivo no se puede crear como comunero
+    const encontrarPersona = yield personas_1.personas.findOne({
+        where: {
+            ID_PERSONA: req.body.persona,
+            ESTADO: 1
+        }
+    });
+    if (!encontrarPersona) {
+        return res.status(400).json({
+            msg: 'La persona no existe o esta inactiva'
+        });
+    }
+    //si la persona ya es comunero no se puede crear
+    const encontrarComunero = yield init_models_1.comuneros.findOne({
+        where: {
+            ID_PERSONA: encontrarPersona.ID_PERSONA,
+            ESTADO_COM: 'ACTIVO'
+        }
+    });
+    if (encontrarComunero) {
+        return res.status(400).json({
+            msg: 'La persona ya es comunero'
+        });
+    }
+    const fecha = new Date().toString();
+    const hora = new Date().toLocaleTimeString();
     const comuneroCr = {
         ID_BARRIO: req.body.barrio,
-        CALIFICADO: req.body.calificado,
         ID_PERSONA: req.body.persona,
-        CREATED_DATE: req.body.fecha,
-        CREATED_TIME: req.body.hora,
+        CREATED_DATE: fecha,
+        CREATED_TIME: hora,
     };
     yield init_models_1.comuneros.create(comuneroCr);
     res.json({
@@ -43,17 +68,43 @@ const crearComunero = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     });
 });
 exports.crearComunero = crearComunero;
-//obtener todos los comuneros con sus valores en la tabla persona y barrio
-const obtenerComuneros = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const listComuneros = yield init_models_1.comuneros.findAll({
-        attributes: ['ID_COMUNERO', 'ID_BARRIO', 'CALIFICADO', 'ID_PERSONA', 'CREATED_DATE', 'CREATED_TIME'],
-        include: {
-            model: personas_1.personas,
-            as: 'ID_PERSONA_persona',
-            attributes: ['ID_PERSONA', 'NOM_PERSONA', 'APE_PERSONA', 'DNI_PERSONA', 'TELF_PERSONA', 'EMAIL_PERSON'],
-        },
-    });
-    res.json(listComuneros);
+//obtener personas que son comuneros con su barrio
+const obtenerPersonasComunerosBarrio = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const listComuneros = yield connection_1.default.query('select comuneros.ID_COMUNERO, personas.CEDULA,personas.APELLIDOS,personas.NOMBRE,personas.CELULAR_PER,barrios.NOM_BARRIO,comuneros.ESTADO_COM,comuneros.CALIFICADO from comuneros ' +
+        'inner join personas on personas.ID_PERSONA=comuneros.ID_PERSONA inner join barrios on comuneros.ID_BARRIO=barrios.ID_BARRIO');
+    res.json({ listComuneros });
 });
-exports.obtenerComuneros = obtenerComuneros;
+exports.obtenerPersonasComunerosBarrio = obtenerPersonasComunerosBarrio;
+//obtener personas que no son comuneros
+const obtenerPersonasNoComuneros = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const listPersonas = yield connection_1.default.query('select p.ID_PERSONA,p.NOMBRE,p.APELLIDOS,p.CEDULA,p.CELULAR_PER,p.ESTADO from personas p where p.ID_PERSONA not in (select ID_PERSONA from comuneros)');
+    res.json({ listPersonas });
+});
+exports.obtenerPersonasNoComuneros = obtenerPersonasNoComuneros;
+//cambiar estado comunero
+const cambiarEstadoComunero = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.body;
+    const comunero = yield init_models_1.comuneros.findByPk(id);
+    //si esta activo lo desactiva y viceversa
+    if (comunero) {
+        const estado = comunero.ESTADO_COM;
+        if (estado == 1) {
+            comunero.ESTADO_COM = 0;
+        }
+        else {
+            comunero.ESTADO_COM = 1;
+        }
+        yield comunero.save();
+        res.json({
+            msg: 'Estado cambiado'
+        });
+    }
+    else {
+        res.status(404).json({
+            msg: 'No existe el comunero'
+        });
+    }
+});
+exports.cambiarEstadoComunero = cambiarEstadoComunero;
+//obtener personas 
 //# sourceMappingURL=comuneros.js.map

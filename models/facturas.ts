@@ -1,6 +1,8 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { comuneros, comunerosId } from './comuneros';
+import type { cuota_anual, cuota_anualId } from './cuota_anual';
+import type { cuotas_factura, cuotas_facturaId } from './cuotas_factura';
 import type { forma_pago, forma_pagoId } from './forma_pago';
 
 export interface facturasAttributes {
@@ -12,11 +14,12 @@ export interface facturasAttributes {
   TOTAL_FAC: number;
   DESCRIP_FAC?: string;
   ESTADO_FAC?: number;
+  ID_FORMA_PAGO: number;
 }
 
 export type facturasPk = "ID_FACTURA";
 export type facturasId = facturas[facturasPk];
-export type facturasOptionalAttributes = "ID_FACTURA" | "ID_COMUNERO" | "DESCRIP_FAC" | "ESTADO_FAC";
+export type facturasOptionalAttributes = "ID_FACTURA" | "ID_COMUNERO" | "DESCRIP_FAC" | "ESTADO_FAC" | "ID_FORMA_PAGO";
 export type facturasCreationAttributes = Optional<facturasAttributes, facturasOptionalAttributes>;
 
 export class facturas extends Model<facturasAttributes, facturasCreationAttributes> implements facturasAttributes {
@@ -28,24 +31,42 @@ export class facturas extends Model<facturasAttributes, facturasCreationAttribut
   TOTAL_FAC!: number;
   DESCRIP_FAC?: string;
   ESTADO_FAC?: number;
+  ID_FORMA_PAGO!: number;
 
   // facturas belongsTo comuneros via ID_COMUNERO
   ID_COMUNERO_comunero!: comuneros;
   getID_COMUNERO_comunero!: Sequelize.BelongsToGetAssociationMixin<comuneros>;
   setID_COMUNERO_comunero!: Sequelize.BelongsToSetAssociationMixin<comuneros, comunerosId>;
   createID_COMUNERO_comunero!: Sequelize.BelongsToCreateAssociationMixin<comuneros>;
-  // facturas hasMany forma_pago via ID_FACTURA
-  forma_pagos!: forma_pago[];
-  getForma_pagos!: Sequelize.HasManyGetAssociationsMixin<forma_pago>;
-  setForma_pagos!: Sequelize.HasManySetAssociationsMixin<forma_pago, forma_pagoId>;
-  addForma_pago!: Sequelize.HasManyAddAssociationMixin<forma_pago, forma_pagoId>;
-  addForma_pagos!: Sequelize.HasManyAddAssociationsMixin<forma_pago, forma_pagoId>;
-  createForma_pago!: Sequelize.HasManyCreateAssociationMixin<forma_pago>;
-  removeForma_pago!: Sequelize.HasManyRemoveAssociationMixin<forma_pago, forma_pagoId>;
-  removeForma_pagos!: Sequelize.HasManyRemoveAssociationsMixin<forma_pago, forma_pagoId>;
-  hasForma_pago!: Sequelize.HasManyHasAssociationMixin<forma_pago, forma_pagoId>;
-  hasForma_pagos!: Sequelize.HasManyHasAssociationsMixin<forma_pago, forma_pagoId>;
-  countForma_pagos!: Sequelize.HasManyCountAssociationsMixin;
+  // facturas belongsToMany cuota_anual via ID_FACTURA and ID_CUOTA
+  ID_CUOTA_cuota_anuals!: cuota_anual[];
+  getID_CUOTA_cuota_anuals!: Sequelize.BelongsToManyGetAssociationsMixin<cuota_anual>;
+  setID_CUOTA_cuota_anuals!: Sequelize.BelongsToManySetAssociationsMixin<cuota_anual, cuota_anualId>;
+  addID_CUOTA_cuota_anual!: Sequelize.BelongsToManyAddAssociationMixin<cuota_anual, cuota_anualId>;
+  addID_CUOTA_cuota_anuals!: Sequelize.BelongsToManyAddAssociationsMixin<cuota_anual, cuota_anualId>;
+  createID_CUOTA_cuota_anual!: Sequelize.BelongsToManyCreateAssociationMixin<cuota_anual>;
+  removeID_CUOTA_cuota_anual!: Sequelize.BelongsToManyRemoveAssociationMixin<cuota_anual, cuota_anualId>;
+  removeID_CUOTA_cuota_anuals!: Sequelize.BelongsToManyRemoveAssociationsMixin<cuota_anual, cuota_anualId>;
+  hasID_CUOTA_cuota_anual!: Sequelize.BelongsToManyHasAssociationMixin<cuota_anual, cuota_anualId>;
+  hasID_CUOTA_cuota_anuals!: Sequelize.BelongsToManyHasAssociationsMixin<cuota_anual, cuota_anualId>;
+  countID_CUOTA_cuota_anuals!: Sequelize.BelongsToManyCountAssociationsMixin;
+  // facturas hasMany cuotas_factura via ID_FACTURA
+  cuotas_facturas!: cuotas_factura[];
+  getCuotas_facturas!: Sequelize.HasManyGetAssociationsMixin<cuotas_factura>;
+  setCuotas_facturas!: Sequelize.HasManySetAssociationsMixin<cuotas_factura, cuotas_facturaId>;
+  addCuotas_factura!: Sequelize.HasManyAddAssociationMixin<cuotas_factura, cuotas_facturaId>;
+  addCuotas_facturas!: Sequelize.HasManyAddAssociationsMixin<cuotas_factura, cuotas_facturaId>;
+  createCuotas_factura!: Sequelize.HasManyCreateAssociationMixin<cuotas_factura>;
+  removeCuotas_factura!: Sequelize.HasManyRemoveAssociationMixin<cuotas_factura, cuotas_facturaId>;
+  removeCuotas_facturas!: Sequelize.HasManyRemoveAssociationsMixin<cuotas_factura, cuotas_facturaId>;
+  hasCuotas_factura!: Sequelize.HasManyHasAssociationMixin<cuotas_factura, cuotas_facturaId>;
+  hasCuotas_facturas!: Sequelize.HasManyHasAssociationsMixin<cuotas_factura, cuotas_facturaId>;
+  countCuotas_facturas!: Sequelize.HasManyCountAssociationsMixin;
+  // facturas belongsTo forma_pago via ID_FORMA_PAGO
+  ID_FORMA_PAGO_forma_pago!: forma_pago;
+  getID_FORMA_PAGO_forma_pago!: Sequelize.BelongsToGetAssociationMixin<forma_pago>;
+  setID_FORMA_PAGO_forma_pago!: Sequelize.BelongsToSetAssociationMixin<forma_pago, forma_pagoId>;
+  createID_FORMA_PAGO_forma_pago!: Sequelize.BelongsToCreateAssociationMixin<forma_pago>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof facturas {
     return facturas.init({
@@ -87,6 +108,15 @@ export class facturas extends Model<facturasAttributes, facturasCreationAttribut
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: 1
+    },
+    ID_FORMA_PAGO: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+      references: {
+        model: 'forma_pago',
+        key: 'ID_FORMA_PAGO'
+      }
     }
   }, {
     sequelize,
@@ -106,6 +136,13 @@ export class facturas extends Model<facturasAttributes, facturasCreationAttribut
         using: "BTREE",
         fields: [
           { name: "ID_COMUNERO" },
+        ]
+      },
+      {
+        name: "fk_facturas_forma_pago1_idx",
+        using: "BTREE",
+        fields: [
+          { name: "ID_FORMA_PAGO" },
         ]
       },
     ]

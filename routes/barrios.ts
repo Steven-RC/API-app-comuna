@@ -7,7 +7,7 @@ const router = Router();
 router.post('/crear', crearBarrio)
 router.get('/obtener', obtenerBarrios)
 router.delete('/eliminar/:id', eliminarBarrio)
-router.put('/actualizar/:id', actualizarBarrio)
+router.put('/actualizar', actualizarBarrio)
 
 
 export default router;

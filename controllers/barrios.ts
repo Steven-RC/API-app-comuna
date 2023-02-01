@@ -10,7 +10,6 @@ export const crearBarrio = async (req: Request, res: Response) => {
             msg: 'No hay barrio'
         })
     }
-
     const encontrarBarrio = await barrios.findOne({
         where: {
             NOM_BARRIO: req.body.barrio
@@ -28,13 +27,7 @@ export const crearBarrio = async (req: Request, res: Response) => {
         res.json({
             msg: 'Barrio creado'
         })
-
-
     }
-
-
-
-
 }
 //obtener barrios
 export const obtenerBarrios = async (req: Request, res: Response) => {
@@ -77,7 +70,7 @@ export const eliminarBarrio = async (req: Request, res: Response) => {
 
 //actualizar barrio
 export const actualizarBarrio = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = req.body;
     const { barrio } = req.body;
     const barrioAct = await barrios.findByPk(id);
     if (!barrioAct) {

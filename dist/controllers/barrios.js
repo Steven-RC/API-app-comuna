@@ -81,7 +81,7 @@ const eliminarBarrio = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.eliminarBarrio = eliminarBarrio;
 //actualizar barrio
 const actualizarBarrio = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    const { id } = req.body;
     const { barrio } = req.body;
     const barrioAct = yield init_models_1.barrios.findByPk(id);
     if (!barrioAct) {

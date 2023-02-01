@@ -52,10 +52,6 @@ class usuarios extends sequelize_1.Model {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
-            },
-            TOKEN: {
-                type: sequelize_1.DataTypes.STRING(20),
-                allowNull: true
             }
         }, {
             sequelize,

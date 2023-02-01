@@ -23,4 +23,18 @@ export const obtenerRoles = async (req: Request, res: Response) => {
         roles
     });
 }
-
+//actualizar rol
+export const actualizarRol = async (req: Request, res: Response) => {
+    const { id } = req.body;
+    const { rol } = req.body;
+    await rol_user.update({
+        NOM_ROL: rol
+    }, {
+        where: {
+            ID_ROL: id
+        }
+    });
+    res.json({
+        msg: 'Rol actualizado'
+    });
+}

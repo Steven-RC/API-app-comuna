@@ -11,14 +11,6 @@ class forma_pago extends sequelize_1.Model {
                 allowNull: false,
                 primaryKey: true
             },
-            ID_FACTURA: {
-                type: sequelize_1.DataTypes.INTEGER,
-                allowNull: true,
-                references: {
-                    model: 'facturas',
-                    key: 'ID_FACTURA'
-                }
-            },
             FORMA_PAGO: {
                 type: sequelize_1.DataTypes.STRING(20),
                 allowNull: false
@@ -34,13 +26,6 @@ class forma_pago extends sequelize_1.Model {
                     using: "BTREE",
                     fields: [
                         { name: "ID_FORMA_PAGO" },
-                    ]
-                },
-                {
-                    name: "FK_REL_FACT_FORM_PAGO",
-                    using: "BTREE",
-                    fields: [
-                        { name: "ID_FACTURA" },
                     ]
                 },
             ]

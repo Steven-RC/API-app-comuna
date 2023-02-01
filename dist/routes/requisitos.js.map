@@ -1,0 +1,1 @@
+{"version":3,"file":"requisitos.js","sourceRoot":"","sources":["../../routes/requisitos.ts"],"names":[],"mappings":";;AAAA,qCAAiC;AACjC,0DAC+D;AAE/D,MAAM,MAAM,GAAG,IAAA,gBAAM,GAAE,CAAC;AAExB,MAAM,CAAC,IAAI,CAAC,QAAQ,EAAE,2BAAc,CAAC,CAAA;AACrC,MAAM,CAAC,GAAG,CAAC,UAAU,EAAE,8BAAiB,CAAC,CAAA;AACzC,MAAM,CAAC,IAAI,CAAC,iBAAiB,EAAE,oCAAuB,CAAC,CAAA;AAKvD,kBAAe,MAAM,CAAC"}

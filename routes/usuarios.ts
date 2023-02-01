@@ -1,5 +1,5 @@
+import { obtenerUsuario, obtenerPersona, cambiarEstado ,crearUsuario, actualizarContrasena } from '../controllers/usuarios';
 import { Router } from "express";
-import { obtenerUsuario,cambiarEstado ,crearUsuario, actualizarContrasena } from '../controllers/usuarios';
 
 const router = Router();
 
@@ -10,3 +10,4 @@ router.post('/deshabilitar', cambiarEstado)
 
 
 export default router;
+

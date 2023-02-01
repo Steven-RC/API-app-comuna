@@ -15,12 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.buscarAsociacion = exports.actualizarAsociacion = exports.eliminarAsociacion = exports.obtenerAsociaciones = exports.crearAsociacion = void 0;
 const init_models_1 = require("../models/init-models");
 const connection_1 = __importDefault(require("../db/connection"));
+const asociaciones_1 = require("../models/asociaciones");
 (0, init_models_1.initModels)(connection_1.default);
 const crearAsociacion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //verificar si existe la asociacion
-    const asociacion = yield init_models_1.asociaciones.findOne({
+    const { nombre } = req.body;
+    const asociacion = yield asociaciones_1.asociaciones.findOne({
         where: {
-            NOM_ASOCIACION_: req.body.nombre
+            NOM_ASOCIACION_: nombre
         }
     });
     if (asociacion) {
@@ -30,22 +32,22 @@ const crearAsociacion = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
     //crear la asociacion
     const asociacionCr = {
-        NOM_ASOCIACION_: req.body.nombre,
+        NOM_ASOCIACION_: nombre,
     };
-    yield init_models_1.asociaciones.create(asociacionCr);
+    yield asociaciones_1.asociaciones.create(asociacionCr);
     res.json({
         msg: 'Asociacion creada'
     });
 });
 exports.crearAsociacion = crearAsociacion;
 const obtenerAsociaciones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const listAsociaciones = yield init_models_1.asociaciones.findAll();
-    res.json(listAsociaciones);
+    const listAsociaciones = yield asociaciones_1.asociaciones.findAll();
+    res.json({ listAsociaciones });
 });
 exports.obtenerAsociaciones = obtenerAsociaciones;
 const eliminarAsociacion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const asociacion = yield init_models_1.asociaciones.findByPk(id);
+    const asociacion = yield asociaciones_1.asociaciones.findByPk(id);
     if (!asociacion) {
         return res.status(404).json({
             msg: 'Asociacion no encontrada'
@@ -58,15 +60,16 @@ const eliminarAsociacion = (req, res) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.eliminarAsociacion = eliminarAsociacion;
 const actualizarAsociacion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const asociacion = yield init_models_1.asociaciones.findByPk(id);
+    const { id } = req.body;
+    const { uAsociacion } = req.body;
+    const asociacion = yield asociaciones_1.asociaciones.findByPk(id);
     if (!asociacion) {
         return res.status(404).json({
             msg: 'Asociacion no encontrada'
         });
     }
     const asociacionUp = {
-        NOM_ASOCIACION_: req.body.nombre,
+        NOM_ASOCIACION_: uAsociacion,
     };
     yield asociacion.update(asociacionUp);
     res.json({
@@ -77,7 +80,7 @@ exports.actualizarAsociacion = actualizarAsociacion;
 //buscar asociacion por nombre
 const buscarAsociacion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { nombre } = req.params;
-    const asociacion = yield init_models_1.asociaciones.findOne({
+    const asociacion = yield asociaciones_1.asociaciones.findOne({
         where: {
             NOM_ASOCIACION_: nombre
         }

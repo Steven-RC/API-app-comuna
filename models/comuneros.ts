@@ -2,7 +2,6 @@ import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { asociaciones, asociacionesId } from './asociaciones';
 import type { barrios, barriosId } from './barrios';
-import type { cuota_anual, cuota_anualId } from './cuota_anual';
 import type { documentos, documentosId } from './documentos';
 import type { facturas, facturasId } from './facturas';
 import type { personas, personasId } from './personas';
@@ -12,7 +11,6 @@ export interface comunerosAttributes {
   ID_COMUNERO: number;
   ID_BARRIO?: number;
   ID_ASO?: number;
-  ID_CUOTA?: number;
   ID_PERSONA?: number;
   CALIFICADO?: number;
   CREATED_DATE?: string;
@@ -22,14 +20,13 @@ export interface comunerosAttributes {
 
 export type comunerosPk = "ID_COMUNERO";
 export type comunerosId = comuneros[comunerosPk];
-export type comunerosOptionalAttributes = "ID_COMUNERO" | "ID_BARRIO" | "ID_ASO" | "ID_CUOTA" | "ID_PERSONA" | "CALIFICADO" | "CREATED_DATE" | "CREATED_TIME" | "ESTADO_COM";
+export type comunerosOptionalAttributes = "ID_COMUNERO" | "ID_BARRIO" | "ID_ASO" | "ID_PERSONA" | "CALIFICADO" | "CREATED_DATE" | "CREATED_TIME" | "ESTADO_COM";
 export type comunerosCreationAttributes = Optional<comunerosAttributes, comunerosOptionalAttributes>;
 
 export class comuneros extends Model<comunerosAttributes, comunerosCreationAttributes> implements comunerosAttributes {
   ID_COMUNERO!: number;
   ID_BARRIO?: number;
   ID_ASO?: number;
-  ID_CUOTA?: number;
   ID_PERSONA?: number;
   CALIFICADO?: number;
   CREATED_DATE?: string;
@@ -82,11 +79,6 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
   hasUsuario!: Sequelize.HasManyHasAssociationMixin<usuarios, usuariosId>;
   hasUsuarios!: Sequelize.HasManyHasAssociationsMixin<usuarios, usuariosId>;
   countUsuarios!: Sequelize.HasManyCountAssociationsMixin;
-  // comuneros belongsTo cuota_anual via ID_CUOTA
-  ID_CUOTA_cuota_anual!: cuota_anual;
-  getID_CUOTA_cuota_anual!: Sequelize.BelongsToGetAssociationMixin<cuota_anual>;
-  setID_CUOTA_cuota_anual!: Sequelize.BelongsToSetAssociationMixin<cuota_anual, cuota_anualId>;
-  createID_CUOTA_cuota_anual!: Sequelize.BelongsToCreateAssociationMixin<cuota_anual>;
   // comuneros belongsTo personas via ID_PERSONA
   ID_PERSONA_persona!: personas;
   getID_PERSONA_persona!: Sequelize.BelongsToGetAssociationMixin<personas>;
@@ -115,14 +107,6 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
       references: {
         model: 'asociaciones',
         key: 'ID_ASO'
-      }
-    },
-    ID_CUOTA: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'cuota_anual',
-        key: 'ID_CUOTA'
       }
     },
     ID_PERSONA: {
@@ -176,13 +160,6 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
         using: "BTREE",
         fields: [
           { name: "ID_BARRIO" },
-        ]
-      },
-      {
-        name: "FK_REL_CUOTA_COM",
-        using: "BTREE",
-        fields: [
-          { name: "ID_CUOTA" },
         ]
       },
       {

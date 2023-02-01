@@ -1,8 +1,8 @@
 import { initModels, usuarios, comuneros, usuariosCreationAttributes, personas } from "../models/init-models";
-import db from '../db/connection';
 import { Request, Response } from "express";
-import * as bcrypt from 'bcrypt';
 import { rol_user } from '../models/init-models';
+import * as bcrypt from 'bcrypt';
+import db from '../db/connection';
 
 initModels(db);
 
@@ -19,7 +19,7 @@ export const crearUsuario = async (req: Request, res: Response) => {
     }
     await usuarios.create(usuarioCr);
     res.json({
-        msg: 'Usuario creado'
+        msg: 'Usuario creado con exito'
     })
 
 }
@@ -39,16 +39,14 @@ export const obtenerUsuario = async (req: Request, res: Response) => {
     // si no existe el usuario
     if (!busUser) {
         return res.status(404).json({
-            msg: 'Usuario no encontrado'
+            errorName: 'Usuario no encontrado'
         })
     }
-
-
     // si existe el usuario comparar contraseñas
     const validPassword = bcrypt.compareSync(contrasena, busUser.PASS_USER);
     if (!validPassword) {
         return res.status(400).json({
-            msg: 'Contraseña no valida'
+            errorPass: 'Contraseña no valida'
         })
     } else if (busUser.ESTADO_USER == 0) {
         return res.status(404).json({
@@ -174,3 +172,24 @@ export const cambiarEstado = async (req: Request, res: Response) => {
     }
 
 }
+//obtener los datos de la persona a la que pertenece el usuario
+export const obtenerPersona = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const persona = await comuneros.findOne({
+        where: {
+            ID_COMUNERO: id
+        },
+        attributes: ['ID_COMUNERO'],
+        include: {
+            model: personas,
+            as: 'ID_PERSONA_persona',
+            attributes: ['NOMBRE', 'APELLIDOS']
+        }
+    });
+    res.json({
+        persona
+    })
+}
+
+
+

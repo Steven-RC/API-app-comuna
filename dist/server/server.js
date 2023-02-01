@@ -22,6 +22,14 @@ const personas_1 = __importDefault(require("../routes/personas"));
 const roles_1 = __importDefault(require("../routes/roles"));
 const comuneros_1 = __importDefault(require("../routes/comuneros"));
 const ressetPassword_1 = __importDefault(require("../routes/ressetPassword"));
+const asociaciones_1 = __importDefault(require("../routes/asociaciones"));
+const anio_1 = __importDefault(require("../routes/anio"));
+const cuotas_1 = __importDefault(require("../routes/cuotas"));
+const requisitos_1 = __importDefault(require("../routes/requisitos"));
+const requisitos_apr_1 = __importDefault(require("../routes/requisitos_apr"));
+const facturas_1 = __importDefault(require("../routes/facturas"));
+const cuotas_factura_1 = __importDefault(require("../routes/cuotas_factura"));
+const node_nlp_1 = require("node-nlp");
 class Server {
     constructor() {
         this.apiPaths = {
@@ -32,6 +40,13 @@ class Server {
             roles: '/api/roles',
             comuneros: '/api/comuneros',
             contrasenia: '/api/contrasenia',
+            asociaciones: '/api/asociaciones',
+            anio: '/api/anio',
+            cuota: '/api/cuota',
+            requisitos: '/api/requisitos',
+            requisitosApr: '/api/requisitosApr',
+            facturas: '/api/facturas',
+            cuotasFactura: '/api/cuotasFactura'
         };
         this.app = (0, express_1.default)(); //inicializamos express
         this.port = process.env.PORT || '8000'; //puerto por defecto
@@ -69,10 +84,23 @@ class Server {
         this.app.use(this.apiPaths.roles, roles_1.default);
         this.app.use(this.apiPaths.comuneros, comuneros_1.default);
         this.app.use(this.apiPaths.contrasenia, ressetPassword_1.default);
+        this.app.use(this.apiPaths.asociaciones, asociaciones_1.default);
+        this.app.use(this.apiPaths.anio, anio_1.default);
+        this.app.use(this.apiPaths.cuota, cuotas_1.default);
+        this.app.use(this.apiPaths.requisitos, requisitos_1.default);
+        this.app.use(this.apiPaths.requisitosApr, requisitos_apr_1.default);
+        this.app.use(this.apiPaths.facturas, facturas_1.default);
+        this.app.use(this.apiPaths.cuotasFactura, cuotas_factura_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {
             console.log('Servidor corriendo en el puerto ' + this.port);
+        });
+    }
+    nlp() {
+        const nlp = new node_nlp_1.Nlp();
+        nlp.process('I want to buy a red car', (err, result) => {
+            console.log(result);
         });
     }
 }

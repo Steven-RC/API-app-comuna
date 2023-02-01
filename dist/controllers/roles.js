@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.obtenerRoles = exports.crearRol = void 0;
+exports.actualizarRol = exports.obtenerRoles = exports.crearRol = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
 (0, init_models_1.initModels)(connection_1.default);
@@ -35,4 +35,20 @@ const obtenerRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     });
 });
 exports.obtenerRoles = obtenerRoles;
+//actualizar rol
+const actualizarRol = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.body;
+    const { rol } = req.body;
+    yield init_models_1.rol_user.update({
+        NOM_ROL: rol
+    }, {
+        where: {
+            ID_ROL: id
+        }
+    });
+    res.json({
+        msg: 'Rol actualizado'
+    });
+});
+exports.actualizarRol = actualizarRol;
 //# sourceMappingURL=roles.js.map

@@ -2,6 +2,7 @@ import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { comuneros, comunerosId } from './comuneros';
 import type { nacionalidad, nacionalidadId } from './nacionalidad';
+import type { requisito_apr, requisito_aprId } from './requisito_apr';
 
 export interface personasAttributes {
   ID_PERSONA: number;
@@ -11,7 +12,7 @@ export interface personasAttributes {
   FECHA_DE_NACIMIENTO: string;
   GENERO: number;
   ESTADO?: number;
-  CELULAR_PER?: number;
+  CELULAR_PER?: string;
   APELLIDOS?: string;
 }
 
@@ -28,7 +29,7 @@ export class personas extends Model<personasAttributes, personasCreationAttribut
   FECHA_DE_NACIMIENTO!: string;
   GENERO!: number;
   ESTADO?: number;
-  CELULAR_PER?: number;
+  CELULAR_PER?: string;
   APELLIDOS?: string;
 
   // personas belongsTo nacionalidad via ID_NACIONALIDAD
@@ -48,6 +49,18 @@ export class personas extends Model<personasAttributes, personasCreationAttribut
   hasComunero!: Sequelize.HasManyHasAssociationMixin<comuneros, comunerosId>;
   hasComuneros!: Sequelize.HasManyHasAssociationsMixin<comuneros, comunerosId>;
   countComuneros!: Sequelize.HasManyCountAssociationsMixin;
+  // personas hasMany requisito_apr via ID_PERSONA
+  requisito_aprs!: requisito_apr[];
+  getRequisito_aprs!: Sequelize.HasManyGetAssociationsMixin<requisito_apr>;
+  setRequisito_aprs!: Sequelize.HasManySetAssociationsMixin<requisito_apr, requisito_aprId>;
+  addRequisito_apr!: Sequelize.HasManyAddAssociationMixin<requisito_apr, requisito_aprId>;
+  addRequisito_aprs!: Sequelize.HasManyAddAssociationsMixin<requisito_apr, requisito_aprId>;
+  createRequisito_apr!: Sequelize.HasManyCreateAssociationMixin<requisito_apr>;
+  removeRequisito_apr!: Sequelize.HasManyRemoveAssociationMixin<requisito_apr, requisito_aprId>;
+  removeRequisito_aprs!: Sequelize.HasManyRemoveAssociationsMixin<requisito_apr, requisito_aprId>;
+  hasRequisito_apr!: Sequelize.HasManyHasAssociationMixin<requisito_apr, requisito_aprId>;
+  hasRequisito_aprs!: Sequelize.HasManyHasAssociationsMixin<requisito_apr, requisito_aprId>;
+  countRequisito_aprs!: Sequelize.HasManyCountAssociationsMixin;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof personas {
     return personas.init({
@@ -88,7 +101,7 @@ export class personas extends Model<personasAttributes, personasCreationAttribut
       defaultValue: 1
     },
     CELULAR_PER: {
-      type: DataTypes.DECIMAL(10,0),
+      type: DataTypes.STRING(10),
       allowNull: true
     },
     APELLIDOS: {

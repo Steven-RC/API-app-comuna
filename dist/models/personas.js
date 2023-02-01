@@ -42,7 +42,7 @@ class personas extends sequelize_1.Model {
                 defaultValue: 1
             },
             CELULAR_PER: {
-                type: sequelize_1.DataTypes.DECIMAL(10, 0),
+                type: sequelize_1.DataTypes.STRING(10),
                 allowNull: true
             },
             APELLIDOS: {

@@ -5,5 +5,6 @@ const nacionalidad_1 = require("../controllers/nacionalidad");
 const router = (0, express_1.Router)();
 router.post('/crear', nacionalidad_1.crearNacionalidad);
 router.get('/obtener', nacionalidad_1.getNacionalidades);
+router.patch('/actualizar', nacionalidad_1.actualizarNacionalidad);
 exports.default = router;
 //# sourceMappingURL=nacionalidad.js.map

@@ -1,6 +1,7 @@
 import db from '../db/connection';
 import { Request, Response } from "express";
-import { initModels, nacionalidad, nacionalidadCreationAttributes } from "../models/init-models";
+import { initModels, nacionalidadCreationAttributes,nacionalidadAttributes } from "../models/init-models";
+import { nacionalidad } from '../models/nacionalidad';
 
 initModels(db);
 
@@ -14,7 +15,7 @@ export const crearNacionalidad = async (req: Request, res: Response) => {
     })
     if (encontrarNacionalidad) {
         return res.status(400).json({
-            msg: 'La nacionalidad ya existe'
+            msg: 'La nacionalidad ya existe' 
         })
     } else {
         const nacionalidadcr: nacionalidadCreationAttributes = {
@@ -22,7 +23,7 @@ export const crearNacionalidad = async (req: Request, res: Response) => {
         }
         await nacionalidad.create(nacionalidadcr);
         res.json({
-            msg: 'Nacionalidad creada'
+            msg: 'Nacionalidad creada '
         })
 
     }
@@ -41,38 +42,21 @@ export const getNacionalidades = async (req: Request, res: Response) => {
     }
 
 }
+//metodo para retorrnar los nombres de las nacionalidades
+export const getNombresNacionalidades = async (req: Request, res: Response) => {
+    const listNacionalidades = await nacionalidad.findAll({
+        attributes: ['NACIONALIDAD']
+    });
+    if (listNacionalidades) {
+        res.json({listNacionalidades});
+    } else {
+        res.status(404).json({
+            msg: 'No hay nacionalidades'
+        })
+    }
+    
+}
 
-//crear metodo para eliminar una nacionalidad
-export const eliminarNacionalidad = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const encontrarNacionalidad = await nacionalidad.findByPk(id);
-    if (!encontrarNacionalidad) {
-        return res.status(404).json({
-            msg: 'Nacionalidad no encontrada'
-        })
-    }
-    await encontrarNacionalidad.destroy();
-    res.json({
-        msg: 'Nacionalidad eliminada'
-    })
-}
-//crear metodo para actualizar una nacionalidad
-export const actualizarNacionalidad = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const encontrarNacionalidad = await nacionalidad.findByPk(id);
-    if (!encontrarNacionalidad) {
-        return res.status(404).json({
-            msg: 'Nacionalidad no encontrada'
-        })
-    }
-    const nacionalidadUp: nacionalidadCreationAttributes = {
-        NACIONALIDAD: req.body.nacionalidad,
-    }
-    await encontrarNacionalidad.update(nacionalidadUp);
-    res.json({
-        msg: 'Nacionalidad actualizada'
-    })
-}
 //crear metodo para retornar una nacionalidad por nombre
 export const getNacionalidad = async (req: Request, res: Response) => {
     const { nombre } = req.params;
@@ -87,6 +71,24 @@ export const getNacionalidad = async (req: Request, res: Response) => {
     else {
         res.status(404).json({
             msg: 'Nacionalidad no encontrada'
+        })
+    }
+}
+//crear metodo para actualizar una nacionalidad
+export const actualizarNacionalidad = async (req: Request, res: Response) => {
+    const { id } = req.body;
+    const { nomNacionalidad } = req.body;
+    const nacionalidadAct = await nacionalidad.findByPk(id);
+    if (!nacionalidadAct) {
+        return res.status(404).json({
+            msg: 'Nacionalidad no encontrada '
+        })
+    }else{
+        await nacionalidadAct.update({
+            NACIONALIDAD: nomNacionalidad
+        })
+        res.json({
+            msg: 'Nacionalidad actualizada'
         })
     }
 }

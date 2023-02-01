@@ -23,6 +23,19 @@ class cuota_anual extends sequelize_1.Model {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: 1
+            },
+            ID_ANIO: {
+                type: sequelize_1.DataTypes.INTEGER,
+                allowNull: false,
+                primaryKey: true,
+                references: {
+                    model: 'anio',
+                    key: 'ID_ANIO'
+                }
+            },
+            DESCRIPCION: {
+                type: sequelize_1.DataTypes.STRING(255),
+                allowNull: true
             }
         }, {
             sequelize,
@@ -35,6 +48,14 @@ class cuota_anual extends sequelize_1.Model {
                     using: "BTREE",
                     fields: [
                         { name: "ID_CUOTA" },
+                        { name: "ID_ANIO" },
+                    ]
+                },
+                {
+                    name: "fk_cuota_anual_table11_idx",
+                    using: "BTREE",
+                    fields: [
+                        { name: "ID_ANIO" },
                     ]
                 },
             ]
