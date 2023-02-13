@@ -22,6 +22,16 @@ class cuotas_factura extends sequelize_1.Model {
                     model: 'cuota_anual',
                     key: 'ID_CUOTA'
                 }
+            },
+            ID_ANIO: {
+                type: sequelize_1.DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: 1,
+                primaryKey: true,
+                references: {
+                    model: 'cuota_anual',
+                    key: 'ID_ANIO'
+                }
             }
         }, {
             sequelize,
@@ -35,13 +45,7 @@ class cuotas_factura extends sequelize_1.Model {
                     fields: [
                         { name: "ID_FACTURA" },
                         { name: "ID_CUOTA" },
-                    ]
-                },
-                {
-                    name: "fk_facturas_has_cuota_anual_facturas1_idx",
-                    using: "BTREE",
-                    fields: [
-                        { name: "ID_FACTURA" },
+                        { name: "ID_ANIO" },
                     ]
                 },
                 {
@@ -49,6 +53,14 @@ class cuotas_factura extends sequelize_1.Model {
                     using: "BTREE",
                     fields: [
                         { name: "ID_CUOTA" },
+                        { name: "ID_ANIO" },
+                    ]
+                },
+                {
+                    name: "fk_facturas_has_cuota_anual_facturas1_idx",
+                    using: "BTREE",
+                    fields: [
+                        { name: "ID_FACTURA" },
                     ]
                 },
             ]

@@ -13,6 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+// import multer from 'multer';
+const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const usuarios_1 = __importDefault(require("../routes/usuarios"));
 const cors_1 = __importDefault(require("cors"));
 const connection_1 = __importDefault(require("../db/connection"));
@@ -29,7 +31,10 @@ const requisitos_1 = __importDefault(require("../routes/requisitos"));
 const requisitos_apr_1 = __importDefault(require("../routes/requisitos_apr"));
 const facturas_1 = __importDefault(require("../routes/facturas"));
 const cuotas_factura_1 = __importDefault(require("../routes/cuotas_factura"));
-const node_nlp_1 = require("node-nlp");
+const tipo_documentos_1 = __importDefault(require("../routes/tipo_documentos"));
+const documentos_1 = __importDefault(require("../routes/documentos"));
+const chat_bot_1 = __importDefault(require("../routes/chat_bot"));
+const uploads_1 = __importDefault(require("../routes/uploads"));
 class Server {
     constructor() {
         this.apiPaths = {
@@ -46,7 +51,11 @@ class Server {
             requisitos: '/api/requisitos',
             requisitosApr: '/api/requisitosApr',
             facturas: '/api/facturas',
-            cuotasFactura: '/api/cuotasFactura'
+            cuotasFactura: '/api/cuotasFactura',
+            tipo_documentos: '/api/tipodocumentos',
+            documentos: '/api/documentos',
+            chatBot: '/api/chatBot',
+            upload: '/api/upload'
         };
         this.app = (0, express_1.default)(); //inicializamos express
         this.port = process.env.PORT || '8000'; //puerto por defecto
@@ -75,6 +84,15 @@ class Server {
         this.app.use(express_1.default.json());
         //carpeta publica
         this.app.use(express_1.default.static('public'));
+        //crear filtro para subir archivos
+        // this.app.use(multerUpload.single('file'));
+        // cargar archivos
+        // this.app.use('/pdf', express.static('pdf'));
+        this.app.use((0, express_fileupload_1.default)({
+            useTempFiles: true,
+            tempFileDir: '/tmp/',
+            createParentPath: true
+        }));
     }
     routes() {
         this.app.use(this.apiPaths.usuarios, usuarios_1.default);
@@ -91,16 +109,14 @@ class Server {
         this.app.use(this.apiPaths.requisitosApr, requisitos_apr_1.default);
         this.app.use(this.apiPaths.facturas, facturas_1.default);
         this.app.use(this.apiPaths.cuotasFactura, cuotas_factura_1.default);
+        this.app.use(this.apiPaths.tipo_documentos, tipo_documentos_1.default);
+        this.app.use(this.apiPaths.documentos, documentos_1.default);
+        this.app.use(this.apiPaths.chatBot, chat_bot_1.default);
+        this.app.use(this.apiPaths.upload, uploads_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {
             console.log('Servidor corriendo en el puerto ' + this.port);
-        });
-    }
-    nlp() {
-        const nlp = new node_nlp_1.Nlp();
-        nlp.process('I want to buy a red car', (err, result) => {
-            console.log(result);
         });
     }
 }

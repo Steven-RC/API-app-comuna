@@ -52,6 +52,10 @@ class usuarios extends sequelize_1.Model {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
+            },
+            img: {
+                type: sequelize_1.DataTypes.TEXT,
+                allowNull: true
             }
         }, {
             sequelize,

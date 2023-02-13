@@ -11,26 +11,17 @@ class documentos extends sequelize_1.Model {
                 allowNull: false,
                 primaryKey: true
             },
-            ID_COMUNERO: {
-                type: sequelize_1.DataTypes.INTEGER,
-                allowNull: true,
-                references: {
-                    model: 'comuneros',
-                    key: 'ID_COMUNERO'
-                }
+            DOCUMENTO: {
+                type: sequelize_1.DataTypes.TEXT,
+                allowNull: false
             },
             ID_TIPO_DOC: {
                 type: sequelize_1.DataTypes.INTEGER,
-                allowNull: true,
+                allowNull: false,
                 references: {
                     model: 'tipo_documentos',
                     key: 'ID_TIPO_DOC'
-                },
-                unique: "FK_REL_TIP_DOC_DOCUMENTOS"
-            },
-            FILE: {
-                type: sequelize_1.DataTypes.BLOB,
-                allowNull: false
+                }
             }
         }, {
             sequelize,
@@ -46,18 +37,10 @@ class documentos extends sequelize_1.Model {
                     ]
                 },
                 {
-                    name: "ID_TIPO_DOC",
-                    unique: true,
+                    name: "fk_documentos_tipo_documentos1_idx",
                     using: "BTREE",
                     fields: [
                         { name: "ID_TIPO_DOC" },
-                    ]
-                },
-                {
-                    name: "FK_REL_COM_DOCUMENTOS",
-                    using: "BTREE",
-                    fields: [
-                        { name: "ID_COMUNERO" },
                     ]
                 },
             ]

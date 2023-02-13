@@ -29,6 +29,7 @@ export const obtenerCuotasFactura = async(req:Request,res:Response)=>{
             as:'ID_CUOTA_cuota_anual',
             attributes:['NOM_CUOTA','DESCRIPCION','VALOR_CUOTA']
         }]
+        
     });
     if (listCuotas){ 
         res.json({listCuotas});

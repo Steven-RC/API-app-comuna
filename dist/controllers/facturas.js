@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.obtenerFacturasComunero = exports.crearFactura = exports.obtenerFacturas = void 0;
+exports.obtenerFacturasMes = exports.obtenerFacturasComunero = exports.crearFactura = exports.obtenerFacturas = void 0;
 const init_models_1 = require("../models/init-models");
 const connection_1 = __importDefault(require("../db/connection"));
 (0, init_models_1.initModels)(connection_1.default);
@@ -64,4 +64,18 @@ const obtenerFacturasComunero = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.obtenerFacturasComunero = obtenerFacturasComunero;
+//obtener facturas por mes 
+const obtenerFacturasMes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    connection_1.default.query('SET lc_time_names = "es_ES"');
+    const facMes = yield connection_1.default.query("SELECT DATE_FORMAT(facturas.FECHA, '%M')AS mes, MONTH(facturas.FECHA) AS mes_numero, COUNT(*) AS facturas_pagadas FROM facturas WHERE year(facturas.FECHA) GROUP BY mes, mes_numero ORDER BY mes_numero asc;");
+    if (facMes) {
+        res.json({ facMes });
+    }
+    else {
+        res.status(404).json({
+            msg: 'No hay facturas'
+        });
+    }
+});
+exports.obtenerFacturasMes = obtenerFacturasMes;
 //# sourceMappingURL=facturas.js.map

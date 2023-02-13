@@ -96,7 +96,6 @@ export const cambiarEstadoComunero=async (req:Request,res:Response ) => {
     }
 }
 
-//obtener personas 
 
 
 

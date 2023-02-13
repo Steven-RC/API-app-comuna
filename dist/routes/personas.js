@@ -8,5 +8,6 @@ router.get('/obtener', personas_1.obtenerPersonas);
 router.patch('/actualizar', personas_1.actualizarPersona);
 router.patch('/cambiarEstado', personas_1.cambiarEstadoPersona);
 router.get('/obtenerPersonasRequisitosAprobados', personas_1.obtenerPersonasRequisitosAprobados);
+router.post('/buscarComunerosPorCedula', personas_1.buscarComunerosPorCedula);
 exports.default = router;
 //# sourceMappingURL=personas.js.map

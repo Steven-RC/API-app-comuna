@@ -48,6 +48,11 @@ class personas extends sequelize_1.Model {
             APELLIDOS: {
                 type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true
+            },
+            TITULO_ACADEMICO: {
+                type: sequelize_1.DataTypes.STRING(10),
+                allowNull: true,
+                defaultValue: "Sr."
             }
         }, {
             sequelize,

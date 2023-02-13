@@ -106,5 +106,4 @@ const cambiarEstadoComunero = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.cambiarEstadoComunero = cambiarEstadoComunero;
-//obtener personas 
 //# sourceMappingURL=comuneros.js.map

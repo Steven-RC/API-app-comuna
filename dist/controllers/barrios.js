@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actualizarBarrio = exports.eliminarBarrio = exports.obtenerBarrios = exports.crearBarrio = void 0;
+exports.obtenerComunerosBarrio = exports.actualizarBarrio = exports.eliminarBarrio = exports.obtenerBarrios = exports.crearBarrio = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
 (0, init_models_1.initModels)(connection_1.default);
@@ -99,4 +99,14 @@ const actualizarBarrio = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.actualizarBarrio = actualizarBarrio;
+//obtener todos los comuneros por barrio
+const obtenerComunerosBarrio = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body.anio);
+    const anioAc = req.body.anio;
+    const comunerosBarrio = yield connection_1.default.query('select barrios.NOM_BARRIO, count(*) as per_por_barrio from comuneros inner join barrios on comuneros.ID_BARRIO = barrios.ID_BARRIO group by barrios.NOM_BARRIO ');
+    res.json({
+        comunerosBarrio
+    });
+});
+exports.obtenerComunerosBarrio = obtenerComunerosBarrio;
 //# sourceMappingURL=barrios.js.map

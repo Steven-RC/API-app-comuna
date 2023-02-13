@@ -42,6 +42,7 @@ exports.obtenerRequisitos = obtenerRequisitos;
 //actualizar requisito
 const actualizarRequisito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id_requisito, requisito, observacion } = req.body;
+    //actualizar requisito
     yield init_models_1.requisitos.update({
         REQUISITO: requisito,
         OBSERVACION: observacion

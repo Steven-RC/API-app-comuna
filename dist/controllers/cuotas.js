@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.obtenerCuotasComunero = exports.actualizarCuota = exports.crearCuota = exports.obtenerCuotas = void 0;
+exports.obtenerCuotasDeudaComunero = exports.obtenerCuotasComunero = exports.actualizarCuota = exports.crearCuota = exports.obtenerCuotas = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
 (0, init_models_1.initModels)(connection_1.default);
@@ -111,4 +111,26 @@ const obtenerCuotasComunero = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.obtenerCuotasComunero = obtenerCuotasComunero;
+const obtenerCuotasDeudaComunero = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //buscar si existe el comunero
+    const encontrarComunero = yield init_models_1.comuneros.findByPk(req.body.id);
+    //si no existe el comunero
+    if (!encontrarComunero) {
+        return res.status(404).json({
+            msg: 'El comunero no existe'
+        });
+    }
+    //obtener las cuotas que no ha pagado el comunero
+    const cuotas = yield connection_1.default.query("select cuota_anual.ID_CUOTA,cuota_anual.NOM_CUOTA,cuota_anual.DESCRIPCION,cuota_anual.VALOR_CUOTA from cuota_anual where cuota_anual.ID_CUOTA not in (select cuota_anual.ID_CUOTA from (((((personas inner join comuneros on personas.ID_PERSONA=comuneros.ID_PERSONA) inner join facturas on comuneros.ID_COMUNERO = facturas.ID_COMUNERO) inner join cuotas_factura on facturas.ID_FACTURA=cuotas_factura.ID_FACTURA )inner join cuota_anual on cuota_anual.ID_CUOTA= cuotas_factura.ID_CUOTA)inner join anio on cuota_anual.ID_ANIO=anio.ID_ANIO) where comuneros.ID_COMUNERO=" + req.body.id + ")");
+    if (cuotas[0].length > 0) {
+        const cuotasCom = cuotas[0];
+        res.json({ cuotasCom });
+    }
+    else {
+        res.status(404).json({
+            msg: 'No tiene deudas pendientes.'
+        });
+    }
+});
+exports.obtenerCuotasDeudaComunero = obtenerCuotasDeudaComunero;
 //# sourceMappingURL=cuotas.js.map

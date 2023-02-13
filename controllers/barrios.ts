@@ -83,9 +83,21 @@ export const actualizarBarrio = async (req: Request, res: Response) => {
              
         })
         res.json({
-            msg: 'Barrio actualizado'
+            msg: 'Barrio actualizado'   
         })
-    }
+    } 
+ 
+}  
+
+//obtener todos los comuneros por barrio
+export const obtenerComunerosBarrio = async (req: Request, res: Response) => { 
+    console.log(req.body.anio)
+    const anioAc= req.body.anio
+    const comunerosBarrio= await db.query('select barrios.NOM_BARRIO, count(*) as per_por_barrio from comuneros inner join barrios on comuneros.ID_BARRIO = barrios.ID_BARRIO group by barrios.NOM_BARRIO ')
+    res.json({
+        comunerosBarrio 
+    })
 }
+
 
 

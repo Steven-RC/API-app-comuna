@@ -53,3 +53,17 @@ export const obtenerFacturasComunero = async (req:Request,res:Response)=>{
     }
     
 }
+
+//obtener facturas por mes 
+export const obtenerFacturasMes = async (req:Request,res:Response)=>{
+    db.query('SET lc_time_names = "es_ES"');
+    const facMes= await db.query("SELECT DATE_FORMAT(facturas.FECHA, '%M')AS mes, MONTH(facturas.FECHA) AS mes_numero, COUNT(*) AS facturas_pagadas FROM facturas WHERE year(facturas.FECHA) GROUP BY mes, mes_numero ORDER BY mes_numero asc;")
+    if (facMes){
+        res.json({facMes});
+    }else{
+        res.status(404).json({
+            msg: 'No hay facturas'
+        })
+    }
+}
+    

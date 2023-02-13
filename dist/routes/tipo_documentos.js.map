@@ -1,0 +1,1 @@
+{"version":3,"file":"tipo_documentos.js","sourceRoot":"","sources":["../../routes/tipo_documentos.ts"],"names":[],"mappings":";;AAAA,qCAAiC;AACjC,oEACgE;AAEhE,MAAM,MAAM,GAAG,IAAA,gBAAM,GAAE,CAAC;AAExB,MAAM,CAAC,IAAI,CAAC,QAAQ,EAAE,oCAAkB,CAAC,CAAA;AACzC,MAAM,CAAC,GAAG,CAAC,UAAU,EAAE,wCAAsB,CAAC,CAAA;AAC9C,MAAM,CAAC,KAAK,CAAC,aAAa,EAAE,yCAAuB,CAAC,CAAA;AAEpD,kBAAe,MAAM,CAAC"}

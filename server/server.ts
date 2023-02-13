@@ -1,4 +1,6 @@
 import express, { Application } from 'express';
+// import multer from 'multer';
+import fileUpload from 'express-fileupload';
 
 import userRoutes from '../routes/usuarios';
 import cors from "cors";
@@ -16,9 +18,10 @@ import requisitosRoutes from '../routes/requisitos';
 import requisitosAprRoytes from '../routes/requisitos_apr';
 import facturasRoutes from '../routes/facturas';
 import cuotasFacturaRoutes from '../routes/cuotas_factura';
-import { Nlp } from 'node-nlp';
-
-
+import tipo_documentosRoutes from '../routes/tipo_documentos';
+import documentosRoutes from '../routes/documentos';
+import chatBotRoutes from '../routes/chat_bot';
+import uploadRoutes from '../routes/uploads';
 
 
 class Server {
@@ -38,7 +41,12 @@ class Server {
         requisitos:'/api/requisitos',
         requisitosApr:'/api/requisitosApr',
         facturas:'/api/facturas',
-        cuotasFactura:'/api/cuotasFactura'
+        cuotasFactura:'/api/cuotasFactura',
+        tipo_documentos:'/api/tipodocumentos',
+        documentos:'/api/documentos',
+        chatBot:'/api/chatBot',
+        upload: '/api/upload'
+
 
     }
 
@@ -76,6 +84,16 @@ class Server {
 
         //carpeta publica
         this.app.use(express.static('public'));
+        
+        //crear filtro para subir archivos
+        // this.app.use(multerUpload.single('file'));
+        // cargar archivos
+        // this.app.use('/pdf', express.static('pdf'));
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/',
+            createParentPath: true
+        }));
 
     }
 
@@ -95,6 +113,10 @@ class Server {
         this.app.use(this.apiPaths.requisitosApr, requisitosAprRoytes);
         this.app.use(this.apiPaths.facturas, facturasRoutes);
         this.app.use(this.apiPaths.cuotasFactura, cuotasFacturaRoutes);
+        this.app.use(this.apiPaths.tipo_documentos, tipo_documentosRoutes);
+        this.app.use(this.apiPaths.documentos, documentosRoutes);
+        this.app.use(this.apiPaths.chatBot, chatBotRoutes);
+        this.app.use(this.apiPaths.upload, uploadRoutes);
     }
 
 
@@ -107,13 +129,6 @@ class Server {
 
     }
 
-    nlp(){
-        const nlp = new Nlp();
-        nlp.process('I want to buy a red car', (err, result) => {
-            console.log(result);
-        }
-        );
-    }
 
 }
 

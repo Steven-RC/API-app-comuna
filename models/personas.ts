@@ -14,11 +14,12 @@ export interface personasAttributes {
   ESTADO?: number;
   CELULAR_PER?: string;
   APELLIDOS?: string;
+  TITULO_ACADEMICO?: string;
 }
 
 export type personasPk = "ID_PERSONA";
 export type personasId = personas[personasPk];
-export type personasOptionalAttributes = "ID_PERSONA" | "ID_NACIONALIDAD" | "ESTADO" | "CELULAR_PER" | "APELLIDOS";
+export type personasOptionalAttributes = "ID_PERSONA" | "ID_NACIONALIDAD" | "ESTADO" | "CELULAR_PER" | "APELLIDOS" | "TITULO_ACADEMICO";
 export type personasCreationAttributes = Optional<personasAttributes, personasOptionalAttributes>;
 
 export class personas extends Model<personasAttributes, personasCreationAttributes> implements personasAttributes {
@@ -31,6 +32,7 @@ export class personas extends Model<personasAttributes, personasCreationAttribut
   ESTADO?: number;
   CELULAR_PER?: string;
   APELLIDOS?: string;
+  TITULO_ACADEMICO?: string;
 
   // personas belongsTo nacionalidad via ID_NACIONALIDAD
   ID_NACIONALIDAD_nacionalidad!: nacionalidad;
@@ -107,6 +109,11 @@ export class personas extends Model<personasAttributes, personasCreationAttribut
     APELLIDOS: {
       type: DataTypes.STRING(50),
       allowNull: true
+    },
+    TITULO_ACADEMICO: {
+      type: DataTypes.STRING(10),
+      allowNull: true,
+      defaultValue: "Sr."
     }
   }, {
     sequelize,

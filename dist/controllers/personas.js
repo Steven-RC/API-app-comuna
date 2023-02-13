@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.obtenerPersonasRequisitosAprobados = exports.cambiarEstadoPersona = exports.actualizarPersona = exports.eliminarPersona = exports.obtenerPersonas = exports.crearPersona = void 0;
+exports.buscarComunerosPorCedula = exports.obtenerPersonasRequisitosAprobados = exports.cambiarEstadoPersona = exports.actualizarPersona = exports.eliminarPersona = exports.obtenerPersonas = exports.crearPersona = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
 (0, init_models_1.initModels)(connection_1.default);
@@ -155,4 +155,38 @@ const obtenerPersonasRequisitosAprobados = (req, res) => __awaiter(void 0, void 
     }
 });
 exports.obtenerPersonasRequisitosAprobados = obtenerPersonasRequisitosAprobados;
+//buscar comuneros por cedula
+const buscarComunerosPorCedula = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { cedula } = req.body;
+    console.log(cedula);
+    const listComuneros = yield init_models_1.personas.findOne({
+        where: {
+            CEDULA: cedula,
+        },
+        attributes: ['APELLIDOS', 'NOMBRE', 'CELULAR_PER', 'ESTADO'],
+        include: [
+            {
+                model: init_models_1.comuneros,
+                as: 'comuneros',
+                attributes: ['ID_COMUNERO'],
+                include: [
+                    {
+                        model: init_models_1.barrios,
+                        as: 'ID_BARRIO_barrio',
+                        attributes: ['NOM_BARRIO']
+                    },
+                ]
+            },
+        ]
+    });
+    if (listComuneros) {
+        res.json({ listComuneros });
+    }
+    else {
+        res.status(404).json({
+            msg: 'El numero de cedula no existe'
+        });
+    }
+});
+exports.buscarComunerosPorCedula = buscarComunerosPorCedula;
 //# sourceMappingURL=personas.js.map

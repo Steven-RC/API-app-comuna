@@ -19,6 +19,10 @@ class tipo_documentos extends sequelize_1.Model {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
+            },
+            ALIAS: {
+                type: sequelize_1.DataTypes.STRING(60),
+                allowNull: true
             }
         }, {
             sequelize,

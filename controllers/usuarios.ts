@@ -14,8 +14,8 @@ export const crearUsuario = async (req: Request, res: Response) => {
         EMAIL: req.body.email,
         ID_ROL: req.body.rol,
         ID_COMUNERO: req.body.comunero,
-        CREATED_AT_DATE: req.body.fecha,
-        CREATED_AT_TIME: req.body.hora
+        CREATED_AT_DATE: new Date().toLocaleDateString(),
+        CREATED_AT_TIME: new Date().toLocaleTimeString(),
     }
     await usuarios.create(usuarioCr);
     res.json({
@@ -57,7 +57,7 @@ export const obtenerUsuario = async (req: Request, res: Response) => {
             where: {
                 NOM_USER: usuario
             },
-            attributes: ['ID_ROL', 'NOM_USER', 'ESTADO_USER', 'ID_COMUNERO'],
+            attributes: ['ID_USUARIO','ID_ROL', 'NOM_USER', 'ESTADO_USER', 'ID_COMUNERO'],
 
             include: {
                 model: rol_user,
@@ -190,6 +190,16 @@ export const obtenerPersona = async (req: Request, res: Response) => {
         persona
     })
 }
+
+//obtener personas del cavildo comunal
+export const obtenerPerRoles = async (req: Request, res: Response) => {
+    const personasRol= await db.query("select rol_user.NOM_ROL, personas.NOMBRE,personas.APELLIDOS, personas.TITULO_ACADEMICO from (((usuarios inner join rol_user on usuarios.ID_ROL=rol_user.ID_ROL)inner join comuneros on usuarios.ID_COMUNERO=comuneros.ID_COMUNERO)inner join personas on comuneros.ID_PERSONA=personas.ID_PERSONA)")
+    res.json({
+        personasRol
+    })
+}
+
+
 
 
 

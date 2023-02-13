@@ -1,7 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { comuneros, comunerosId } from './comuneros';
-import type { cuota_anual, cuota_anualId } from './cuota_anual';
 import type { cuotas_factura, cuotas_facturaId } from './cuotas_factura';
 import type { forma_pago, forma_pagoId } from './forma_pago';
 
@@ -38,18 +37,6 @@ export class facturas extends Model<facturasAttributes, facturasCreationAttribut
   getID_COMUNERO_comunero!: Sequelize.BelongsToGetAssociationMixin<comuneros>;
   setID_COMUNERO_comunero!: Sequelize.BelongsToSetAssociationMixin<comuneros, comunerosId>;
   createID_COMUNERO_comunero!: Sequelize.BelongsToCreateAssociationMixin<comuneros>;
-  // facturas belongsToMany cuota_anual via ID_FACTURA and ID_CUOTA
-  ID_CUOTA_cuota_anuals!: cuota_anual[];
-  getID_CUOTA_cuota_anuals!: Sequelize.BelongsToManyGetAssociationsMixin<cuota_anual>;
-  setID_CUOTA_cuota_anuals!: Sequelize.BelongsToManySetAssociationsMixin<cuota_anual, cuota_anualId>;
-  addID_CUOTA_cuota_anual!: Sequelize.BelongsToManyAddAssociationMixin<cuota_anual, cuota_anualId>;
-  addID_CUOTA_cuota_anuals!: Sequelize.BelongsToManyAddAssociationsMixin<cuota_anual, cuota_anualId>;
-  createID_CUOTA_cuota_anual!: Sequelize.BelongsToManyCreateAssociationMixin<cuota_anual>;
-  removeID_CUOTA_cuota_anual!: Sequelize.BelongsToManyRemoveAssociationMixin<cuota_anual, cuota_anualId>;
-  removeID_CUOTA_cuota_anuals!: Sequelize.BelongsToManyRemoveAssociationsMixin<cuota_anual, cuota_anualId>;
-  hasID_CUOTA_cuota_anual!: Sequelize.BelongsToManyHasAssociationMixin<cuota_anual, cuota_anualId>;
-  hasID_CUOTA_cuota_anuals!: Sequelize.BelongsToManyHasAssociationsMixin<cuota_anual, cuota_anualId>;
-  countID_CUOTA_cuota_anuals!: Sequelize.BelongsToManyCountAssociationsMixin;
   // facturas hasMany cuotas_factura via ID_FACTURA
   cuotas_facturas!: cuotas_factura[];
   getCuotas_facturas!: Sequelize.HasManyGetAssociationsMixin<cuotas_factura>;

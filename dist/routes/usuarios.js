@@ -7,5 +7,6 @@ router.post('/obtener', usuarios_1.obtenerUsuario);
 router.post('/crear', usuarios_1.crearUsuario);
 router.post('/reset', usuarios_1.actualizarContrasena);
 router.post('/deshabilitar', usuarios_1.cambiarEstado);
+router.get('/obtenerPerRoles', usuarios_1.obtenerPerRoles);
 exports.default = router;
 //# sourceMappingURL=usuarios.js.map

@@ -1,6 +1,7 @@
 import db from '../db/connection';
 import { Request, Response } from "express";
-import { initModels,requisitos,requisito_apr, personas, personasAttributes, personasCreationAttributes } from "../models/init-models";
+import { initModels,comuneros,requisitos,requisito_apr, personas,facturas,
+    cuotas_factura, cuota_anual,personasAttributes, personasCreationAttributes,barrios} from "../models/init-models";
 
 
 
@@ -141,3 +142,38 @@ export const obtenerPersonasRequisitosAprobados = async (req: Request, res: Resp
 }
 
 
+//buscar comuneros por cedula
+export const buscarComunerosPorCedula = async (req: Request, res: Response) => {
+    const {cedula}=req.body;
+    console.log(cedula);
+
+    const listComuneros = await personas.findOne({
+        where:{
+            CEDULA:cedula,
+        },
+        attributes: ['APELLIDOS', 'NOMBRE', 'CELULAR_PER', 'ESTADO'],
+        
+        include: [
+            {
+                model: comuneros,
+                as: 'comuneros',
+                attributes: ['ID_COMUNERO'],
+                include: [
+                    {
+                        model: barrios,
+                        as: 'ID_BARRIO_barrio',
+                        attributes: [ 'NOM_BARRIO']
+                    },
+                ]
+            },
+
+        ]
+    });
+    if (listComuneros) {
+        res.json({listComuneros} );
+    }else{
+        res.status(404).json({
+            msg: 'El numero de cedula no existe'
+        })
+    }
+}

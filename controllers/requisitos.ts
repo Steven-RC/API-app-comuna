@@ -31,6 +31,7 @@ export const obtenerRequisitos = async (req:Request,res:Response)=>{
 //actualizar requisito
 export const actualizarRequisito = async (req:Request,res:Response)=>{
     const {id_requisito,requisito,observacion} = req.body;
+    //actualizar requisito
     await requisitos.update({
         REQUISITO:requisito,
         OBSERVACION:observacion
@@ -42,6 +43,8 @@ export const actualizarRequisito = async (req:Request,res:Response)=>{
     res.json({
         msg:'Requisito actualizado'
     })
+
+
 }
 
 //cambiar estado requisito

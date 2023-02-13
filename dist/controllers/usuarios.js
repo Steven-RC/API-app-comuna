@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.obtenerPersona = exports.cambiarEstado = exports.actualizarContrasena = exports.obtenerUsuario = exports.crearUsuario = void 0;
+exports.obtenerPerRoles = exports.obtenerPersona = exports.cambiarEstado = exports.actualizarContrasena = exports.obtenerUsuario = exports.crearUsuario = void 0;
 const init_models_1 = require("../models/init-models");
 const init_models_2 = require("../models/init-models");
 const bcrypt = __importStar(require("bcrypt"));
@@ -48,8 +48,8 @@ const crearUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         EMAIL: req.body.email,
         ID_ROL: req.body.rol,
         ID_COMUNERO: req.body.comunero,
-        CREATED_AT_DATE: req.body.fecha,
-        CREATED_AT_TIME: req.body.hora
+        CREATED_AT_DATE: new Date().toLocaleDateString(),
+        CREATED_AT_TIME: new Date().toLocaleTimeString(),
     };
     yield init_models_1.usuarios.create(usuarioCr);
     res.json({
@@ -92,7 +92,7 @@ const obtenerUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function*
             where: {
                 NOM_USER: usuario
             },
-            attributes: ['ID_ROL', 'NOM_USER', 'ESTADO_USER', 'ID_COMUNERO'],
+            attributes: ['ID_USUARIO', 'ID_ROL', 'NOM_USER', 'ESTADO_USER', 'ID_COMUNERO'],
             include: {
                 model: init_models_2.rol_user,
                 as: 'ID_ROL_rol_user',
@@ -218,4 +218,12 @@ const obtenerPersona = (req, res) => __awaiter(void 0, void 0, void 0, function*
     });
 });
 exports.obtenerPersona = obtenerPersona;
+//obtener personas del cavildo comunal
+const obtenerPerRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const personasRol = yield connection_1.default.query("select rol_user.NOM_ROL, personas.NOMBRE,personas.APELLIDOS, personas.TITULO_ACADEMICO from (((usuarios inner join rol_user on usuarios.ID_ROL=rol_user.ID_ROL)inner join comuneros on usuarios.ID_COMUNERO=comuneros.ID_COMUNERO)inner join personas on comuneros.ID_PERSONA=personas.ID_PERSONA)");
+    res.json({
+        personasRol
+    });
+});
+exports.obtenerPerRoles = obtenerPerRoles;
 //# sourceMappingURL=usuarios.js.map

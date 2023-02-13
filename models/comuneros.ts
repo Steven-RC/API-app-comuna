@@ -2,9 +2,10 @@ import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { asociaciones, asociacionesId } from './asociaciones';
 import type { barrios, barriosId } from './barrios';
-import type { documentos, documentosId } from './documentos';
+import type { comuneros_tipos_doc, comuneros_tipos_docId } from './comuneros_tipos_doc';
 import type { facturas, facturasId } from './facturas';
 import type { personas, personasId } from './personas';
+import type { tipo_documentos, tipo_documentosId } from './tipo_documentos';
 import type { usuarios, usuariosId } from './usuarios';
 
 export interface comunerosAttributes {
@@ -43,18 +44,18 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
   getID_BARRIO_barrio!: Sequelize.BelongsToGetAssociationMixin<barrios>;
   setID_BARRIO_barrio!: Sequelize.BelongsToSetAssociationMixin<barrios, barriosId>;
   createID_BARRIO_barrio!: Sequelize.BelongsToCreateAssociationMixin<barrios>;
-  // comuneros hasMany documentos via ID_COMUNERO
-  documentos!: documentos[];
-  getDocumentos!: Sequelize.HasManyGetAssociationsMixin<documentos>;
-  setDocumentos!: Sequelize.HasManySetAssociationsMixin<documentos, documentosId>;
-  addDocumento!: Sequelize.HasManyAddAssociationMixin<documentos, documentosId>;
-  addDocumentos!: Sequelize.HasManyAddAssociationsMixin<documentos, documentosId>;
-  createDocumento!: Sequelize.HasManyCreateAssociationMixin<documentos>;
-  removeDocumento!: Sequelize.HasManyRemoveAssociationMixin<documentos, documentosId>;
-  removeDocumentos!: Sequelize.HasManyRemoveAssociationsMixin<documentos, documentosId>;
-  hasDocumento!: Sequelize.HasManyHasAssociationMixin<documentos, documentosId>;
-  hasDocumentos!: Sequelize.HasManyHasAssociationsMixin<documentos, documentosId>;
-  countDocumentos!: Sequelize.HasManyCountAssociationsMixin;
+  // comuneros hasMany comuneros_tipos_doc via ID_COMUNERO
+  comuneros_tipos_docs!: comuneros_tipos_doc[];
+  getComuneros_tipos_docs!: Sequelize.HasManyGetAssociationsMixin<comuneros_tipos_doc>;
+  setComuneros_tipos_docs!: Sequelize.HasManySetAssociationsMixin<comuneros_tipos_doc, comuneros_tipos_docId>;
+  addComuneros_tipos_doc!: Sequelize.HasManyAddAssociationMixin<comuneros_tipos_doc, comuneros_tipos_docId>;
+  addComuneros_tipos_docs!: Sequelize.HasManyAddAssociationsMixin<comuneros_tipos_doc, comuneros_tipos_docId>;
+  createComuneros_tipos_doc!: Sequelize.HasManyCreateAssociationMixin<comuneros_tipos_doc>;
+  removeComuneros_tipos_doc!: Sequelize.HasManyRemoveAssociationMixin<comuneros_tipos_doc, comuneros_tipos_docId>;
+  removeComuneros_tipos_docs!: Sequelize.HasManyRemoveAssociationsMixin<comuneros_tipos_doc, comuneros_tipos_docId>;
+  hasComuneros_tipos_doc!: Sequelize.HasManyHasAssociationMixin<comuneros_tipos_doc, comuneros_tipos_docId>;
+  hasComuneros_tipos_docs!: Sequelize.HasManyHasAssociationsMixin<comuneros_tipos_doc, comuneros_tipos_docId>;
+  countComuneros_tipos_docs!: Sequelize.HasManyCountAssociationsMixin;
   // comuneros hasMany facturas via ID_COMUNERO
   facturas!: facturas[];
   getFacturas!: Sequelize.HasManyGetAssociationsMixin<facturas>;
@@ -67,6 +68,18 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
   hasFactura!: Sequelize.HasManyHasAssociationMixin<facturas, facturasId>;
   hasFacturas!: Sequelize.HasManyHasAssociationsMixin<facturas, facturasId>;
   countFacturas!: Sequelize.HasManyCountAssociationsMixin;
+  // comuneros belongsToMany tipo_documentos via ID_COMUNERO and ID_TIPO_DOC
+  ID_TIPO_DOC_tipo_documentos!: tipo_documentos[];
+  getID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManyGetAssociationsMixin<tipo_documentos>;
+  setID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManySetAssociationsMixin<tipo_documentos, tipo_documentosId>;
+  addID_TIPO_DOC_tipo_documento!: Sequelize.BelongsToManyAddAssociationMixin<tipo_documentos, tipo_documentosId>;
+  addID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManyAddAssociationsMixin<tipo_documentos, tipo_documentosId>;
+  createID_TIPO_DOC_tipo_documento!: Sequelize.BelongsToManyCreateAssociationMixin<tipo_documentos>;
+  removeID_TIPO_DOC_tipo_documento!: Sequelize.BelongsToManyRemoveAssociationMixin<tipo_documentos, tipo_documentosId>;
+  removeID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManyRemoveAssociationsMixin<tipo_documentos, tipo_documentosId>;
+  hasID_TIPO_DOC_tipo_documento!: Sequelize.BelongsToManyHasAssociationMixin<tipo_documentos, tipo_documentosId>;
+  hasID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManyHasAssociationsMixin<tipo_documentos, tipo_documentosId>;
+  countID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManyCountAssociationsMixin;
   // comuneros hasMany usuarios via ID_COMUNERO
   usuarios!: usuarios[];
   getUsuarios!: Sequelize.HasManyGetAssociationsMixin<usuarios>;
