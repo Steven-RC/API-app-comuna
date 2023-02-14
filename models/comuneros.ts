@@ -1,10 +1,11 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
-import type { asociaciones, asociacionesId } from './asociaciones';
+import type { Asociaciones, asociacionesId } from './asociaciones';
 import type { barrios, barriosId } from './barrios';
 import type { comuneros_tipos_doc, comuneros_tipos_docId } from './comuneros_tipos_doc';
 import type { facturas, facturasId } from './facturas';
 import type { personas, personasId } from './personas';
+import type { terrenos, terrenosId } from './terrenos';
 import type { tipo_documentos, tipo_documentosId } from './tipo_documentos';
 import type { usuarios, usuariosId } from './usuarios';
 
@@ -17,11 +18,12 @@ export interface comunerosAttributes {
   CREATED_DATE?: string;
   CREATED_TIME?: string;
   ESTADO_COM?: number;
+  ID_TERRENO?: number;
 }
 
 export type comunerosPk = "ID_COMUNERO";
 export type comunerosId = comuneros[comunerosPk];
-export type comunerosOptionalAttributes = "ID_COMUNERO" | "ID_BARRIO" | "ID_ASO" | "ID_PERSONA" | "CALIFICADO" | "CREATED_DATE" | "CREATED_TIME" | "ESTADO_COM";
+export type comunerosOptionalAttributes = "ID_COMUNERO" | "ID_BARRIO" | "ID_ASO" | "ID_PERSONA" | "CALIFICADO" | "CREATED_DATE" | "CREATED_TIME" | "ESTADO_COM" | "ID_TERRENO";
 export type comunerosCreationAttributes = Optional<comunerosAttributes, comunerosOptionalAttributes>;
 
 export class comuneros extends Model<comunerosAttributes, comunerosCreationAttributes> implements comunerosAttributes {
@@ -33,12 +35,13 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
   CREATED_DATE?: string;
   CREATED_TIME?: string;
   ESTADO_COM?: number;
+  ID_TERRENO?: number;
 
   // comuneros belongsTo asociaciones via ID_ASO
-  ID_ASO_asociacione!: asociaciones;
-  getID_ASO_asociacione!: Sequelize.BelongsToGetAssociationMixin<asociaciones>;
-  setID_ASO_asociacione!: Sequelize.BelongsToSetAssociationMixin<asociaciones, asociacionesId>;
-  createID_ASO_asociacione!: Sequelize.BelongsToCreateAssociationMixin<asociaciones>;
+  ID_ASO_asociacione!: Asociaciones;
+  getID_ASO_asociacione!: Sequelize.BelongsToGetAssociationMixin<Asociaciones>;
+  setID_ASO_asociacione!: Sequelize.BelongsToSetAssociationMixin<Asociaciones, asociacionesId>;
+  createID_ASO_asociacione!: Sequelize.BelongsToCreateAssociationMixin<Asociaciones>;
   // comuneros belongsTo barrios via ID_BARRIO
   ID_BARRIO_barrio!: barrios;
   getID_BARRIO_barrio!: Sequelize.BelongsToGetAssociationMixin<barrios>;
@@ -97,6 +100,11 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
   getID_PERSONA_persona!: Sequelize.BelongsToGetAssociationMixin<personas>;
   setID_PERSONA_persona!: Sequelize.BelongsToSetAssociationMixin<personas, personasId>;
   createID_PERSONA_persona!: Sequelize.BelongsToCreateAssociationMixin<personas>;
+  // comuneros belongsTo terrenos via ID_TERRENO
+  ID_TERRENO_terreno!: terrenos;
+  getID_TERRENO_terreno!: Sequelize.BelongsToGetAssociationMixin<terrenos>;
+  setID_TERRENO_terreno!: Sequelize.BelongsToSetAssociationMixin<terrenos, terrenosId>;
+  createID_TERRENO_terreno!: Sequelize.BelongsToCreateAssociationMixin<terrenos>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof comuneros {
     return comuneros.init({
@@ -147,6 +155,14 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: 1
+    },
+    ID_TERRENO: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'terrenos',
+        key: 'ID_TERRENO'
+      }
     }
   }, {
     sequelize,
@@ -180,6 +196,13 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
         using: "BTREE",
         fields: [
           { name: "ID_PERSONA" },
+        ]
+      },
+      {
+        name: "fk_comuneros_terrenos1_idx",
+        using: "BTREE",
+        fields: [
+          { name: "ID_TERRENO" },
         ]
       },
     ]

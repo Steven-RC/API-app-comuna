@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.asociaciones = void 0;
+exports.Asociaciones = void 0;
 const sequelize_1 = require("sequelize");
-class asociaciones extends sequelize_1.Model {
+class Asociaciones extends sequelize_1.Model {
     static initModel(sequelize) {
-        return asociaciones.init({
+        return Asociaciones.init({
             ID_ASO: {
                 autoIncrement: true,
                 type: sequelize_1.DataTypes.INTEGER,
@@ -37,5 +37,5 @@ class asociaciones extends sequelize_1.Model {
         });
     }
 }
-exports.asociaciones = asociaciones;
+exports.Asociaciones = Asociaciones;
 //# sourceMappingURL=asociaciones.js.map

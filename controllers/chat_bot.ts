@@ -2,6 +2,7 @@ import { Request, Response, text } from 'express';
 import { PythonShell } from 'python-shell';
 
 export const  chatBot  =  async ( req :  Request ,  res :  Response ) => {
+    
     const options = {
         scriptPath: './chat-bot',
         args: [req.body.message]

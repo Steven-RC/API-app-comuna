@@ -8,11 +8,11 @@ export interface anioAttributes {
 }
 
 export type anioPk = "ID_ANIO";
-export type anioId = anio[anioPk];
+export type anioId = Anio[anioPk];
 export type anioOptionalAttributes = "ID_ANIO" | "ANIO";
 export type anioCreationAttributes = Optional<anioAttributes, anioOptionalAttributes>;
 
-export class anio extends Model<anioAttributes, anioCreationAttributes> implements anioAttributes {
+export class Anio extends Model<anioAttributes, anioCreationAttributes> implements anioAttributes {
   ID_ANIO!: number;
   ANIO?: number;
 
@@ -29,8 +29,8 @@ export class anio extends Model<anioAttributes, anioCreationAttributes> implemen
   hasCuota_anuals!: Sequelize.HasManyHasAssociationsMixin<cuota_anual, cuota_anualId>;
   countCuota_anuals!: Sequelize.HasManyCountAssociationsMixin;
 
-  static initModel(sequelize: Sequelize.Sequelize): typeof anio {
-    return anio.init({
+  static initModel(sequelize: Sequelize.Sequelize): typeof Anio {
+    return Anio.init({
     ID_ANIO: {
       autoIncrement: true,
       type: DataTypes.INTEGER,

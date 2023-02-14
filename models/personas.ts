@@ -1,44 +1,44 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { comuneros, comunerosId } from './comuneros';
-import type { nacionalidad, nacionalidadId } from './nacionalidad';
+import type { Nacionalidad, nacionalidadId } from './nacionalidad';
 import type { requisito_apr, requisito_aprId } from './requisito_apr';
 
 export interface personasAttributes {
   ID_PERSONA: number;
   ID_NACIONALIDAD?: number;
   CEDULA: string;
+  APELLIDOS?: string;
   NOMBRE: string;
   FECHA_DE_NACIMIENTO: string;
   GENERO: number;
   ESTADO?: number;
   CELULAR_PER?: string;
-  APELLIDOS?: string;
   TITULO_ACADEMICO?: string;
 }
 
 export type personasPk = "ID_PERSONA";
 export type personasId = personas[personasPk];
-export type personasOptionalAttributes = "ID_PERSONA" | "ID_NACIONALIDAD" | "ESTADO" | "CELULAR_PER" | "APELLIDOS" | "TITULO_ACADEMICO";
+export type personasOptionalAttributes = "ID_PERSONA" | "ID_NACIONALIDAD" | "APELLIDOS" | "ESTADO" | "CELULAR_PER" | "TITULO_ACADEMICO";
 export type personasCreationAttributes = Optional<personasAttributes, personasOptionalAttributes>;
 
 export class personas extends Model<personasAttributes, personasCreationAttributes> implements personasAttributes {
   ID_PERSONA!: number;
   ID_NACIONALIDAD?: number;
   CEDULA!: string;
+  APELLIDOS?: string;
   NOMBRE!: string;
   FECHA_DE_NACIMIENTO!: string;
   GENERO!: number;
   ESTADO?: number;
   CELULAR_PER?: string;
-  APELLIDOS?: string;
   TITULO_ACADEMICO?: string;
 
   // personas belongsTo nacionalidad via ID_NACIONALIDAD
-  ID_NACIONALIDAD_nacionalidad!: nacionalidad;
-  getID_NACIONALIDAD_nacionalidad!: Sequelize.BelongsToGetAssociationMixin<nacionalidad>;
-  setID_NACIONALIDAD_nacionalidad!: Sequelize.BelongsToSetAssociationMixin<nacionalidad, nacionalidadId>;
-  createID_NACIONALIDAD_nacionalidad!: Sequelize.BelongsToCreateAssociationMixin<nacionalidad>;
+  ID_NACIONALIDAD_nacionalidad!: Nacionalidad;
+  getID_NACIONALIDAD_nacionalidad!: Sequelize.BelongsToGetAssociationMixin<Nacionalidad>;
+  setID_NACIONALIDAD_nacionalidad!: Sequelize.BelongsToSetAssociationMixin<Nacionalidad, nacionalidadId>;
+  createID_NACIONALIDAD_nacionalidad!: Sequelize.BelongsToCreateAssociationMixin<Nacionalidad>;
   // personas hasMany comuneros via ID_PERSONA
   comuneros!: comuneros[];
   getComuneros!: Sequelize.HasManyGetAssociationsMixin<comuneros>;
@@ -85,6 +85,10 @@ export class personas extends Model<personasAttributes, personasCreationAttribut
       allowNull: false,
       unique: "CEDULA"
     },
+    APELLIDOS: {
+      type: DataTypes.STRING(50),
+      allowNull: true
+    },
     NOMBRE: {
       type: DataTypes.STRING(100),
       allowNull: false
@@ -104,10 +108,6 @@ export class personas extends Model<personasAttributes, personasCreationAttribut
     },
     CELULAR_PER: {
       type: DataTypes.STRING(10),
-      allowNull: true
-    },
-    APELLIDOS: {
-      type: DataTypes.STRING(50),
       allowNull: true
     },
     TITULO_ACADEMICO: {

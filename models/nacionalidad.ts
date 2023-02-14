@@ -9,11 +9,11 @@ export interface nacionalidadAttributes {
 }
 
 export type nacionalidadPk = "ID_NACIONALIDAD";
-export type nacionalidadId = nacionalidad[nacionalidadPk];
+export type nacionalidadId = Nacionalidad[nacionalidadPk];
 export type nacionalidadOptionalAttributes = "ID_NACIONALIDAD" | "NACIONALIDAD" | "ESTADO_NAC";
 export type nacionalidadCreationAttributes = Optional<nacionalidadAttributes, nacionalidadOptionalAttributes>;
 
-export class nacionalidad extends Model<nacionalidadAttributes, nacionalidadCreationAttributes> implements nacionalidadAttributes {
+export class Nacionalidad extends Model<nacionalidadAttributes, nacionalidadCreationAttributes> implements nacionalidadAttributes {
   ID_NACIONALIDAD!: number;
   NACIONALIDAD?: string;
   ESTADO_NAC?: number;
@@ -31,8 +31,8 @@ export class nacionalidad extends Model<nacionalidadAttributes, nacionalidadCrea
   hasPersonas!: Sequelize.HasManyHasAssociationsMixin<personas, personasId>;
   countPersonas!: Sequelize.HasManyCountAssociationsMixin;
 
-  static initModel(sequelize: Sequelize.Sequelize): typeof nacionalidad {
-    return nacionalidad.init({
+  static initModel(sequelize: Sequelize.Sequelize): typeof Nacionalidad {
+    return Nacionalidad.init({
     ID_NACIONALIDAD: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -41,7 +41,8 @@ export class nacionalidad extends Model<nacionalidadAttributes, nacionalidadCrea
     },
     NACIONALIDAD: {
       type: DataTypes.STRING(100),
-      allowNull: true
+      allowNull: true,
+      unique: "NACIONALIDAD_UNIQUE"
     },
     ESTADO_NAC: {
       type: DataTypes.BOOLEAN,
@@ -59,6 +60,14 @@ export class nacionalidad extends Model<nacionalidadAttributes, nacionalidadCrea
         using: "BTREE",
         fields: [
           { name: "ID_NACIONALIDAD" },
+        ]
+      },
+      {
+        name: "NACIONALIDAD_UNIQUE",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "NACIONALIDAD" },
         ]
       },
     ]

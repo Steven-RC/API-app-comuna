@@ -17,35 +17,51 @@ const init_models_1 = require("../models/init-models");
 const connection_1 = __importDefault(require("../db/connection"));
 (0, init_models_1.initModels)(connection_1.default);
 const crearCuotaFactura = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id_cuota, id_factura } = req.body;
-    const cuotaFactura = {
-        ID_CUOTA: id_cuota,
-        ID_FACTURA: id_factura
-    };
-    yield init_models_1.cuotas_factura.create(cuotaFactura);
-    res.json({
-        msg: 'Cuota de factura creada '
-    });
+    try {
+        const { id_cuota, id_factura } = req.body;
+        const cuotaFactura = {
+            ID_CUOTA: id_cuota,
+            ID_FACTURA: id_factura
+        };
+        yield init_models_1.cuotas_factura.create(cuotaFactura);
+        res.json({
+            msg: 'Cuota de factura creada '
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
 });
 exports.crearCuotaFactura = crearCuotaFactura;
 //obtener cuotas de una factura
 const obtenerCuotasFactura = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id_factura = req.body.id_factura;
-    const listCuotas = yield init_models_1.cuotas_factura.findAll({
-        where: {
-            ID_FACTURA: id_factura
-        }, include: [{
-                model: init_models_1.cuota_anual,
-                as: 'ID_CUOTA_cuota_anual',
-                attributes: ['NOM_CUOTA', 'DESCRIPCION', 'VALOR_CUOTA']
-            }]
-    });
-    if (listCuotas) {
-        res.json({ listCuotas });
+    try {
+        const id_factura = req.body.id_factura;
+        const listCuotas = yield init_models_1.cuotas_factura.findAll({
+            where: {
+                ID_FACTURA: id_factura
+            }, include: [{
+                    model: init_models_1.cuota_anual,
+                    as: 'ID_CUOTA_cuota_anual',
+                    attributes: ['NOM_CUOTA', 'DESCRIPCION', 'VALOR_CUOTA']
+                }]
+        });
+        if (listCuotas) {
+            res.json({ listCuotas });
+        }
+        else {
+            res.status(404).json({
+                msg: 'No hay cuotas'
+            });
+        }
     }
-    else {
-        res.status(404).json({
-            msg: 'No hay cuotas'
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
         });
     }
 });

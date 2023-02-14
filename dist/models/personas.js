@@ -24,6 +24,10 @@ class personas extends sequelize_1.Model {
                 allowNull: false,
                 unique: "CEDULA"
             },
+            APELLIDOS: {
+                type: sequelize_1.DataTypes.STRING(50),
+                allowNull: true
+            },
             NOMBRE: {
                 type: sequelize_1.DataTypes.STRING(100),
                 allowNull: false
@@ -43,10 +47,6 @@ class personas extends sequelize_1.Model {
             },
             CELULAR_PER: {
                 type: sequelize_1.DataTypes.STRING(10),
-                allowNull: true
-            },
-            APELLIDOS: {
-                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true
             },
             TITULO_ACADEMICO: {

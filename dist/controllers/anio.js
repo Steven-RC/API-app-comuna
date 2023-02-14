@@ -19,32 +19,48 @@ const init_models_1 = require("../models/init-models");
 (0, init_models_1.initModels)(connection_1.default);
 //crear anio
 const crearAnio = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //obtener el ultimo anio
-    const anioActual = yield anio_1.anio.findOne({
-        order: [
-            ['ID_ANIO', 'DESC']
-        ]
-    });
-    //obtener el anio actual
-    const anioActualNumber = anioActual === null || anioActual === void 0 ? void 0 : anioActual.ANIO;
-    //sumarle 1 al anio actual
-    const anioNuevo = anioActualNumber + 1;
-    //crear el anio
-    const anioNuevoCreado = {
-        ANIO: anioNuevo
-    };
-    yield anio_1.anio.create(anioNuevoCreado);
-    res.json({
-        msg: 'Anio creado'
-    });
+    try {
+        //obtener el ultimo anio
+        const anioActual = yield anio_1.Anio.findOne({
+            order: [
+                ['ID_ANIO', 'DESC']
+            ]
+        });
+        //obtener el anio actual
+        const anioActualNumber = anioActual === null || anioActual === void 0 ? void 0 : anioActual.ANIO;
+        //sumarle 1 al anio actual
+        const anioNuevo = anioActualNumber + 1;
+        //crear el anio
+        const anioNuevoCreado = {
+            ANIO: anioNuevo
+        };
+        yield anio_1.Anio.create(anioNuevoCreado);
+        res.json({
+            msg: 'Anio creado'
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
 });
 exports.crearAnio = crearAnio;
 //obtener anios
 const obtenerAnios = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const anios = yield anio_1.anio.findAll();
-    res.json({
-        anios
-    });
+    try {
+        const anios = yield anio_1.Anio.findAll();
+        res.json({
+            anios
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
 });
 exports.obtenerAnios = obtenerAnios;
 //# sourceMappingURL=anio.js.map

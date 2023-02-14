@@ -17,38 +17,62 @@ const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
 (0, init_models_1.initModels)(connection_1.default);
 const crearRol = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //crear rol
-    const rol = {
-        NOM_ROL: req.body.rol,
-    };
-    yield init_models_1.rol_user.create(rol);
-    res.json({
-        msg: 'Rol creado'
-    });
+    try {
+        //crear rol
+        const rol = {
+            NOM_ROL: req.body.rol,
+        };
+        yield init_models_1.rol_user.create(rol);
+        res.json({
+            msg: 'Rol creado'
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
 });
 exports.crearRol = crearRol;
 //obtener roles
 const obtenerRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const roles = yield init_models_1.rol_user.findAll();
-    res.json({
-        roles
-    });
+    try {
+        const roles = yield init_models_1.rol_user.findAll();
+        res.json({
+            roles
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
 });
 exports.obtenerRoles = obtenerRoles;
 //actualizar rol
 const actualizarRol = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.body;
-    const { rol } = req.body;
-    yield init_models_1.rol_user.update({
-        NOM_ROL: rol
-    }, {
-        where: {
-            ID_ROL: id
-        }
-    });
-    res.json({
-        msg: 'Rol actualizado'
-    });
+    try {
+        const { id } = req.body;
+        const { rol } = req.body;
+        yield init_models_1.rol_user.update({
+            NOM_ROL: rol
+        }, {
+            where: {
+                ID_ROL: id
+            }
+        });
+        res.json({
+            msg: 'Rol actualizado'
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
 });
 exports.actualizarRol = actualizarRol;
 //# sourceMappingURL=roles.js.map

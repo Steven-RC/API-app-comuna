@@ -52,6 +52,14 @@ class comuneros extends sequelize_1.Model {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
+            },
+            ID_TERRENO: {
+                type: sequelize_1.DataTypes.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'terrenos',
+                    key: 'ID_TERRENO'
+                }
             }
         }, {
             sequelize,
@@ -85,6 +93,13 @@ class comuneros extends sequelize_1.Model {
                     using: "BTREE",
                     fields: [
                         { name: "ID_PERSONA" },
+                    ]
+                },
+                {
+                    name: "fk_comuneros_terrenos1_idx",
+                    using: "BTREE",
+                    fields: [
+                        { name: "ID_TERRENO" },
                     ]
                 },
             ]

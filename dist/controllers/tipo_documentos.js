@@ -17,44 +17,68 @@ const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
 (0, init_models_1.initModels)(connection_1.default);
 const crearTipoDocumento = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //crear tipo documento
-    const { tipoDocumento } = req.body;
-    //quitar espacios y convertir a minusculas
-    const alias = tipoDocumento.replace(/\s/g, '').toLowerCase();
-    console.log(alias);
-    const tipoDocument = {
-        TIPO_DOC: tipoDocumento,
-    };
-    yield init_models_1.tipo_documentos.create(tipoDocument);
-    res.json({
-        msg: 'Tipo de documento creado'
-    });
+    try {
+        //crear tipo documento
+        const { tipoDocumento } = req.body;
+        //quitar espacios y convertir a minusculas
+        const alias = tipoDocumento.replace(/\s/g, '').toLowerCase();
+        console.log(alias);
+        const tipoDocument = {
+            TIPO_DOC: tipoDocumento,
+        };
+        yield init_models_1.tipo_documentos.create(tipoDocument);
+        res.json({
+            msg: 'Tipo de documento creado'
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
 });
 exports.crearTipoDocumento = crearTipoDocumento;
 //obtener tipos de documentos
 const obtenerTiposDocumentos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const tiposDocumentos = yield init_models_1.tipo_documentos.findAll();
-    res.json({
-        tiposDocumentos
-    });
+    try {
+        const tiposDocumentos = yield init_models_1.tipo_documentos.findAll();
+        res.json({
+            tiposDocumentos
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
 });
 exports.obtenerTiposDocumentos = obtenerTiposDocumentos;
 //actualizar tipo de documento
 const actualizarTipoDocumento = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.body;
-    const { tipoDocumento } = req.body;
-    const alias = tipoDocumento.replace(/\s/g, '').toLowerCase();
-    yield init_models_1.tipo_documentos.update({
-        TIPO_DOC: tipoDocumento,
-        ALIAS: alias
-    }, {
-        where: {
-            ID_TIPO_DOC: id
-        }
-    });
-    res.json({
-        msg: 'Tipo de documento actualizado'
-    });
+    try {
+        const { id } = req.body;
+        const { tipoDocumento } = req.body;
+        const alias = tipoDocumento.replace(/\s/g, '').toLowerCase();
+        yield init_models_1.tipo_documentos.update({
+            TIPO_DOC: tipoDocumento,
+            ALIAS: alias
+        }, {
+            where: {
+                ID_TIPO_DOC: id
+            }
+        });
+        res.json({
+            msg: 'Tipo de documento actualizado'
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
 });
 exports.actualizarTipoDocumento = actualizarTipoDocumento;
 //# sourceMappingURL=tipo_documentos.js.map

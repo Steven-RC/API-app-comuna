@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.anio = void 0;
+exports.Anio = void 0;
 const sequelize_1 = require("sequelize");
-class anio extends sequelize_1.Model {
+class Anio extends sequelize_1.Model {
     static initModel(sequelize) {
-        return anio.init({
+        return Anio.init({
             ID_ANIO: {
                 autoIncrement: true,
                 type: sequelize_1.DataTypes.INTEGER,
@@ -49,5 +49,5 @@ class anio extends sequelize_1.Model {
         });
     }
 }
-exports.anio = anio;
+exports.Anio = Anio;
 //# sourceMappingURL=anio.js.map

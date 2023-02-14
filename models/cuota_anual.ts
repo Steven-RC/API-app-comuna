@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
-import type { anio, anioId } from './anio';
+import type { Anio, anioId } from './anio';
 import type { cuotas_factura, cuotas_facturaId } from './cuotas_factura';
 
 export interface cuota_anualAttributes {
@@ -26,10 +26,10 @@ export class cuota_anual extends Model<cuota_anualAttributes, cuota_anualCreatio
   DESCRIPCION?: string;
 
   // cuota_anual belongsTo anio via ID_ANIO
-  ID_ANIO_anio!: anio;
-  getID_ANIO_anio!: Sequelize.BelongsToGetAssociationMixin<anio>;
-  setID_ANIO_anio!: Sequelize.BelongsToSetAssociationMixin<anio, anioId>;
-  createID_ANIO_anio!: Sequelize.BelongsToCreateAssociationMixin<anio>;
+  ID_ANIO_anio!: Anio;
+  getID_ANIO_anio!: Sequelize.BelongsToGetAssociationMixin<Anio>;
+  setID_ANIO_anio!: Sequelize.BelongsToSetAssociationMixin<Anio, anioId>;
+  createID_ANIO_anio!: Sequelize.BelongsToCreateAssociationMixin<Anio>;
   // cuota_anual hasMany cuotas_factura via ID_CUOTA
   cuotas_facturas!: cuotas_factura[];
   getCuotas_facturas!: Sequelize.HasManyGetAssociationsMixin<cuotas_factura>;

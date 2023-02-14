@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.nacionalidad = void 0;
+exports.Nacionalidad = void 0;
 const sequelize_1 = require("sequelize");
-class nacionalidad extends sequelize_1.Model {
+class Nacionalidad extends sequelize_1.Model {
     static initModel(sequelize) {
-        return nacionalidad.init({
+        return Nacionalidad.init({
             ID_NACIONALIDAD: {
                 autoIncrement: true,
                 type: sequelize_1.DataTypes.INTEGER,
@@ -13,7 +13,8 @@ class nacionalidad extends sequelize_1.Model {
             },
             NACIONALIDAD: {
                 type: sequelize_1.DataTypes.STRING(100),
-                allowNull: true
+                allowNull: true,
+                unique: "NACIONALIDAD_UNIQUE"
             },
             ESTADO_NAC: {
                 type: sequelize_1.DataTypes.BOOLEAN,
@@ -33,9 +34,17 @@ class nacionalidad extends sequelize_1.Model {
                         { name: "ID_NACIONALIDAD" },
                     ]
                 },
+                {
+                    name: "NACIONALIDAD_UNIQUE",
+                    unique: true,
+                    using: "BTREE",
+                    fields: [
+                        { name: "NACIONALIDAD" },
+                    ]
+                },
             ]
         });
     }
 }
-exports.nacionalidad = nacionalidad;
+exports.Nacionalidad = Nacionalidad;
 //# sourceMappingURL=nacionalidad.js.map

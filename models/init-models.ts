@@ -1,7 +1,7 @@
 import type { Sequelize } from "sequelize";
-import { anio as _anio } from "./anio";
+import { Anio as _anio } from "./anio";
 import type { anioAttributes, anioCreationAttributes } from "./anio";
-import { asociaciones as _asociaciones } from "./asociaciones";
+import { Asociaciones as _asociaciones } from "./asociaciones";
 import type { asociacionesAttributes, asociacionesCreationAttributes } from "./asociaciones";
 import { barrios as _barrios } from "./barrios";
 import type { barriosAttributes, barriosCreationAttributes } from "./barrios";
@@ -17,7 +17,7 @@ import { facturas as _facturas } from "./facturas";
 import type { facturasAttributes, facturasCreationAttributes } from "./facturas";
 import { forma_pago as _forma_pago } from "./forma_pago";
 import type { forma_pagoAttributes, forma_pagoCreationAttributes } from "./forma_pago";
-import { nacionalidad as _nacionalidad } from "./nacionalidad";
+import { Nacionalidad as _nacionalidad } from "./nacionalidad";
 import type { nacionalidadAttributes, nacionalidadCreationAttributes } from "./nacionalidad";
 import { personas as _personas } from "./personas";
 import type { personasAttributes, personasCreationAttributes } from "./personas";
@@ -27,6 +27,8 @@ import { requisitos as _requisitos } from "./requisitos";
 import type { requisitosAttributes, requisitosCreationAttributes } from "./requisitos";
 import { rol_user as _rol_user } from "./rol_user";
 import type { rol_userAttributes, rol_userCreationAttributes } from "./rol_user";
+import { terrenos as _terrenos } from "./terrenos";
+import type { terrenosAttributes, terrenosCreationAttributes } from "./terrenos";
 import { tipo_documentos as _tipo_documentos } from "./tipo_documentos";
 import type { tipo_documentosAttributes, tipo_documentosCreationAttributes } from "./tipo_documentos";
 import { usuarios as _usuarios } from "./usuarios";
@@ -34,7 +36,7 @@ import type { usuariosAttributes, usuariosCreationAttributes } from "./usuarios"
 
 export {
   _anio as anio,
-  _asociaciones as asociaciones,
+  _asociaciones as Asociaciones,
   _barrios as barrios,
   _comuneros as comuneros,
   _comuneros_tipos_doc as comuneros_tipos_doc,
@@ -47,6 +49,7 @@ export {
   _requisito_apr as requisito_apr,
   _requisitos as requisitos,
   _rol_user as rol_user,
+  _terrenos as terrenos,
   _tipo_documentos as tipo_documentos,
   _usuarios as usuarios,
 };
@@ -80,6 +83,8 @@ export type {
   requisitosCreationAttributes,
   rol_userAttributes,
   rol_userCreationAttributes,
+  terrenosAttributes,
+  terrenosCreationAttributes,
   tipo_documentosAttributes,
   tipo_documentosCreationAttributes,
   usuariosAttributes,
@@ -101,6 +106,7 @@ export function initModels(sequelize: Sequelize) {
   const requisito_apr = _requisito_apr.initModel(sequelize);
   const requisitos = _requisitos.initModel(sequelize);
   const rol_user = _rol_user.initModel(sequelize);
+  const terrenos = _terrenos.initModel(sequelize);
   const tipo_documentos = _tipo_documentos.initModel(sequelize);
   const usuarios = _usuarios.initModel(sequelize);
 
@@ -136,6 +142,8 @@ export function initModels(sequelize: Sequelize) {
   requisitos.hasMany(requisito_apr, { as: "requisito_aprs", foreignKey: "ID_REQ"});
   usuarios.belongsTo(rol_user, { as: "ID_ROL_rol_user", foreignKey: "ID_ROL"});
   rol_user.hasMany(usuarios, { as: "usuarios", foreignKey: "ID_ROL"});
+  comuneros.belongsTo(terrenos, { as: "ID_TERRENO_terreno", foreignKey: "ID_TERRENO"});
+  terrenos.hasMany(comuneros, { as: "comuneros", foreignKey: "ID_TERRENO"});
   comuneros_tipos_doc.belongsTo(tipo_documentos, { as: "ID_TIPO_DOC_tipo_documento", foreignKey: "ID_TIPO_DOC"});
   tipo_documentos.hasMany(comuneros_tipos_doc, { as: "comuneros_tipos_docs", foreignKey: "ID_TIPO_DOC"});
 
@@ -149,11 +157,12 @@ export function initModels(sequelize: Sequelize) {
     cuotas_factura: cuotas_factura,
     facturas: facturas,
     forma_pago: forma_pago,
-    nacionalidad: nacionalidad,
+    Nacionalidad: nacionalidad,
     personas: personas,
     requisito_apr: requisito_apr,
     requisitos: requisitos,
     rol_user: rol_user,
+    terrenos: terrenos,
     tipo_documentos: tipo_documentos,
     usuarios: usuarios,
   };
