@@ -57,8 +57,6 @@ class Server {
         upload: '/upload',
         terrenos: '/terrenos',
         auth: '/auth'
-
-
     }
     private server: any;
 
