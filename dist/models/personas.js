@@ -5,54 +5,53 @@ const sequelize_1 = require("sequelize");
 class personas extends sequelize_1.Model {
     static initModel(sequelize) {
         return personas.init({
-            ID_PERSONA: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_persona: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            ID_NACIONALIDAD: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_nacionalidad: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true,
                 references: {
                     model: 'nacionalidad',
-                    key: 'ID_NACIONALIDAD'
+                    key: 'id_nacionalidad'
                 }
             },
-            CEDULA: {
+            cedula: {
                 type: sequelize_1.DataTypes.STRING(10),
                 allowNull: false,
-                unique: "CEDULA"
+                unique: "cedula"
             },
-            APELLIDOS: {
+            apellidos: {
                 type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true
             },
-            NOMBRE: {
+            nombre: {
                 type: sequelize_1.DataTypes.STRING(100),
                 allowNull: false
             },
-            FECHA_DE_NACIMIENTO: {
+            fecha_de_nacimiento: {
                 type: sequelize_1.DataTypes.DATEONLY,
                 allowNull: false
             },
-            GENERO: {
+            genero: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: false
             },
-            ESTADO: {
+            estado: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
             },
-            CELULAR_PER: {
+            celular_per: {
                 type: sequelize_1.DataTypes.STRING(10),
                 allowNull: true
             },
-            TITULO_ACADEMICO: {
+            titulo_academico: {
                 type: sequelize_1.DataTypes.STRING(10),
                 allowNull: true,
-                defaultValue: "Sr."
+                defaultValue: "sr."
             }
         }, {
             sequelize,
@@ -64,22 +63,22 @@ class personas extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_PERSONA" },
+                        { name: "id_persona" },
                     ]
                 },
                 {
-                    name: "CEDULA",
+                    name: "cedula",
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "CEDULA" },
+                        { name: "cedula" },
                     ]
                 },
                 {
-                    name: "FK_REL_NACIONALIDAD_PERSON",
+                    name: "fk_rel_nacionalidad_person",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_NACIONALIDAD" },
+                        { name: "id_nacionalidad" },
                     ]
                 },
             ]

@@ -35,35 +35,52 @@ const tipo_documentos_1 = __importDefault(require("../routes/tipo_documentos"));
 const documentos_1 = __importDefault(require("../routes/documentos"));
 const chat_bot_1 = __importDefault(require("../routes/chat_bot"));
 const uploads_1 = __importDefault(require("../routes/uploads"));
+const terrenos_1 = __importDefault(require("../routes/terrenos"));
+const auth_1 = __importDefault(require("../routes/auth"));
+const http_1 = require("http");
+const controllers_1 = require("../socket/controllers");
 class Server {
     constructor() {
         this.apiPaths = {
-            usuarios: '/api/usuarios',
-            nacionalidad: '/api/nacionalidad',
-            barrios: '/api/barrios',
-            personas: '/api/personas',
-            roles: '/api/roles',
-            comuneros: '/api/comuneros',
-            contrasenia: '/api/contrasenia',
-            asociaciones: '/api/asociaciones',
-            anio: '/api/anio',
-            cuota: '/api/cuota',
-            requisitos: '/api/requisitos',
-            requisitosApr: '/api/requisitosApr',
-            facturas: '/api/facturas',
-            cuotasFactura: '/api/cuotasFactura',
-            tipo_documentos: '/api/tipodocumentos',
-            documentos: '/api/documentos',
-            chatBot: '/api/chatBot',
-            upload: '/api/upload'
+            usuarios: '/usuarios',
+            nacionalidad: '/nacionalidad',
+            barrios: '/barrios',
+            personas: '/personas',
+            roles: '/roles',
+            comuneros: '/comuneros',
+            contrasenia: '/contrasenia',
+            asociaciones: '/asociaciones',
+            anio: '/anio',
+            cuota: '/cuota',
+            requisitos: '/requisitos',
+            requisitosApr: '/requisitosApr',
+            facturas: '/facturas',
+            cuotasFactura: '/cuotasFactura',
+            tipo_documentos: '/tipodocumentos',
+            documentos: '/documentos',
+            chatBot: '/chatBot',
+            upload: '/upload',
+            terrenos: '/terrenos',
+            auth: '/auth'
         };
-        this.app = (0, express_1.default)(); //inicializamos express
-        this.port = process.env.PORT || '8000'; //puerto por defecto
+        //inicializa el servidor con express y socket.io
+        this.app = (0, express_1.default)();
+        this.port = process.env.PORT || '8000';
+        this.server = (0, http_1.createServer)(this.app);
+        const io = require('socket.io')(this.server, {
+            cors: {
+                origin: "*",
+                methods: ["GET", "POST"]
+            }
+        });
+        //conectar a la base de datos
+        this.conectarDB();
         //middlewares
-        this.middlewares(); //llamamos a los middlewares
-        //base de datos
-        this.conectarDB(); //llamamos a la base de datos
-        this.routes(); //llamamos a las rutas
+        this.middlewares();
+        //rutas de mi aplicacion
+        this.routes();
+        //sockets
+        io.on('connection', controllers_1.socketController);
     }
     //conexion base de datos
     conectarDB() {
@@ -113,9 +130,11 @@ class Server {
         this.app.use(this.apiPaths.documentos, documentos_1.default);
         this.app.use(this.apiPaths.chatBot, chat_bot_1.default);
         this.app.use(this.apiPaths.upload, uploads_1.default);
+        this.app.use(this.apiPaths.terrenos, terrenos_1.default);
+        this.app.use(this.apiPaths.auth, auth_1.default);
     }
     listen() {
-        this.app.listen(this.port, () => {
+        this.server.listen(this.port, () => {
             console.log('Servidor corriendo en el puerto ' + this.port);
         });
     }

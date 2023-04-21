@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.actualizarTipoDocumento = exports.obtenerTiposDocumentos = exports.crearTipoDocumento = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
+const uuid_1 = require("uuid");
 (0, init_models_1.initModels)(connection_1.default);
 const crearTipoDocumento = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -24,7 +25,8 @@ const crearTipoDocumento = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const alias = tipoDocumento.replace(/\s/g, '').toLowerCase();
         console.log(alias);
         const tipoDocument = {
-            TIPO_DOC: tipoDocumento,
+            id_tipo_doc: (0, uuid_1.v4)(),
+            tipo_doc: tipoDocumento,
         };
         yield init_models_1.tipo_documentos.create(tipoDocument);
         res.json({
@@ -62,11 +64,11 @@ const actualizarTipoDocumento = (req, res) => __awaiter(void 0, void 0, void 0, 
         const { tipoDocumento } = req.body;
         const alias = tipoDocumento.replace(/\s/g, '').toLowerCase();
         yield init_models_1.tipo_documentos.update({
-            TIPO_DOC: tipoDocumento,
-            ALIAS: alias
+            tipo_doc: tipoDocumento,
+            alias: alias
         }, {
             where: {
-                ID_TIPO_DOC: id
+                id_tipo_doc: id
             }
         });
         res.json({

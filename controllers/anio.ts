@@ -1,8 +1,10 @@
 import { anioAttributes, anioCreationAttributes } from '../models/init-models';
 import { Request, Response } from 'express';
-import { Anio } from '../models/anio';
+import { anio } from '../models/anio';
 import db from '../db/connection';
 import { initModels } from '../models/init-models';
+
+import {v4} from 'uuid';
 
 initModels(db);
 
@@ -11,22 +13,23 @@ export const crearAnio = async (req: Request, res: Response) => {
     try {
 
         //obtener el ultimo anio
-        const anioActual = await Anio.findOne({
+        const anioActual = await anio.findOne({
             order: [
-                ['ID_ANIO', 'DESC']
+                ['id_anio', 'DESC']
             ]
         });
         //obtener el anio actual
-        const anioActualNumber = anioActual?.ANIO;
+        const anioActualNumber = anioActual?.anio;
         //sumarle 1 al anio actual
         const anioNuevo = anioActualNumber! + 1;
         //crear el anio
         const anioNuevoCreado: anioCreationAttributes = {
-            ANIO: anioNuevo
+            id_anio: v4(),
+            anio: anioNuevo
         }
-        await Anio.create(anioNuevoCreado);
+        await anio.create(anioNuevoCreado);
         res.json({
-            msg: 'Anio creado'
+            msg: 'anio creado'
         })
     } catch (error) {
         console.log(error);
@@ -41,7 +44,7 @@ export const crearAnio = async (req: Request, res: Response) => {
 export const obtenerAnios = async (req: Request, res: Response) => {
     try {
 
-        const anios = await Anio.findAll();
+        const anios = await anio.findAll();
         res.json({
             anios
         })

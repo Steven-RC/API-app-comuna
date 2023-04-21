@@ -12,10 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cambiarEstadoComunero = exports.obtenerPersonasNoComuneros = exports.obtenerPersonasComunerosBarrio = exports.crearComunero = exports.getComuneros = void 0;
+exports.obtenerComunero = exports.obtenerComunerosAsociacion = exports.obtenerAsociacion = exports.agregarAsociacion = exports.cambiarEstadoComunero = exports.obtenerPersonasNoComuneros = exports.obtenerPersonasComunerosBarrio = exports.obtenerPersonasComuneros = exports.crearComunero = exports.getComuneros = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
 const personas_1 = require("../models/personas");
+const asociaciones_1 = require("../models/asociaciones");
+const uuid_1 = require("uuid");
 (0, init_models_1.initModels)(connection_1.default);
 const getComuneros = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -25,14 +27,14 @@ const getComuneros = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         else {
             res.status(404).json({
-                msg: 'No hay comuneros'
+                msg: 'no hay comuneros'
             });
         }
     }
     catch (error) {
         console.log(error);
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         });
     }
 });
@@ -42,59 +44,84 @@ const crearComunero = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         //si la persona esta en estado inactivo no se puede crear como comunero
         const encontrarPersona = yield personas_1.personas.findOne({
             where: {
-                ID_PERSONA: req.body.persona,
-                ESTADO: 1
+                id_persona: req.body.persona,
+                estado: 1
             }
         });
         if (!encontrarPersona) {
             return res.status(400).json({
-                msg: 'La persona no existe o esta inactiva'
+                msg: 'la persona no existe o esta inactiva'
             });
         }
         //si la persona ya es comunero no se puede crear
         const encontrarComunero = yield init_models_1.comuneros.findOne({
             where: {
-                ID_PERSONA: encontrarPersona.ID_PERSONA,
-                ESTADO_COM: 'ACTIVO'
+                id_persona: encontrarPersona.id_persona,
+                estado_com: 'activo'
             }
         });
         if (encontrarComunero) {
             return res.status(400).json({
-                msg: 'La persona ya es comunero'
+                msg: 'la persona ya es comunero'
             });
         }
         const fecha = new Date().toString();
         const hora = new Date().toLocaleTimeString();
-        const comuneroCr = {
-            ID_BARRIO: req.body.barrio,
-            ID_PERSONA: req.body.persona,
-            CREATED_DATE: fecha,
-            CREATED_TIME: hora,
+        const comuneroCreado = {
+            id_comunero: 'com-' + (0, uuid_1.v4)(),
+            id_barrio: req.body.barrio,
+            id_persona: req.body.persona,
+            created_date: fecha,
+            created_time: hora,
         };
-        yield init_models_1.comuneros.create(comuneroCr);
+        yield init_models_1.comuneros.create(comuneroCreado);
         res.json({
-            msg: 'Comunero creado'
+            msg: 'comunero creado'
         });
     }
     catch (error) {
         console.log(error);
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         });
     }
 });
 exports.crearComunero = crearComunero;
 //obtener personas que son comuneros con su barrio
-const obtenerPersonasComunerosBarrio = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const obtenerPersonasComuneros = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const listComuneros = yield connection_1.default.query('select comuneros.ID_COMUNERO, personas.CEDULA,personas.APELLIDOS,personas.NOMBRE,personas.CELULAR_PER,barrios.NOM_BARRIO,comuneros.ESTADO_COM,comuneros.CALIFICADO from comuneros ' +
-            'inner join personas on personas.ID_PERSONA=comuneros.ID_PERSONA inner join barrios on comuneros.ID_BARRIO=barrios.ID_BARRIO');
+        const listComuneros = yield connection_1.default.query('select comuneros.id_comunero, personas.cedula,personas.apellidos,personas.nombre,personas.celular_per,barrios.nom_barrio,comuneros.estado_com,comuneros.calificado from comuneros ' +
+            'inner join personas on personas.id_persona=comuneros.id_persona inner join barrios on comuneros.id_barrio=barrios.id_barrio order by personas.apellidos asc ');
         res.json({ listComuneros });
     }
     catch (error) {
         console.log(error);
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
+        });
+    }
+});
+exports.obtenerPersonasComuneros = obtenerPersonasComuneros;
+const obtenerPersonasComunerosBarrio = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const idbarrio = req.body.barrio;
+    try {
+        try {
+            const listComuneros = yield connection_1.default.query('select comuneros.id_comunero, personas.cedula,personas.apellidos,personas.nombre,personas.celular_per,barrios.nom_barrio,comuneros.estado_com,comuneros.calificado from comuneros ' +
+                'inner join personas on personas.id_persona=comuneros.id_persona inner join barrios on comuneros.id_barrio=barrios.id_barrio where barrios.id_barrio=' + idbarrio + ' order by personas.apellidos asc ');
+            const comuneros = listComuneros[0];
+            res.json({ comuneros });
+        }
+        catch (error) {
+            console.log(error);
+            res.status(500).json({
+                msg: 'error inesperado'
+            });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'error inesperado'
         });
     }
 });
@@ -102,13 +129,13 @@ exports.obtenerPersonasComunerosBarrio = obtenerPersonasComunerosBarrio;
 //obtener personas que no son comuneros
 const obtenerPersonasNoComuneros = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const listPersonas = yield connection_1.default.query('select p.ID_PERSONA,p.NOMBRE,p.APELLIDOS,p.CEDULA,p.CELULAR_PER,p.ESTADO from personas p where p.ID_PERSONA not in (select ID_PERSONA from comuneros)');
+        const listPersonas = yield connection_1.default.query('select p.id_persona,p.nombre,p.apellidos,p.cedula,p.celular_per,p.estado from personas p where p.id_persona not in (select id_persona from comuneros)');
         res.json({ listPersonas });
     }
     catch (error) {
         console.log(error);
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         });
     }
 });
@@ -120,30 +147,138 @@ const cambiarEstadoComunero = (req, res) => __awaiter(void 0, void 0, void 0, fu
         const comunero = yield init_models_1.comuneros.findByPk(id);
         //si esta activo lo desactiva y viceversa
         if (comunero) {
-            const estado = comunero.ESTADO_COM;
+            const estado = comunero.estado_com;
             if (estado == 1) {
-                comunero.ESTADO_COM = 0;
+                comunero.estado_com = 0;
             }
             else {
-                comunero.ESTADO_COM = 1;
+                comunero.estado_com = 1;
             }
             yield comunero.save();
             res.json({
-                msg: 'Estado cambiado'
+                msg: 'estado cambiado'
             });
         }
         else {
             res.status(404).json({
-                msg: 'No existe el comunero'
+                msg: 'no existe el comunero'
             });
         }
     }
     catch (error) {
         console.log(error);
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         });
     }
 });
 exports.cambiarEstadoComunero = cambiarEstadoComunero;
+//añadir asociaicon al comunero
+const agregarAsociacion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.body;
+        const comunero = yield init_models_1.comuneros.findByPk(id);
+        if (comunero) {
+            comunero.id_aso = req.body.asociacion;
+            yield comunero.save();
+            res.json({
+                msg: 'asociacion agregada'
+            });
+        }
+        else {
+            res.status(404).json({
+                msg: 'no existe el comunero'
+            });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'error inesperado'
+        });
+    }
+});
+exports.agregarAsociacion = agregarAsociacion;
+//obtener asociaicon del comunero
+const obtenerAsociacion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.body;
+        const comunero = yield init_models_1.comuneros.findByPk(id);
+        if (comunero) {
+            //busca la asociacion del comunero
+            const asociacion = yield asociaciones_1.asociaciones.findByPk(comunero.id_aso);
+            //si tiene asociacion la devuelve
+            if (asociacion) {
+                res.json({
+                    asociacion
+                });
+            }
+            //si no tiene asociacion devuelve null
+            else {
+                res.json({
+                    asociacion: null
+                });
+            }
+        }
+        else {
+            res.status(404).json({
+                msg: 'no existe el comunero'
+            });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'error inesperado'
+        });
+    }
+});
+exports.obtenerAsociacion = obtenerAsociacion;
+//obtener comuneros por asociacion
+const obtenerComunerosAsociacion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { asociacion } = req.body;
+        const respuesta = yield connection_1.default.query('select comuneros.id_comunero, personas.cedula,personas.apellidos,personas.nombre,personas.celular_per,comuneros.estado_com,comuneros.calificado, asociaciones.nom_asociacion from comuneros ' +
+            'inner join personas on personas.id_persona=comuneros.id_persona inner join asociaciones on comuneros.id_aso=asociaciones.id_aso where asociaciones.id_aso =' + asociacion + ' order by personas.apellidos asc');
+        const comuneros = respuesta[0];
+        res.json({ comuneros });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'error inesperado'
+        });
+    }
+});
+exports.obtenerComunerosAsociacion = obtenerComunerosAsociacion;
+//obtener comunero por id
+const obtenerComunero = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.body;
+        const comunero = yield init_models_1.comuneros.findOne({
+            where: {
+                id_comunero: id
+            },
+            include: [
+                {
+                    model: personas_1.personas,
+                    as: 'id_persona_persona',
+                    attributes: ['nombre', 'apellidos', 'cedula', 'celular_per']
+                },
+            ]
+        });
+        if (comunero) {
+            res.json({
+                comunero
+            });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'error inesperado'
+        });
+    }
+});
+exports.obtenerComunero = obtenerComunero;
 //# sourceMappingURL=comuneros.js.map

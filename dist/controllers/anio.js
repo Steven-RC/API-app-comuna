@@ -16,27 +16,29 @@ exports.obtenerAnios = exports.crearAnio = void 0;
 const anio_1 = require("../models/anio");
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
+const uuid_1 = require("uuid");
 (0, init_models_1.initModels)(connection_1.default);
 //crear anio
 const crearAnio = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //obtener el ultimo anio
-        const anioActual = yield anio_1.Anio.findOne({
+        const anioActual = yield anio_1.anio.findOne({
             order: [
-                ['ID_ANIO', 'DESC']
+                ['id_anio', 'DESC']
             ]
         });
         //obtener el anio actual
-        const anioActualNumber = anioActual === null || anioActual === void 0 ? void 0 : anioActual.ANIO;
+        const anioActualNumber = anioActual === null || anioActual === void 0 ? void 0 : anioActual.anio;
         //sumarle 1 al anio actual
         const anioNuevo = anioActualNumber + 1;
         //crear el anio
         const anioNuevoCreado = {
-            ANIO: anioNuevo
+            id_anio: (0, uuid_1.v4)(),
+            anio: anioNuevo
         };
-        yield anio_1.Anio.create(anioNuevoCreado);
+        yield anio_1.anio.create(anioNuevoCreado);
         res.json({
-            msg: 'Anio creado'
+            msg: 'anio creado'
         });
     }
     catch (error) {
@@ -50,7 +52,7 @@ exports.crearAnio = crearAnio;
 //obtener anios
 const obtenerAnios = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const anios = yield anio_1.Anio.findAll();
+        const anios = yield anio_1.anio.findAll();
         res.json({
             anios
         });

@@ -45,7 +45,7 @@ def check_all_messages(message):
         ['generar', 'comuneros', 'lista','listado', 'reporte','crear','obtengo','obtener','creo'], single_response = True)
 
         response('Dirigirse a el modulo reportes, seccion cuotas anuales',
-         ['como','reportes', 'anuales', 'reporte', 'de', 'sientes','lista','listar'], required_words=['cuotas'])
+         ['como','reportes', 'anuales', 'reporte', 'sientes','lista','listar'], required_words=['cuotas'])
 
         response('El dia de hoy me encuentro bien, gracias por preguntar', 
         ['estas','Arturo', 'arturo', 'generar','crear', 'inactivos', 'sientes','creo']

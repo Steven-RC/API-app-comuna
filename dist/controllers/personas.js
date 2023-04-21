@@ -15,40 +15,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.buscarComunerosPorCedula = exports.obtenerPersonasRequisitosAprobados = exports.cambiarEstadoPersona = exports.actualizarPersona = exports.eliminarPersona = exports.obtenerPersonas = exports.crearPersona = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
+const uuid_1 = require("uuid");
 (0, init_models_1.initModels)(connection_1.default);
 const crearPersona = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //si existe una persona con la misma cedula
         const encontrarPersona = yield init_models_1.personas.findOne({
             where: {
-                CEDULA: req.body.cedula
+                cedula: req.body.cedula
             }
         });
         if (encontrarPersona) {
             return res.status(400).json({
-                msg: 'La persona ya existe'
+                msg: 'la persona ya existe'
             });
         }
         else {
             const persona = {
-                CEDULA: req.body.cedula,
-                APELLIDOS: req.body.apellidos,
-                NOMBRE: req.body.nombre,
-                FECHA_DE_NACIMIENTO: req.body.fecha_nacimiento,
-                GENERO: req.body.genero,
-                CELULAR_PER: req.body.celular,
-                ID_NACIONALIDAD: req.body.nacionalidad,
+                id_persona: 'per-' + (0, uuid_1.v4)(),
+                cedula: req.body.cedula,
+                apellidos: req.body.apellidos,
+                nombre: req.body.nombre,
+                fecha_de_nacimiento: req.body.fecha_nacimiento,
+                genero: req.body.genero,
+                celular_per: req.body.celular,
+                id_nacionalidad: req.body.nacionalidad,
             };
             yield init_models_1.personas.create(persona);
             res.json({
-                msg: 'Persona creada'
+                msg: 'persona creada'
             });
         }
     }
     catch (error) {
         console.log(error);
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         });
     }
 });
@@ -62,14 +64,14 @@ const obtenerPersonas = (req, res) => __awaiter(void 0, void 0, void 0, function
         }
         else {
             res.status(404).json({
-                msg: 'No hay personas'
+                msg: 'no hay personas'
             });
         }
     }
     catch (error) {
         console.log(error);
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         });
     }
 });
@@ -81,18 +83,18 @@ const eliminarPersona = (req, res) => __awaiter(void 0, void 0, void 0, function
         const encontrarPersona = yield init_models_1.personas.findByPk(id);
         if (!encontrarPersona) {
             return res.status(404).json({
-                msg: 'Persona no encontrada'
+                msg: 'persona no encontrada'
             });
         }
         yield encontrarPersona.destroy();
         res.json({
-            msg: 'Persona eliminada'
+            msg: 'persona eliminada'
         });
     }
     catch (error) {
         console.log(error);
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         });
     }
 });
@@ -107,24 +109,24 @@ const actualizarPersona = (req, res) => __awaiter(void 0, void 0, void 0, functi
         //si no existe la persona
         if (!encontrarPersona) {
             return res.status(404).json({
-                msg: 'Persona no encontrada'
+                msg: 'persona no encontrada'
             });
         }
         //actualizar el nombre de la persona
         yield encontrarPersona.update({
-            NOMBRE: req.body.nombre,
-            APELLIDOS: req.body.apellidos,
-            FECHA_DE_NACIMIENTO: req.body.fecha_nacimiento,
-            CELULAR_PER: req.body.celular,
+            nombre: req.body.nombre,
+            apellidos: req.body.apellidos,
+            fecha_de_nacimiento: req.body.fecha_nacimiento,
+            celular_per: req.body.celular,
         });
         res.json({
-            msg: 'Persona actualizada'
+            msg: 'persona actualizada'
         });
     }
     catch (error) {
         console.log(error);
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         });
     }
 });
@@ -139,32 +141,32 @@ const cambiarEstadoPersona = (req, res) => __awaiter(void 0, void 0, void 0, fun
         //si no existe la persona
         if (!encontrarPersona) {
             return res.status(404).json({
-                msg: 'Persona no encontrada'
+                msg: 'persona no encontrada'
             });
         }
         if (encontrarPersona) {
-            const estado = encontrarPersona.ESTADO;
+            const estado = encontrarPersona.estado;
             if (estado == 1) {
-                encontrarPersona.ESTADO = 0;
+                encontrarPersona.estado = 0;
             }
             else {
-                encontrarPersona.ESTADO = 1;
+                encontrarPersona.estado = 1;
             }
             yield encontrarPersona.save();
             res.json({
-                msg: 'Estado actualizado'
+                msg: 'estado actualizado'
             });
         }
         else {
             res.status(404).json({
-                msg: 'No se pudo actualizar el estado'
+                msg: 'no se pudo actualizar el estado'
             });
         }
     }
     catch (error) {
         console.log(error);
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         });
     }
 });
@@ -179,7 +181,7 @@ const obtenerPersonasRequisitosAprobados = (req, res) => __awaiter(void 0, void 
                 include: [
                     {
                         model: init_models_1.requisitos,
-                        as: 'ID_REQ_requisito'
+                        as: 'id_req_requisito'
                     }
                 ]
             }
@@ -190,7 +192,7 @@ const obtenerPersonasRequisitosAprobados = (req, res) => __awaiter(void 0, void 
     }
     else {
         res.status(404).json({
-            msg: 'No hay personas'
+            msg: 'no hay personas'
         });
     }
 });
@@ -199,32 +201,32 @@ exports.obtenerPersonasRequisitosAprobados = obtenerPersonasRequisitosAprobados;
 const buscarComunerosPorCedula = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { cedula } = req.body;
     console.log(cedula);
-    const listComuneros = yield init_models_1.personas.findOne({
+    const comunero = yield init_models_1.personas.findOne({
         where: {
-            CEDULA: cedula,
+            cedula: cedula,
         },
-        attributes: ['APELLIDOS', 'NOMBRE', 'CELULAR_PER', 'ESTADO'],
+        attributes: ['apellidos', 'nombre', 'celular_per', 'estado'],
         include: [
             {
                 model: init_models_1.comuneros,
                 as: 'comuneros',
-                attributes: ['ID_COMUNERO'],
+                attributes: ['id_comunero', 'id_terreno'],
                 include: [
                     {
                         model: init_models_1.barrios,
-                        as: 'ID_BARRIO_barrio',
-                        attributes: ['NOM_BARRIO']
+                        as: 'id_barrio_barrio',
+                        attributes: ['nom_barrio']
                     },
                 ]
             },
         ]
     });
-    if (listComuneros) {
-        res.json({ listComuneros });
+    if (comunero) {
+        res.json({ comunero });
     }
     else {
         res.status(404).json({
-            msg: 'El numero de cedula no existe'
+            msg: 'el numero de cedula no existe'
         });
     }
 });

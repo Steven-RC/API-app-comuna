@@ -1,7 +1,9 @@
-import { initModels, asociacionesAttributes, asociacionesCreationAttributes,Asociaciones } from '../models/init-models';
+import { initModels,  asociacionesCreationAttributes,asociaciones } from '../models/init-models';
 import { Request, Response } from 'express';
 import db from '../db/connection';
-// import { Asociaciones } from '../models/asociaciones';
+// import { asociaciones } from '../models/asociaciones';
+
+import {v4} from 'uuid';
 
 initModels(db);
 
@@ -10,9 +12,9 @@ export const crearAsociacion = async (req: Request, res: Response) => {
         //verificar si existe la asociacion
         const { nombre } = req.body;
     
-        const asociacion = await Asociaciones.findOne({
+        const asociacion = await asociaciones.findOne({
             where: {
-                NOM_ASOCIACION_: nombre
+                nom_asociacion: nombre
             }
         });
         if (asociacion) {
@@ -22,9 +24,10 @@ export const crearAsociacion = async (req: Request, res: Response) => {
         }
         //crear la asociacion
         const asociacionCr: asociacionesCreationAttributes = {
-            NOM_ASOCIACION_: nombre,
+            id_aso: 'aso-'+v4(),
+            nom_asociacion: nombre,
         }
-        await Asociaciones.create(asociacionCr);
+        await asociaciones.create(asociacionCr);
         res.json({
             msg: 'Asociacion creada'
         })
@@ -40,8 +43,8 @@ export const crearAsociacion = async (req: Request, res: Response) => {
 
 export const obtenerAsociaciones = async (req: Request, res: Response) => {
     try {
-        const listAsociaciones = await Asociaciones.findAll();
-        res.json({ listAsociaciones });
+        const listasociaciones = await asociaciones.findAll();
+        res.json({ listasociaciones });
         
     } catch (error) {
 
@@ -57,7 +60,7 @@ export const obtenerAsociaciones = async (req: Request, res: Response) => {
 export const eliminarAsociacion = async (req: Request, res: Response) => {
     try{
         const { id } = req.params;
-        const asociacion = await Asociaciones.findByPk(id);
+        const asociacion = await asociaciones.findByPk(id);
         if (!asociacion) {
             return res.status(404).json({
                 msg: 'Asociacion no encontrada'
@@ -80,7 +83,7 @@ export const actualizarAsociacion = async (req: Request, res: Response) => {
     try{
         const { id } = req.body;
         const { uAsociacion } = req.body;
-        const asociacion = await Asociaciones.findByPk(id);
+        const asociacion = await asociaciones.findByPk(id);
     
         if (!asociacion) {
             return res.status(404).json({
@@ -88,7 +91,8 @@ export const actualizarAsociacion = async (req: Request, res: Response) => {
             })
         }
         const asociacionUp: asociacionesCreationAttributes = {
-            NOM_ASOCIACION_: uAsociacion,
+            id_aso: id,
+            nom_asociacion: uAsociacion,
         }
         await asociacion.update(asociacionUp);
         res.json({
@@ -106,9 +110,9 @@ export const actualizarAsociacion = async (req: Request, res: Response) => {
 export const buscarAsociacion = async (req: Request, res: Response) => {
     try{
         const { nombre } = req.params;
-        const asociacion = await Asociaciones.findOne({
+        const asociacion = await asociaciones.findOne({
             where: {
-                NOM_ASOCIACION_: nombre
+                nom_asociacion: nombre
             }
         });
         if (!asociacion) {

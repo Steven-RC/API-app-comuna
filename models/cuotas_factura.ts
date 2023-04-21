@@ -4,65 +4,65 @@ import type { cuota_anual, cuota_anualId } from './cuota_anual';
 import type { facturas, facturasId } from './facturas';
 
 export interface cuotas_facturaAttributes {
-  ID_FACTURA: number;
-  ID_CUOTA: number;
-  ID_ANIO: number;
+  id_factura: string;
+  id_cuota: string;
+  id_anio: string;
 }
 
-export type cuotas_facturaPk = "ID_FACTURA" | "ID_CUOTA" | "ID_ANIO";
+export type cuotas_facturaPk = "id_factura" | "id_cuota" | "id_anio";
 export type cuotas_facturaId = cuotas_factura[cuotas_facturaPk];
-export type cuotas_facturaOptionalAttributes = "ID_ANIO";
+export type cuotas_facturaOptionalAttributes = "id_anio";
 export type cuotas_facturaCreationAttributes = Optional<cuotas_facturaAttributes, cuotas_facturaOptionalAttributes>;
 
 export class cuotas_factura extends Model<cuotas_facturaAttributes, cuotas_facturaCreationAttributes> implements cuotas_facturaAttributes {
-  ID_FACTURA!: number;
-  ID_CUOTA!: number;
-  ID_ANIO!: number;
+  id_factura!: string;
+  id_cuota!: string;
+  id_anio!: string;
 
-  // cuotas_factura belongsTo cuota_anual via ID_CUOTA
-  ID_CUOTA_cuota_anual!: cuota_anual;
-  getID_CUOTA_cuota_anual!: Sequelize.BelongsToGetAssociationMixin<cuota_anual>;
-  setID_CUOTA_cuota_anual!: Sequelize.BelongsToSetAssociationMixin<cuota_anual, cuota_anualId>;
-  createID_CUOTA_cuota_anual!: Sequelize.BelongsToCreateAssociationMixin<cuota_anual>;
-  // cuotas_factura belongsTo cuota_anual via ID_ANIO
-  ID_ANIO_cuota_anual!: cuota_anual;
-  getID_ANIO_cuota_anual!: Sequelize.BelongsToGetAssociationMixin<cuota_anual>;
-  setID_ANIO_cuota_anual!: Sequelize.BelongsToSetAssociationMixin<cuota_anual, cuota_anualId>;
-  createID_ANIO_cuota_anual!: Sequelize.BelongsToCreateAssociationMixin<cuota_anual>;
-  // cuotas_factura belongsTo facturas via ID_FACTURA
-  ID_FACTURA_factura!: facturas;
-  getID_FACTURA_factura!: Sequelize.BelongsToGetAssociationMixin<facturas>;
-  setID_FACTURA_factura!: Sequelize.BelongsToSetAssociationMixin<facturas, facturasId>;
-  createID_FACTURA_factura!: Sequelize.BelongsToCreateAssociationMixin<facturas>;
+  // cuotas_factura belongsTo cuota_anual via id_cuota
+  id_cuota_cuota_anual!: cuota_anual;
+  getId_cuota_cuota_anual!: Sequelize.BelongsToGetAssociationMixin<cuota_anual>;
+  setId_cuota_cuota_anual!: Sequelize.BelongsToSetAssociationMixin<cuota_anual, cuota_anualId>;
+  createId_cuota_cuota_anual!: Sequelize.BelongsToCreateAssociationMixin<cuota_anual>;
+  // cuotas_factura belongsTo cuota_anual via id_anio
+  id_anio_cuota_anual!: cuota_anual;
+  getId_anio_cuota_anual!: Sequelize.BelongsToGetAssociationMixin<cuota_anual>;
+  setId_anio_cuota_anual!: Sequelize.BelongsToSetAssociationMixin<cuota_anual, cuota_anualId>;
+  createId_anio_cuota_anual!: Sequelize.BelongsToCreateAssociationMixin<cuota_anual>;
+  // cuotas_factura belongsTo facturas via id_factura
+  id_factura_factura!: facturas;
+  getId_factura_factura!: Sequelize.BelongsToGetAssociationMixin<facturas>;
+  setId_factura_factura!: Sequelize.BelongsToSetAssociationMixin<facturas, facturasId>;
+  createId_factura_factura!: Sequelize.BelongsToCreateAssociationMixin<facturas>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof cuotas_factura {
     return cuotas_factura.init({
-    ID_FACTURA: {
-      type: DataTypes.INTEGER,
+    id_factura: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true,
       references: {
         model: 'facturas',
-        key: 'ID_FACTURA'
+        key: 'id_factura'
       }
     },
-    ID_CUOTA: {
-      type: DataTypes.INTEGER,
+    id_cuota: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true,
       references: {
         model: 'cuota_anual',
-        key: 'ID_CUOTA'
+        key: 'id_cuota'
       }
     },
-    ID_ANIO: {
-      type: DataTypes.INTEGER,
+    id_anio: {
+      type: DataTypes.STRING(50),
       allowNull: false,
-      defaultValue: 1,
+      defaultValue: "1",
       primaryKey: true,
       references: {
         model: 'cuota_anual',
-        key: 'ID_ANIO'
+        key: 'id_anio'
       }
     }
   }, {
@@ -75,24 +75,24 @@ export class cuotas_factura extends Model<cuotas_facturaAttributes, cuotas_factu
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_FACTURA" },
-          { name: "ID_CUOTA" },
-          { name: "ID_ANIO" },
+          { name: "id_factura" },
+          { name: "id_cuota" },
+          { name: "id_anio" },
         ]
       },
       {
         name: "fk_facturas_has_cuota_anual_cuota_anual1_idx",
         using: "BTREE",
         fields: [
-          { name: "ID_CUOTA" },
-          { name: "ID_ANIO" },
+          { name: "id_cuota" },
+          { name: "id_anio" },
         ]
       },
       {
         name: "fk_facturas_has_cuota_anual_facturas1_idx",
         using: "BTREE",
         fields: [
-          { name: "ID_FACTURA" },
+          { name: "id_factura" },
         ]
       },
     ]

@@ -1,6 +1,7 @@
-import { initModels,facturas,facturasAttributes,facturasCreationAttributes } from "../models/init-models";
+import { initModels,facturas,facturasCreationAttributes } from "../models/init-models";
 import { Request, Response } from "express";
 import db from "../db/connection";
+import {v4} from 'uuid';
 
 initModels(db);
 
@@ -31,12 +32,13 @@ export const crearFactura = async (req:Request,res:Response)=>{
         //obtener fecha actual
         const fechaActual = new Date();
         const factura:facturasCreationAttributes = {
-            ID_COMUNERO:req.body.id_comunero,
-            FECHA:fechaActual.toDateString(),
-            HORA:fechaActual.getHours()+":"+fechaActual.getMinutes()+":"+fechaActual.getSeconds(),
-            DESCRIP_FAC:req.body.descrip_fac,
-            SUBTOTAL_FAC:req.body.subtotal_fac,
-            TOTAL_FAC:req.body.total_fac,      
+            id_factura:v4(),
+            id_comunero:req.body.id_comunero,
+            fecha:fechaActual.toDateString(),
+            hora:fechaActual.getHours()+":"+fechaActual.getMinutes()+":"+fechaActual.getSeconds(),
+            descrip_fac:req.body.descrip_fac,
+            subtotal_fac:req.body.subtotal_fac,
+            total_fac:req.body.total_fac,      
         }
         await facturas.create(factura);
         res.json({
@@ -59,7 +61,7 @@ export const obtenerFacturasComunero = async (req:Request,res:Response)=>{
         const id_comunero = req.body.id_comunero;
         const listFacturas = await facturas.findAll({
             where:{
-                ID_COMUNERO:id_comunero
+                id_comunero
             }
         });
         if (listFacturas){
@@ -85,7 +87,7 @@ export const obtenerFacturasComunero = async (req:Request,res:Response)=>{
 export const obtenerFacturasMes = async (req:Request,res:Response)=>{
     try {
         db.query('SET lc_time_names = "es_ES"');
-        const facMes= await db.query("SELECT DATE_FORMAT(facturas.FECHA, '%M')AS mes, MONTH(facturas.FECHA) AS mes_numero, COUNT(*) AS facturas_pagadas FROM facturas WHERE year(facturas.FECHA) GROUP BY mes, mes_numero ORDER BY mes_numero asc;")
+        const facMes= await db.query("select date_format(facturas.fecha, '%m')as mes, month(facturas.fecha) as mes_numero, count(*) as facturas_pagadas from facturas where year(facturas.fecha) group by mes, mes_numero order by mes_numero asc;")
         if (facMes){
             res.json({facMes});
         }else{

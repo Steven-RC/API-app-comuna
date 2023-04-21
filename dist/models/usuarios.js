@@ -1,54 +1,64 @@
 "use strict";
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usuarios = void 0;
 const sequelize_1 = require("sequelize");
 class usuarios extends sequelize_1.Model {
     static initModel(sequelize) {
         return usuarios.init({
-            ID_USUARIO: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_usuario: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            ID_COMUNERO: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_comunero: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true,
                 references: {
                     model: 'comuneros',
-                    key: 'ID_COMUNERO'
+                    key: 'id_comunero'
                 }
             },
-            ID_ROL: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_rol: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true,
                 references: {
                     model: 'rol_user',
-                    key: 'ID_ROL'
+                    key: 'id_rol'
                 }
             },
-            EMAIL: {
+            email: {
                 type: sequelize_1.DataTypes.STRING(100),
                 allowNull: false,
-                unique: "EMAIL"
+                unique: "email"
             },
-            CREATED_AT_DATE: {
+            created_at_date: {
                 type: sequelize_1.DataTypes.DATEONLY,
                 allowNull: false
             },
-            CREATED_AT_TIME: {
+            created_at_time: {
                 type: sequelize_1.DataTypes.TIME,
                 allowNull: false
             },
-            NOM_USER: {
+            nom_user: {
                 type: sequelize_1.DataTypes.STRING(12),
                 allowNull: false
             },
-            PASS_USER: {
+            pass_user: {
                 type: sequelize_1.DataTypes.TEXT,
                 allowNull: false
             },
-            ESTADO_USER: {
+            estado_user: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
@@ -67,29 +77,29 @@ class usuarios extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_USUARIO" },
+                        { name: "id_usuario" },
                     ]
                 },
                 {
-                    name: "EMAIL",
+                    name: "email",
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "EMAIL" },
+                        { name: "email" },
                     ]
                 },
                 {
-                    name: "FK_REL_COMUNERO_USUARIO",
+                    name: "fk_rel_comunero_usuario",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_COMUNERO" },
+                        { name: "id_comunero" },
                     ]
                 },
                 {
-                    name: "FK_REL_USER_ROL",
+                    name: "fk_rel_user_rol",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_ROL" },
+                        { name: "id_rol" },
                     ]
                 },
             ]
@@ -97,4 +107,9 @@ class usuarios extends sequelize_1.Model {
     }
 }
 exports.usuarios = usuarios;
+//evitar que la contraseña se envie al cliente
+usuarios.prototype.toJSON = function () {
+    const _a = this.get(), { pass_user } = _a, object = __rest(_a, ["pass_user"]);
+    return object;
+};
 //# sourceMappingURL=usuarios.js.map

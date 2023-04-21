@@ -1,45 +1,45 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { comuneros, comunerosId } from './comuneros';
-import type { Nacionalidad, nacionalidadId } from './nacionalidad';
+import type { nacionalidad, nacionalidadId } from './nacionalidad';
 import type { requisito_apr, requisito_aprId } from './requisito_apr';
 
 export interface personasAttributes {
-  ID_PERSONA: number;
-  ID_NACIONALIDAD?: number;
-  CEDULA: string;
-  APELLIDOS?: string;
-  NOMBRE: string;
-  FECHA_DE_NACIMIENTO: string;
-  GENERO: number;
-  ESTADO?: number;
-  CELULAR_PER?: string;
-  TITULO_ACADEMICO?: string;
+  id_persona: string;
+  id_nacionalidad?: string;
+  cedula: string;
+  apellidos?: string;
+  nombre: string;
+  fecha_de_nacimiento: string;
+  genero: number;
+  estado?: number;
+  celular_per?: string;
+  titulo_academico?: string;
 }
 
-export type personasPk = "ID_PERSONA";
+export type personasPk = "id_persona";
 export type personasId = personas[personasPk];
-export type personasOptionalAttributes = "ID_PERSONA" | "ID_NACIONALIDAD" | "APELLIDOS" | "ESTADO" | "CELULAR_PER" | "TITULO_ACADEMICO";
+export type personasOptionalAttributes = "id_nacionalidad" | "apellidos" | "estado" | "celular_per" | "titulo_academico";
 export type personasCreationAttributes = Optional<personasAttributes, personasOptionalAttributes>;
 
 export class personas extends Model<personasAttributes, personasCreationAttributes> implements personasAttributes {
-  ID_PERSONA!: number;
-  ID_NACIONALIDAD?: number;
-  CEDULA!: string;
-  APELLIDOS?: string;
-  NOMBRE!: string;
-  FECHA_DE_NACIMIENTO!: string;
-  GENERO!: number;
-  ESTADO?: number;
-  CELULAR_PER?: string;
-  TITULO_ACADEMICO?: string;
+  id_persona!: string;
+  id_nacionalidad?: string;
+  cedula!: string;
+  apellidos?: string;
+  nombre!: string;
+  fecha_de_nacimiento!: string;
+  genero!: number;
+  estado?: number;
+  celular_per?: string;
+  titulo_academico?: string;
 
-  // personas belongsTo nacionalidad via ID_NACIONALIDAD
-  ID_NACIONALIDAD_nacionalidad!: Nacionalidad;
-  getID_NACIONALIDAD_nacionalidad!: Sequelize.BelongsToGetAssociationMixin<Nacionalidad>;
-  setID_NACIONALIDAD_nacionalidad!: Sequelize.BelongsToSetAssociationMixin<Nacionalidad, nacionalidadId>;
-  createID_NACIONALIDAD_nacionalidad!: Sequelize.BelongsToCreateAssociationMixin<Nacionalidad>;
-  // personas hasMany comuneros via ID_PERSONA
+  // personas belongsTo nacionalidad via id_nacionalidad
+  id_nacionalidad_nacionalidad!: nacionalidad;
+  getId_nacionalidad_nacionalidad!: Sequelize.BelongsToGetAssociationMixin<nacionalidad>;
+  setId_nacionalidad_nacionalidad!: Sequelize.BelongsToSetAssociationMixin<nacionalidad, nacionalidadId>;
+  createId_nacionalidad_nacionalidad!: Sequelize.BelongsToCreateAssociationMixin<nacionalidad>;
+  // personas hasMany comuneros via id_persona
   comuneros!: comuneros[];
   getComuneros!: Sequelize.HasManyGetAssociationsMixin<comuneros>;
   setComuneros!: Sequelize.HasManySetAssociationsMixin<comuneros, comunerosId>;
@@ -51,7 +51,7 @@ export class personas extends Model<personasAttributes, personasCreationAttribut
   hasComunero!: Sequelize.HasManyHasAssociationMixin<comuneros, comunerosId>;
   hasComuneros!: Sequelize.HasManyHasAssociationsMixin<comuneros, comunerosId>;
   countComuneros!: Sequelize.HasManyCountAssociationsMixin;
-  // personas hasMany requisito_apr via ID_PERSONA
+  // personas hasMany requisito_apr via id_persona
   requisito_aprs!: requisito_apr[];
   getRequisito_aprs!: Sequelize.HasManyGetAssociationsMixin<requisito_apr>;
   setRequisito_aprs!: Sequelize.HasManySetAssociationsMixin<requisito_apr, requisito_aprId>;
@@ -66,54 +66,53 @@ export class personas extends Model<personasAttributes, personasCreationAttribut
 
   static initModel(sequelize: Sequelize.Sequelize): typeof personas {
     return personas.init({
-    ID_PERSONA: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+    id_persona: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
-    ID_NACIONALIDAD: {
-      type: DataTypes.INTEGER,
+    id_nacionalidad: {
+      type: DataTypes.STRING(50),
       allowNull: true,
       references: {
         model: 'nacionalidad',
-        key: 'ID_NACIONALIDAD'
+        key: 'id_nacionalidad'
       }
     },
-    CEDULA: {
+    cedula: {
       type: DataTypes.STRING(10),
       allowNull: false,
-      unique: "CEDULA"
+      unique: "cedula"
     },
-    APELLIDOS: {
+    apellidos: {
       type: DataTypes.STRING(50),
       allowNull: true
     },
-    NOMBRE: {
+    nombre: {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    FECHA_DE_NACIMIENTO: {
+    fecha_de_nacimiento: {
       type: DataTypes.DATEONLY,
       allowNull: false
     },
-    GENERO: {
+    genero: {
       type: DataTypes.BOOLEAN,
       allowNull: false
     },
-    ESTADO: {
+    estado: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: 1
     },
-    CELULAR_PER: {
+    celular_per: {
       type: DataTypes.STRING(10),
       allowNull: true
     },
-    TITULO_ACADEMICO: {
+    titulo_academico: {
       type: DataTypes.STRING(10),
       allowNull: true,
-      defaultValue: "Sr."
+      defaultValue: "sr."
     }
   }, {
     sequelize,
@@ -125,22 +124,22 @@ export class personas extends Model<personasAttributes, personasCreationAttribut
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_PERSONA" },
+          { name: "id_persona" },
         ]
       },
       {
-        name: "CEDULA",
+        name: "cedula",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "CEDULA" },
+          { name: "cedula" },
         ]
       },
       {
-        name: "FK_REL_NACIONALIDAD_PERSON",
+        name: "fk_rel_nacionalidad_person",
         using: "BTREE",
         fields: [
-          { name: "ID_NACIONALIDAD" },
+          { name: "id_nacionalidad" },
         ]
       },
     ]

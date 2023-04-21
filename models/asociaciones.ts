@@ -3,22 +3,22 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { comuneros, comunerosId } from './comuneros';
 
 export interface asociacionesAttributes {
-  ID_ASO: number;
-  NOM_ASOCIACION_?: string;
-  ESTADO_ASO?: number;
+  id_aso: string;
+  nom_asociacion?: string;
+  estado_aso?: number;
 }
 
-export type asociacionesPk = "ID_ASO";
-export type asociacionesId = Asociaciones[asociacionesPk];
-export type asociacionesOptionalAttributes = "ID_ASO" | "NOM_ASOCIACION_" | "ESTADO_ASO";
+export type asociacionesPk = "id_aso";
+export type asociacionesId = asociaciones[asociacionesPk];
+export type asociacionesOptionalAttributes = "nom_asociacion" | "estado_aso";
 export type asociacionesCreationAttributes = Optional<asociacionesAttributes, asociacionesOptionalAttributes>;
 
-export class Asociaciones extends Model<asociacionesAttributes, asociacionesCreationAttributes> implements asociacionesAttributes {
-  ID_ASO!: number;
-  NOM_ASOCIACION_?: string;
-  ESTADO_ASO?: number;
+export class asociaciones extends Model<asociacionesAttributes, asociacionesCreationAttributes> implements asociacionesAttributes {
+  id_aso!: string;
+  nom_asociacion?: string;
+  estado_aso?: number;
 
-  // asociaciones hasMany comuneros via ID_ASO
+  // asociaciones hasMany comuneros via id_aso
   comuneros!: comuneros[];
   getComuneros!: Sequelize.HasManyGetAssociationsMixin<comuneros>;
   setComuneros!: Sequelize.HasManySetAssociationsMixin<comuneros, comunerosId>;
@@ -31,37 +31,36 @@ export class Asociaciones extends Model<asociacionesAttributes, asociacionesCrea
   hasComuneros!: Sequelize.HasManyHasAssociationsMixin<comuneros, comunerosId>;
   countComuneros!: Sequelize.HasManyCountAssociationsMixin;
 
-  static initModel(sequelize: Sequelize.Sequelize): typeof Asociaciones {
-    return Asociaciones.init({
-      ID_ASO: {
-        autoIncrement: true,
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true
+  static initModel(sequelize: Sequelize.Sequelize): typeof asociaciones {
+    return asociaciones.init({
+    id_aso: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      primaryKey: true
+    },
+    nom_asociacion: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    estado_aso: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: 1
+    }
+  }, {
+    sequelize,
+    tableName: 'asociaciones',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id_aso" },
+        ]
       },
-      NOM_ASOCIACION_: {
-        type: DataTypes.TEXT,
-        allowNull: true
-      },
-      ESTADO_ASO: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
-        defaultValue: 1
-      }
-    }, {
-      sequelize,
-      tableName: 'asociaciones',
-      timestamps: false,
-      indexes: [
-        {
-          name: "PRIMARY",
-          unique: true,
-          using: "BTREE",
-          fields: [
-            { name: "ID_ASO" },
-          ]
-        },
-      ]
-    });
+    ]
+  });
   }
 }

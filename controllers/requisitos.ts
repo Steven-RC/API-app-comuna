@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import db from '../db/connection';
 import { initModels, requisitos, requisitosCreationAttributes, requisitosAttributes } from '../models/init-models';
+import { v4 } from 'uuid';
 
 initModels(db);
 
@@ -10,8 +11,9 @@ export const crearRequisito = async (req: Request, res: Response) => {
     try {
         const { requisito, observacion } = req.body;
         const reqCr: requisitosCreationAttributes = {
-            REQUISITO: requisito,
-            OBSERVACION: observacion,
+            id_req: 'req-'+v4(),
+            requisito ,
+            observacion,
         }
         await requisitos.create(reqCr);
         res.json({
@@ -31,7 +33,28 @@ export const crearRequisito = async (req: Request, res: Response) => {
 export const obtenerRequisitos = async (req: Request, res: Response) => {
     try {
         const listRequisitos = await requisitos.findAll({
-            attributes: ['ID_REQ', 'REQUISITO', 'OBSERVACION']
+            attributes: ['id_req', 'requisito', 'observacion', 'req_estado'],
+        });
+        res.json({
+            listRequisitos
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            msg: 'Error inesperado'
+        })
+
+
+    }
+}
+export const obtenerRequisitosActivos= async (req: Request, res: Response) => {
+    try {
+        const listRequisitos = await requisitos.findAll({
+            attributes: ['id_req', 'requisito', 'observacion'],
+            where: {
+                req_estado: 1
+            }
         });
         res.json({
             listRequisitos
@@ -49,15 +72,22 @@ export const obtenerRequisitos = async (req: Request, res: Response) => {
 
 //actualizar requisito
 export const actualizarRequisito = async (req: Request, res: Response) => {
+
     try {
-        const { id_requisito, requisito, observacion } = req.body;
+        const {id_req} = req.body;
+        const {requisito} = req.body;
+        const {observacion} = req.body;
+        const {estado} = req.body;
+        console.log(id_req)
+        console.log(requisito)
         //actualizar requisito
         await requisitos.update({
-            REQUISITO: requisito,
-            OBSERVACION: observacion
+             requisito,
+             observacion,
+             req_estado: estado
         }, {
             where: {
-                ID_REQ: id_requisito
+                id_req
             }
         });
         res.json({
@@ -74,40 +104,20 @@ export const actualizarRequisito = async (req: Request, res: Response) => {
 
 }
 
-//cambiar estado requisito
-export const cambiarEstadoRequisito = async (req: Request, res: Response) => {
-    try {
-        const { id_requisito, estado } = req.body;
-        await requisitos.update({
-            REQ_ESTADO: estado
-        }, {
-            where: {
-                ID_REQ: id_requisito
-            }
-        });
-        res.json({
-            msg: 'Estado actualizado'
-        })
-
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            msg: 'Error inesperado'
-        })
-
-    }
-}
 //obtener requisito por de una persona
 export const obtenerRequisitoPersona = async (req: Request, res: Response) => {
     try {
-        const listRequisitos = await db.query("select personas.ID_PERSONA,personas.CEDULA, personas.APELLIDOS, personas.NOMBRE,requisitos.ID_REQ,requisitos.REQUISITO,requisitos.OBSERVACION,requisito_apr.FECHA_AP " +
-            " from ((personas inner join requisito_apr on personas.ID_PERSONA = requisito_apr.ID_PERSONA) " +
-            " inner join requisitos on requisito_apr.ID_REQ = requisitos.ID_REQ) where personas.ID_PERSONA = " + req.body.id_persona);
+        const listaRequisitos = await db.query("select personas.id_persona,personas.cedula, personas.apellidos, personas.nombre,requisitos.id_req,requisitos.requisito,requisitos.observacion,requisito_apr.fecha_ap " +
+            ",requisito_apr.observacion as observacion_ap from ((personas inner join requisito_apr on personas.id_persona = requisito_apr.id_persona) " +
+            " inner join requisitos on requisito_apr.id_req = requisitos.id_req) where requisitos.req_estado=1 && personas.id_persona = " + req.body.id_persona);
         //si no hay requisitos
-        if (listRequisitos[0].length == 0) {
-            res.status(404).json({
-                msg: 'La persona no tiene requisitos aprobados'
-            })
+        const listRequisitos = listaRequisitos[0];
+        if (listRequisitos.length == 0) {
+            //se retotna la lista vacia
+
+            res.json(
+                {listRequisitos}
+            )
         } else {
             res.json({
                 listRequisitos

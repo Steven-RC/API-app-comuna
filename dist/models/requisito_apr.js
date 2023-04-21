@@ -5,36 +5,35 @@ const sequelize_1 = require("sequelize");
 class requisito_apr extends sequelize_1.Model {
     static initModel(sequelize) {
         return requisito_apr.init({
-            ID_REQ_AP: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_req_ap: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            FECHA_AP: {
+            fecha_ap: {
                 type: sequelize_1.DataTypes.DATEONLY,
                 allowNull: false
             },
-            OBSERVACION: {
+            observacion: {
                 type: sequelize_1.DataTypes.STRING(150),
                 allowNull: true,
-                defaultValue: "Ninguna"
+                defaultValue: "ninguna"
             },
-            ID_PERSONA: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_persona: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 references: {
                     model: 'personas',
-                    key: 'ID_PERSONA'
+                    key: 'id_persona'
                 }
             },
-            ID_REQ: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_req: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true,
                 references: {
                     model: 'requisitos',
-                    key: 'ID_REQ'
+                    key: 'id_req'
                 }
             }
         }, {
@@ -47,22 +46,22 @@ class requisito_apr extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_REQ_AP" },
-                        { name: "ID_REQ" },
+                        { name: "id_req_ap" },
+                        { name: "id_req" },
                     ]
                 },
                 {
                     name: "fk_requisito_apr_personas1_idx",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_PERSONA" },
+                        { name: "id_persona" },
                     ]
                 },
                 {
                     name: "fk_requisito_apr_requisitos1_idx",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_REQ" },
+                        { name: "id_req" },
                     ]
                 },
             ]

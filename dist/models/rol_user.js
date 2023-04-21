@@ -5,17 +5,16 @@ const sequelize_1 = require("sequelize");
 class rol_user extends sequelize_1.Model {
     static initModel(sequelize) {
         return rol_user.init({
-            ID_ROL: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_rol: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            NOM_ROL: {
+            nom_rol: {
                 type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false
             },
-            ESTADO_ROL: {
+            estado_rol: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
@@ -30,7 +29,7 @@ class rol_user extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_ROL" },
+                        { name: "id_rol" },
                     ]
                 },
             ]

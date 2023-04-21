@@ -5,13 +5,12 @@ const sequelize_1 = require("sequelize");
 class forma_pago extends sequelize_1.Model {
     static initModel(sequelize) {
         return forma_pago.init({
-            ID_FORMA_PAGO: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_forma_pago: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            FORMA_PAGO: {
+            forma_pago: {
                 type: sequelize_1.DataTypes.STRING(20),
                 allowNull: false
             }
@@ -25,7 +24,7 @@ class forma_pago extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_FORMA_PAGO" },
+                        { name: "id_forma_pago" },
                     ]
                 },
             ]

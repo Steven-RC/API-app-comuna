@@ -1,7 +1,7 @@
 import db from '../db/connection';
 import { Request, Response } from "express";
 import { initModels,comuneros,barrios, barriosCreationAttributes } from "../models/init-models";
-
+import {v4} from 'uuid';
 initModels(db);
 
 export const crearBarrio = async (req: Request, res: Response) => {
@@ -9,31 +9,32 @@ export const crearBarrio = async (req: Request, res: Response) => {
 
         if (!req.body.barrio) {
             return res.status(400).json({
-                msg: 'No hay barrio'
+                msg: 'no hay barrio'
             })
         }
         const encontrarBarrio = await barrios.findOne({
             where: {
-                NOM_BARRIO: req.body.barrio
+                nom_barrio: req.body.barrio
             }
         })
         if (encontrarBarrio) {
             return res.status(400).json({
-                msg: 'El barrio ya existe'
+                msg: 'el barrio ya existe'
             })
         } else {
             const barrio: barriosCreationAttributes = {
-                NOM_BARRIO: req.body.barrio,
+                id_barrio:'bar-'+v4(),
+                nom_barrio: req.body.barrio,
             }
             await barrios.create(barrio);
             res.json({
-                msg: 'Barrio creado'
+                msg: 'barrio creado'
             })
         }
     }catch(error){
         console.log(error)
         res.status(500).json({
-            msg: 'Hable con el administrador'
+            msg: 'hable con el administrador'
         })
     }
     
@@ -41,15 +42,15 @@ export const crearBarrio = async (req: Request, res: Response) => {
 //obtener barrios
 export const obtenerBarrios = async (req: Request, res: Response) => {
     try {
-        const listbarrios = await barrios.findAll();
+        const listBarrios = await barrios.findAll();
         res.json({
-            listbarrios
+            listBarrios
         })
 
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         })
         
     }
@@ -64,12 +65,12 @@ export const eliminarBarrio = async (req: Request, res: Response) => {
         //buscar comunero que este asociado al barrio
         const buscarComunero = await comuneros.findOne({
             where: {
-                ID_BARRIO: id
+                id_barrio: id
             }
         })
         if (buscarComunero) {
             return res.status(400).json({
-                msg: 'No se puede eliminar el barrio porque tiene comuneros asociados'
+                msg: 'no se puede eliminar el barrio porque tiene comuneros asociados'
             })
         }
     
@@ -77,19 +78,19 @@ export const eliminarBarrio = async (req: Request, res: Response) => {
     
         if (!barrio) {
             return res.status(404).json({
-                msg: 'No existe el barrio'
+                msg: 'no existe el barrio'
             })
         } else {
             await barrio.destroy();
             res.json({
-                msg: 'Barrio eliminado' 
+                msg: 'barrio eliminado' 
             })
     
         }
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         })
         
     }
@@ -101,24 +102,24 @@ export const actualizarBarrio = async (req: Request, res: Response) => {
         
         const { id } = req.body;
         const { barrio } = req.body;
-        const barrioAct = await barrios.findByPk(id);
-        if (!barrioAct) {
+        const barrioact = await barrios.findByPk(id);
+        if (!barrioact) {
             return res.status(404).json({
-                msg: 'No existe el barrio'
+                msg: 'no existe el barrio'
             })
         } else {
-            await barrioAct.update({
-                NOM_BARRIO: barrio
+            await barrioact.update({
+                nom_barrio: barrio
                  
             })
             res.json({
-                msg: 'Barrio actualizado'   
+                msg: 'barrio actualizado'   
             })
         } 
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         })
                 
     }
@@ -129,15 +130,15 @@ export const actualizarBarrio = async (req: Request, res: Response) => {
 export const obtenerComunerosBarrio = async (req: Request, res: Response) => { 
     try {
         console.log(req.body.anio)
-        const anioAc= req.body.anio
-        const comunerosBarrio= await db.query('select barrios.NOM_BARRIO, count(*) as per_por_barrio from comuneros inner join barrios on comuneros.ID_BARRIO = barrios.ID_BARRIO group by barrios.NOM_BARRIO ')
+        const anioac= req.body.anio
+        const comunerosBarrio= await db.query('select barrios.nom_barrio, count(*) as per_por_barrio from comuneros inner join barrios on comuneros.id_barrio = barrios.id_barrio group by barrios.nom_barrio ')
         res.json({
             comunerosBarrio 
         })
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         })
         
     }

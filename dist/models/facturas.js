@@ -5,52 +5,51 @@ const sequelize_1 = require("sequelize");
 class facturas extends sequelize_1.Model {
     static initModel(sequelize) {
         return facturas.init({
-            ID_FACTURA: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_factura: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            ID_COMUNERO: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_comunero: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true,
                 references: {
                     model: 'comuneros',
-                    key: 'ID_COMUNERO'
+                    key: 'id_comunero'
                 }
             },
-            FECHA: {
+            fecha: {
                 type: sequelize_1.DataTypes.DATEONLY,
                 allowNull: false
             },
-            HORA: {
+            hora: {
                 type: sequelize_1.DataTypes.TIME,
                 allowNull: false
             },
-            SUBTOTAL_FAC: {
+            subtotal_fac: {
                 type: sequelize_1.DataTypes.FLOAT,
                 allowNull: false
             },
-            TOTAL_FAC: {
+            total_fac: {
                 type: sequelize_1.DataTypes.FLOAT,
                 allowNull: false
             },
-            DESCRIP_FAC: {
+            descrip_fac: {
                 type: sequelize_1.DataTypes.STRING(100),
                 allowNull: true
             },
-            ESTADO_FAC: {
+            estado_fac: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
             },
-            ID_FORMA_PAGO: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_forma_pago: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
-                defaultValue: 1,
+                defaultValue: "1",
                 references: {
                     model: 'forma_pago',
-                    key: 'ID_FORMA_PAGO'
+                    key: 'id_forma_pago'
                 }
             }
         }, {
@@ -63,21 +62,21 @@ class facturas extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_FACTURA" },
+                        { name: "id_factura" },
                     ]
                 },
                 {
-                    name: "FK_REL_COMUNERO_FACT",
+                    name: "fk_rel_comunero_fact",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_COMUNERO" },
+                        { name: "id_comunero" },
                     ]
                 },
                 {
                     name: "fk_facturas_forma_pago1_idx",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_FORMA_PAGO" },
+                        { name: "id_forma_pago" },
                     ]
                 },
             ]

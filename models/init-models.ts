@@ -1,7 +1,7 @@
 import type { Sequelize } from "sequelize";
-import { Anio as _anio } from "./anio";
+import { anio as _anio } from "./anio";
 import type { anioAttributes, anioCreationAttributes } from "./anio";
-import { Asociaciones as _asociaciones } from "./asociaciones";
+import { asociaciones as _asociaciones } from "./asociaciones";
 import type { asociacionesAttributes, asociacionesCreationAttributes } from "./asociaciones";
 import { barrios as _barrios } from "./barrios";
 import type { barriosAttributes, barriosCreationAttributes } from "./barrios";
@@ -17,7 +17,7 @@ import { facturas as _facturas } from "./facturas";
 import type { facturasAttributes, facturasCreationAttributes } from "./facturas";
 import { forma_pago as _forma_pago } from "./forma_pago";
 import type { forma_pagoAttributes, forma_pagoCreationAttributes } from "./forma_pago";
-import { Nacionalidad as _nacionalidad } from "./nacionalidad";
+import { nacionalidad as _nacionalidad } from "./nacionalidad";
 import type { nacionalidadAttributes, nacionalidadCreationAttributes } from "./nacionalidad";
 import { personas as _personas } from "./personas";
 import type { personasAttributes, personasCreationAttributes } from "./personas";
@@ -36,7 +36,7 @@ import type { usuariosAttributes, usuariosCreationAttributes } from "./usuarios"
 
 export {
   _anio as anio,
-  _asociaciones as Asociaciones,
+  _asociaciones as asociaciones,
   _barrios as barrios,
   _comuneros as comuneros,
   _comuneros_tipos_doc as comuneros_tipos_doc,
@@ -110,42 +110,42 @@ export function initModels(sequelize: Sequelize) {
   const tipo_documentos = _tipo_documentos.initModel(sequelize);
   const usuarios = _usuarios.initModel(sequelize);
 
-  comuneros.belongsToMany(tipo_documentos, { as: 'ID_TIPO_DOC_tipo_documentos', through: comuneros_tipos_doc, foreignKey: "ID_COMUNERO", otherKey: "ID_TIPO_DOC" });
-  tipo_documentos.belongsToMany(comuneros, { as: 'ID_COMUNERO_comuneros', through: comuneros_tipos_doc, foreignKey: "ID_TIPO_DOC", otherKey: "ID_COMUNERO" });
-  cuota_anual.belongsTo(anio, { as: "ID_ANIO_anio", foreignKey: "ID_ANIO"});
-  anio.hasMany(cuota_anual, { as: "cuota_anuals", foreignKey: "ID_ANIO"});
-  comuneros.belongsTo(asociaciones, { as: "ID_ASO_asociacione", foreignKey: "ID_ASO"});
-  asociaciones.hasMany(comuneros, { as: "comuneros", foreignKey: "ID_ASO"});
-  comuneros.belongsTo(barrios, { as: "ID_BARRIO_barrio", foreignKey: "ID_BARRIO"});
-  barrios.hasMany(comuneros, { as: "comuneros", foreignKey: "ID_BARRIO"});
-  comuneros_tipos_doc.belongsTo(comuneros, { as: "ID_COMUNERO_comunero", foreignKey: "ID_COMUNERO"});
-  comuneros.hasMany(comuneros_tipos_doc, { as: "comuneros_tipos_docs", foreignKey: "ID_COMUNERO"});
-  facturas.belongsTo(comuneros, { as: "ID_COMUNERO_comunero", foreignKey: "ID_COMUNERO"});
-  comuneros.hasMany(facturas, { as: "facturas", foreignKey: "ID_COMUNERO"});
-  usuarios.belongsTo(comuneros, { as: "ID_COMUNERO_comunero", foreignKey: "ID_COMUNERO"});
-  comuneros.hasMany(usuarios, { as: "usuarios", foreignKey: "ID_COMUNERO"});
-  cuotas_factura.belongsTo(cuota_anual, { as: "ID_CUOTA_cuota_anual", foreignKey: "ID_CUOTA"});
-  cuota_anual.hasMany(cuotas_factura, { as: "cuotas_facturas", foreignKey: "ID_CUOTA"});
-  cuotas_factura.belongsTo(cuota_anual, { as: "ID_ANIO_cuota_anual", foreignKey: "ID_ANIO"});
-  cuota_anual.hasMany(cuotas_factura, { as: "ID_ANIO_cuotas_facturas", foreignKey: "ID_ANIO"});
-  cuotas_factura.belongsTo(facturas, { as: "ID_FACTURA_factura", foreignKey: "ID_FACTURA"});
-  facturas.hasMany(cuotas_factura, { as: "cuotas_facturas", foreignKey: "ID_FACTURA"});
-  facturas.belongsTo(forma_pago, { as: "ID_FORMA_PAGO_forma_pago", foreignKey: "ID_FORMA_PAGO"});
-  forma_pago.hasMany(facturas, { as: "facturas", foreignKey: "ID_FORMA_PAGO"});
-  personas.belongsTo(nacionalidad, { as: "ID_NACIONALIDAD_nacionalidad", foreignKey: "ID_NACIONALIDAD"});
-  nacionalidad.hasMany(personas, { as: "personas", foreignKey: "ID_NACIONALIDAD"});
-  comuneros.belongsTo(personas, { as: "ID_PERSONA_persona", foreignKey: "ID_PERSONA"});
-  personas.hasMany(comuneros, { as: "comuneros", foreignKey: "ID_PERSONA"});
-  requisito_apr.belongsTo(personas, { as: "ID_PERSONA_persona", foreignKey: "ID_PERSONA"});
-  personas.hasMany(requisito_apr, { as: "requisito_aprs", foreignKey: "ID_PERSONA"});
-  requisito_apr.belongsTo(requisitos, { as: "ID_REQ_requisito", foreignKey: "ID_REQ"});
-  requisitos.hasMany(requisito_apr, { as: "requisito_aprs", foreignKey: "ID_REQ"});
-  usuarios.belongsTo(rol_user, { as: "ID_ROL_rol_user", foreignKey: "ID_ROL"});
-  rol_user.hasMany(usuarios, { as: "usuarios", foreignKey: "ID_ROL"});
-  comuneros.belongsTo(terrenos, { as: "ID_TERRENO_terreno", foreignKey: "ID_TERRENO"});
-  terrenos.hasMany(comuneros, { as: "comuneros", foreignKey: "ID_TERRENO"});
-  comuneros_tipos_doc.belongsTo(tipo_documentos, { as: "ID_TIPO_DOC_tipo_documento", foreignKey: "ID_TIPO_DOC"});
-  tipo_documentos.hasMany(comuneros_tipos_doc, { as: "comuneros_tipos_docs", foreignKey: "ID_TIPO_DOC"});
+  comuneros.belongsToMany(tipo_documentos, { as: 'id_tipo_doc_tipo_documentos', through: comuneros_tipos_doc, foreignKey: "id_comunero", otherKey: "id_tipo_doc" });
+  tipo_documentos.belongsToMany(comuneros, { as: 'id_comunero_comuneros', through: comuneros_tipos_doc, foreignKey: "id_tipo_doc", otherKey: "id_comunero" });
+  cuota_anual.belongsTo(anio, { as: "id_anio_anio", foreignKey: "id_anio"});
+  anio.hasMany(cuota_anual, { as: "cuota_anuals", foreignKey: "id_anio"});
+  comuneros.belongsTo(asociaciones, { as: "id_aso_asociacione", foreignKey: "id_aso"});
+  asociaciones.hasMany(comuneros, { as: "comuneros", foreignKey: "id_aso"});
+  comuneros.belongsTo(barrios, { as: "id_barrio_barrio", foreignKey: "id_barrio"});
+  barrios.hasMany(comuneros, { as: "comuneros", foreignKey: "id_barrio"});
+  comuneros_tipos_doc.belongsTo(comuneros, { as: "id_comunero_comunero", foreignKey: "id_comunero"});
+  comuneros.hasMany(comuneros_tipos_doc, { as: "comuneros_tipos_docs", foreignKey: "id_comunero"});
+  facturas.belongsTo(comuneros, { as: "id_comunero_comunero", foreignKey: "id_comunero"});
+  comuneros.hasMany(facturas, { as: "facturas", foreignKey: "id_comunero"});
+  usuarios.belongsTo(comuneros, { as: "id_comunero_comunero", foreignKey: "id_comunero"});
+  comuneros.hasMany(usuarios, { as: "usuarios", foreignKey: "id_comunero"});
+  cuotas_factura.belongsTo(cuota_anual, { as: "id_cuota_cuota_anual", foreignKey: "id_cuota"});
+  cuota_anual.hasMany(cuotas_factura, { as: "cuotas_facturas", foreignKey: "id_cuota"});
+  cuotas_factura.belongsTo(cuota_anual, { as: "id_anio_cuota_anual", foreignKey: "id_anio"});
+  cuota_anual.hasMany(cuotas_factura, { as: "id_anio_cuotas_facturas", foreignKey: "id_anio"});
+  cuotas_factura.belongsTo(facturas, { as: "id_factura_factura", foreignKey: "id_factura"});
+  facturas.hasMany(cuotas_factura, { as: "cuotas_facturas", foreignKey: "id_factura"});
+  facturas.belongsTo(forma_pago, { as: "id_forma_pago_forma_pago", foreignKey: "id_forma_pago"});
+  forma_pago.hasMany(facturas, { as: "facturas", foreignKey: "id_forma_pago"});
+  personas.belongsTo(nacionalidad, { as: "id_nacionalidad_nacionalidad", foreignKey: "id_nacionalidad"});
+  nacionalidad.hasMany(personas, { as: "personas", foreignKey: "id_nacionalidad"});
+  comuneros.belongsTo(personas, { as: "id_persona_persona", foreignKey: "id_persona"});
+  personas.hasMany(comuneros, { as: "comuneros", foreignKey: "id_persona"});
+  requisito_apr.belongsTo(personas, { as: "id_persona_persona", foreignKey: "id_persona"});
+  personas.hasMany(requisito_apr, { as: "requisito_aprs", foreignKey: "id_persona"});
+  requisito_apr.belongsTo(requisitos, { as: "id_req_requisito", foreignKey: "id_req"});
+  requisitos.hasMany(requisito_apr, { as: "requisito_aprs", foreignKey: "id_req"});
+  usuarios.belongsTo(rol_user, { as: "id_rol_rol_user", foreignKey: "id_rol"});
+  rol_user.hasMany(usuarios, { as: "usuarios", foreignKey: "id_rol"});
+  comuneros.belongsTo(terrenos, { as: "id_terreno_terreno", foreignKey: "id_terreno"});
+  terrenos.hasMany(comuneros, { as: "comuneros", foreignKey: "id_terreno"});
+  comuneros_tipos_doc.belongsTo(tipo_documentos, { as: "id_tipo_doc_tipo_documento", foreignKey: "id_tipo_doc"});
+  tipo_documentos.hasMany(comuneros_tipos_doc, { as: "comuneros_tipos_docs", foreignKey: "id_tipo_doc"});
 
   return {
     anio: anio,
@@ -157,7 +157,7 @@ export function initModels(sequelize: Sequelize) {
     cuotas_factura: cuotas_factura,
     facturas: facturas,
     forma_pago: forma_pago,
-    Nacionalidad: nacionalidad,
+    nacionalidad: nacionalidad,
     personas: personas,
     requisito_apr: requisito_apr,
     requisitos: requisitos,

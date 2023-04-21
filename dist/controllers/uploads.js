@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mostrarImagen = exports.subirImagen = exports.cargarArchivo = void 0;
-const subir_archivo_1 = __importDefault(require("../helpers/subir-archivo"));
+const helpers_1 = __importDefault(require("../helpers"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const init_models_1 = require("../models/init-models");
@@ -23,7 +23,7 @@ const cargarArchivo = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(400).json({ msg: 'No files were uploaded.' });
     }
     try {
-        const nombre = yield subir_archivo_1.default.subirArchivo(req.files, ['pdf'], 'cedulas');
+        const nombre = yield helpers_1.default.subirArchivo(req.files, ['pdf'], 'cedulas');
         res.json({
             nombre: nombre
         });
@@ -57,7 +57,7 @@ const subirImagen = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 fs_1.default.unlinkSync(pathImagen);
             }
         }
-        const nombre = yield subir_archivo_1.default.subirArchivo(req.files, ['png', 'jpg', 'jpeg'], 'usuarios');
+        const nombre = yield helpers_1.default.subirArchivo(req.files, ['png', 'jpg', 'jpeg'], 'usuarios');
         modelo.img = nombre;
         yield modelo.save();
         res.json({
@@ -71,6 +71,7 @@ const subirImagen = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.subirImagen = subirImagen;
 const mostrarImagen = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.uid + 'Desde mostrar imagen');
     try {
         const { coleccion, id } = req.params;
         let modelo;
@@ -91,11 +92,17 @@ const mostrarImagen = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             //hay que borrar la imagen del servidor
             const pathImagen = path_1.default.join(__dirname, '../uploads', coleccion, modelo.img);
             if (fs_1.default.existsSync(pathImagen)) {
-                return res.sendFile(pathImagen);
+                // return res.sendFile(pathImagen);
+                //retorna la imagen en base64
+                const imgBinary = fs_1.default.readFileSync(pathImagen);
+                const imgBase64 = Buffer.from(imgBinary).toString('base64');
+                return res.json({
+                    imgBase64
+                });
             }
-            else {
-                return res.sendFile(path_1.default.join(__dirname, '../assets/no-image.jpg'));
-            }
+        }
+        else {
+            return res.sendFile(path_1.default.join(__dirname, '../assets/no-image.jpg'));
         }
         res.json({
             msg: 'no existe imagen'

@@ -3,24 +3,24 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { requisito_apr, requisito_aprId } from './requisito_apr';
 
 export interface requisitosAttributes {
-  ID_REQ: number;
-  REQUISITO: string;
-  OBSERVACION?: string;
-  REQ_ESTADO?: number;
+  id_req: string;
+  requisito: string;
+  observacion?: string;
+  req_estado?: number;
 }
 
-export type requisitosPk = "ID_REQ";
+export type requisitosPk = "id_req";
 export type requisitosId = requisitos[requisitosPk];
-export type requisitosOptionalAttributes = "ID_REQ" | "OBSERVACION" | "REQ_ESTADO";
+export type requisitosOptionalAttributes = "observacion" | "req_estado";
 export type requisitosCreationAttributes = Optional<requisitosAttributes, requisitosOptionalAttributes>;
 
 export class requisitos extends Model<requisitosAttributes, requisitosCreationAttributes> implements requisitosAttributes {
-  ID_REQ!: number;
-  REQUISITO!: string;
-  OBSERVACION?: string;
-  REQ_ESTADO?: number;
+  id_req!: string;
+  requisito!: string;
+  observacion?: string;
+  req_estado?: number;
 
-  // requisitos hasMany requisito_apr via ID_REQ
+  // requisitos hasMany requisito_apr via id_req
   requisito_aprs!: requisito_apr[];
   getRequisito_aprs!: Sequelize.HasManyGetAssociationsMixin<requisito_apr>;
   setRequisito_aprs!: Sequelize.HasManySetAssociationsMixin<requisito_apr, requisito_aprId>;
@@ -35,21 +35,20 @@ export class requisitos extends Model<requisitosAttributes, requisitosCreationAt
 
   static initModel(sequelize: Sequelize.Sequelize): typeof requisitos {
     return requisitos.init({
-    ID_REQ: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+    id_req: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
-    REQUISITO: {
+    requisito: {
       type: DataTypes.STRING(255),
       allowNull: false
     },
-    OBSERVACION: {
+    observacion: {
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    REQ_ESTADO: {
+    req_estado: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: 1
@@ -64,7 +63,7 @@ export class requisitos extends Model<requisitosAttributes, requisitosCreationAt
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_REQ" },
+          { name: "id_req" },
         ]
       },
     ]

@@ -12,7 +12,7 @@ export const resetPassword = async (req: Request, res: Response) => {
         // buscar el email en los usuarios
         const busUser = await usuarios.findOne({
             where: {
-                EMAIL: email
+                email
             },
             attributes: [
                 'EMAIL',

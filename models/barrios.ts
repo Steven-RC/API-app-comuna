@@ -3,20 +3,19 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { comuneros, comunerosId } from './comuneros';
 
 export interface barriosAttributes {
-  ID_BARRIO: number;
-  NOM_BARRIO: string;
+  id_barrio: string;
+  nom_barrio: string;
 }
 
-export type barriosPk = "ID_BARRIO";
+export type barriosPk = "id_barrio";
 export type barriosId = barrios[barriosPk];
-export type barriosOptionalAttributes = "ID_BARRIO";
-export type barriosCreationAttributes = Optional<barriosAttributes, barriosOptionalAttributes>;
+export type barriosCreationAttributes = barriosAttributes;
 
 export class barrios extends Model<barriosAttributes, barriosCreationAttributes> implements barriosAttributes {
-  ID_BARRIO!: number;
-  NOM_BARRIO!: string;
+  id_barrio!: string;
+  nom_barrio!: string;
 
-  // barrios hasMany comuneros via ID_BARRIO
+  // barrios hasMany comuneros via id_barrio
   comuneros!: comuneros[];
   getComuneros!: Sequelize.HasManyGetAssociationsMixin<comuneros>;
   setComuneros!: Sequelize.HasManySetAssociationsMixin<comuneros, comunerosId>;
@@ -31,16 +30,15 @@ export class barrios extends Model<barriosAttributes, barriosCreationAttributes>
 
   static initModel(sequelize: Sequelize.Sequelize): typeof barrios {
     return barrios.init({
-    ID_BARRIO: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+    id_barrio: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
-    NOM_BARRIO: {
+    nom_barrio: {
       type: DataTypes.STRING(120),
       allowNull: false,
-      unique: "NOM_BARRIO"
+      unique: "nom_barrio"
     }
   }, {
     sequelize,
@@ -52,15 +50,15 @@ export class barrios extends Model<barriosAttributes, barriosCreationAttributes>
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_BARRIO" },
+          { name: "id_barrio" },
         ]
       },
       {
-        name: "NOM_BARRIO",
+        name: "nom_barrio",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "NOM_BARRIO" },
+          { name: "nom_barrio" },
         ]
       },
     ]

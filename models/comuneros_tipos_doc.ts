@@ -4,53 +4,53 @@ import type { comuneros, comunerosId } from './comuneros';
 import type { tipo_documentos, tipo_documentosId } from './tipo_documentos';
 
 export interface comuneros_tipos_docAttributes {
-  ID_COMUNERO: number;
-  ID_TIPO_DOC: number;
-  DOCUMENTO?: string;
+  id_comunero: string;
+  id_tipo_doc: string;
+  documento?: string;
 }
 
-export type comuneros_tipos_docPk = "ID_COMUNERO" | "ID_TIPO_DOC";
+export type comuneros_tipos_docPk = "id_comunero" | "id_tipo_doc";
 export type comuneros_tipos_docId = comuneros_tipos_doc[comuneros_tipos_docPk];
-export type comuneros_tipos_docOptionalAttributes = "DOCUMENTO";
+export type comuneros_tipos_docOptionalAttributes = "documento";
 export type comuneros_tipos_docCreationAttributes = Optional<comuneros_tipos_docAttributes, comuneros_tipos_docOptionalAttributes>;
 
 export class comuneros_tipos_doc extends Model<comuneros_tipos_docAttributes, comuneros_tipos_docCreationAttributes> implements comuneros_tipos_docAttributes {
-  ID_COMUNERO!: number;
-  ID_TIPO_DOC!: number;
-  DOCUMENTO?: string;
+  id_comunero!: string;
+  id_tipo_doc!: string;
+  documento?: string;
 
-  // comuneros_tipos_doc belongsTo comuneros via ID_COMUNERO
-  ID_COMUNERO_comunero!: comuneros;
-  getID_COMUNERO_comunero!: Sequelize.BelongsToGetAssociationMixin<comuneros>;
-  setID_COMUNERO_comunero!: Sequelize.BelongsToSetAssociationMixin<comuneros, comunerosId>;
-  createID_COMUNERO_comunero!: Sequelize.BelongsToCreateAssociationMixin<comuneros>;
-  // comuneros_tipos_doc belongsTo tipo_documentos via ID_TIPO_DOC
-  ID_TIPO_DOC_tipo_documento!: tipo_documentos;
-  getID_TIPO_DOC_tipo_documento!: Sequelize.BelongsToGetAssociationMixin<tipo_documentos>;
-  setID_TIPO_DOC_tipo_documento!: Sequelize.BelongsToSetAssociationMixin<tipo_documentos, tipo_documentosId>;
-  createID_TIPO_DOC_tipo_documento!: Sequelize.BelongsToCreateAssociationMixin<tipo_documentos>;
+  // comuneros_tipos_doc belongsTo comuneros via id_comunero
+  id_comunero_comunero!: comuneros;
+  getId_comunero_comunero!: Sequelize.BelongsToGetAssociationMixin<comuneros>;
+  setId_comunero_comunero!: Sequelize.BelongsToSetAssociationMixin<comuneros, comunerosId>;
+  createId_comunero_comunero!: Sequelize.BelongsToCreateAssociationMixin<comuneros>;
+  // comuneros_tipos_doc belongsTo tipo_documentos via id_tipo_doc
+  id_tipo_doc_tipo_documento!: tipo_documentos;
+  getId_tipo_doc_tipo_documento!: Sequelize.BelongsToGetAssociationMixin<tipo_documentos>;
+  setId_tipo_doc_tipo_documento!: Sequelize.BelongsToSetAssociationMixin<tipo_documentos, tipo_documentosId>;
+  createId_tipo_doc_tipo_documento!: Sequelize.BelongsToCreateAssociationMixin<tipo_documentos>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof comuneros_tipos_doc {
     return comuneros_tipos_doc.init({
-    ID_COMUNERO: {
-      type: DataTypes.INTEGER,
+    id_comunero: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true,
       references: {
         model: 'comuneros',
-        key: 'ID_COMUNERO'
+        key: 'id_comunero'
       }
     },
-    ID_TIPO_DOC: {
-      type: DataTypes.INTEGER,
+    id_tipo_doc: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true,
       references: {
         model: 'tipo_documentos',
-        key: 'ID_TIPO_DOC'
+        key: 'id_tipo_doc'
       }
     },
-    DOCUMENTO: {
+    documento: {
       type: DataTypes.TEXT,
       allowNull: true
     }
@@ -64,22 +64,22 @@ export class comuneros_tipos_doc extends Model<comuneros_tipos_docAttributes, co
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_COMUNERO" },
-          { name: "ID_TIPO_DOC" },
+          { name: "id_comunero" },
+          { name: "id_tipo_doc" },
         ]
       },
       {
         name: "fk_comuneros_has_tipo_documentos_tipo_documentos1_idx",
         using: "BTREE",
         fields: [
-          { name: "ID_TIPO_DOC" },
+          { name: "id_tipo_doc" },
         ]
       },
       {
         name: "fk_comuneros_has_tipo_documentos_comuneros1_idx",
         using: "BTREE",
         fields: [
-          { name: "ID_COMUNERO" },
+          { name: "id_comunero" },
         ]
       },
     ]

@@ -6,6 +6,7 @@ const router = (0, express_1.Router)();
 router.post('/crear', requisitos_1.crearRequisito);
 router.get('/obtener', requisitos_1.obtenerRequisitos);
 router.post('/obtenerPersona', requisitos_1.obtenerRequisitoPersona);
-router.patch('/actualizar', requisitos_1.actualizarRequisito);
+router.patch('/actualizar', requisitos_1.actualizarRequisito),
+    router.get('/obtenerActivos', requisitos_1.obtenerRequisitosActivos);
 exports.default = router;
 //# sourceMappingURL=requisitos.js.map

@@ -5,22 +5,21 @@ const sequelize_1 = require("sequelize");
 class tipo_documentos extends sequelize_1.Model {
     static initModel(sequelize) {
         return tipo_documentos.init({
-            ID_TIPO_DOC: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_tipo_doc: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            TIPO_DOC: {
+            tipo_doc: {
                 type: sequelize_1.DataTypes.TEXT,
                 allowNull: false
             },
-            ESTADO_DOC: {
+            estado_doc: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
             },
-            ALIAS: {
+            alias: {
                 type: sequelize_1.DataTypes.STRING(60),
                 allowNull: true
             }
@@ -34,7 +33,7 @@ class tipo_documentos extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_TIPO_DOC" },
+                        { name: "id_tipo_doc" },
                     ]
                 },
             ]

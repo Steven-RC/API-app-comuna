@@ -16,13 +16,14 @@ exports.actualizarNacionalidad = exports.getNacionalidad = exports.getNombresNac
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
 const nacionalidad_1 = require("../models/nacionalidad");
+const uuid_1 = require("uuid");
 (0, init_models_1.initModels)(connection_1.default);
 const crearNacionalidad = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // const {nacionalidad}=req.body;
     try {
-        const encontrarNacionalidad = yield nacionalidad_1.Nacionalidad.findOne({
+        const encontrarNacionalidad = yield nacionalidad_1.nacionalidad.findOne({
             where: {
-                NACIONALIDAD: req.body.nacionalidad
+                nacionalidad: req.body.nacionalidad
             }
         });
         if (encontrarNacionalidad) {
@@ -32,9 +33,10 @@ const crearNacionalidad = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         else {
             const nacionalidadcr = {
-                NACIONALIDAD: req.body.nacionalidad,
+                id_nacionalidad: 'nac-' + (0, uuid_1.v4)(),
+                nacionalidad: req.body.nacionalidad,
             };
-            yield nacionalidad_1.Nacionalidad.create(nacionalidadcr);
+            yield nacionalidad_1.nacionalidad.create(nacionalidadcr);
             res.status(200).json({
                 msg: 'Nacionalidad creada '
             });
@@ -51,20 +53,21 @@ exports.crearNacionalidad = crearNacionalidad;
 const crear = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // const {nacionalidad}=req.body;
     try {
-        const nacionalidad = yield nacionalidad_1.Nacionalidad.findOne({
+        const nacionalidadEnc = yield nacionalidad_1.nacionalidad.findOne({
             where: {
-                NACIONALIDAD: req.body.nacionalidad
+                nacionalidad: req.body.nacionalidad
             }
         });
-        if (nacionalidad) {
+        if (nacionalidadEnc) {
             return res.status(400).json({
                 msg: 'La nacionalidad ya existe'
             });
         }
         const nacionalidadcr = {
-            NACIONALIDAD: req.body.nacionalidad,
+            id_nacionalidad: (0, uuid_1.v4)(),
+            nacionalidad: req.body.nacionalidad,
         };
-        yield nacionalidad_1.Nacionalidad.create(nacionalidadcr);
+        yield nacionalidad_1.nacionalidad.create(nacionalidadcr);
         res.json({
             msg: 'Nacionalidad creada '
         });
@@ -80,7 +83,7 @@ exports.crear = crear;
 //crear metodo para retornar todas las nacionalidades
 const getNacionalidades = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const listNacionalidades = yield nacionalidad_1.Nacionalidad.findAll();
+        const listNacionalidades = yield nacionalidad_1.nacionalidad.findAll();
         if (listNacionalidades) {
             res.json({ listNacionalidades });
         }
@@ -101,8 +104,8 @@ exports.getNacionalidades = getNacionalidades;
 //metodo para retorrnar los nombres de las nacionalidades
 const getNombresNacionalidades = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const listNacionalidades = yield nacionalidad_1.Nacionalidad.findAll({
-            attributes: ['NACIONALIDAD']
+        const listNacionalidades = yield nacionalidad_1.nacionalidad.findAll({
+            attributes: ['nacionalidad']
         });
         if (listNacionalidades) {
             res.json({ listNacionalidades });
@@ -125,9 +128,9 @@ exports.getNombresNacionalidades = getNombresNacionalidades;
 const getNacionalidad = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { nombre } = req.params;
-        const encontrarNacionalidad = yield nacionalidad_1.Nacionalidad.findOne({
+        const encontrarNacionalidad = yield nacionalidad_1.nacionalidad.findOne({
             where: {
-                NACIONALIDAD: nombre
+                nacionalidad: nombre
             }
         });
         if (encontrarNacionalidad) {
@@ -152,7 +155,7 @@ const actualizarNacionalidad = (req, res) => __awaiter(void 0, void 0, void 0, f
     try {
         const { id } = req.body;
         const { nomNacionalidad } = req.body;
-        const nacionalidadAct = yield nacionalidad_1.Nacionalidad.findByPk(id);
+        const nacionalidadAct = yield nacionalidad_1.nacionalidad.findByPk(id);
         if (!nacionalidadAct) {
             return res.status(404).json({
                 msg: 'Nacionalidad no encontrada '
@@ -160,7 +163,8 @@ const actualizarNacionalidad = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         else {
             yield nacionalidadAct.update({
-                NACIONALIDAD: nomNacionalidad
+                id_nacionalidad: id,
+                nacionalidad: nomNacionalidad
             });
             res.json({
                 msg: 'Nacionalidad actualizada'

@@ -5,60 +5,59 @@ const sequelize_1 = require("sequelize");
 class comuneros extends sequelize_1.Model {
     static initModel(sequelize) {
         return comuneros.init({
-            ID_COMUNERO: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_comunero: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            ID_BARRIO: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_barrio: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true,
                 references: {
                     model: 'barrios',
-                    key: 'ID_BARRIO'
+                    key: 'id_barrio'
                 }
             },
-            ID_ASO: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_aso: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true,
                 references: {
                     model: 'asociaciones',
-                    key: 'ID_ASO'
+                    key: 'id_aso'
                 }
             },
-            ID_PERSONA: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_persona: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true,
                 references: {
                     model: 'personas',
-                    key: 'ID_PERSONA'
+                    key: 'id_persona'
                 }
             },
-            CALIFICADO: {
+            calificado: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 0
             },
-            CREATED_DATE: {
+            created_date: {
                 type: sequelize_1.DataTypes.DATEONLY,
                 allowNull: true
             },
-            CREATED_TIME: {
+            created_time: {
                 type: sequelize_1.DataTypes.TIME,
                 allowNull: true
             },
-            ESTADO_COM: {
+            estado_com: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
             },
-            ID_TERRENO: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_terreno: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true,
                 references: {
                     model: 'terrenos',
-                    key: 'ID_TERRENO'
+                    key: 'id_terreno'
                 }
             }
         }, {
@@ -71,35 +70,35 @@ class comuneros extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_COMUNERO" },
+                        { name: "id_comunero" },
                     ]
                 },
                 {
-                    name: "FK_REL_ASOCIACION_COMUNERO",
+                    name: "fk_rel_asociacion_comunero",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_ASO" },
+                        { name: "id_aso" },
                     ]
                 },
                 {
-                    name: "FK_REL_BARRIO_COMUNERO",
+                    name: "fk_rel_barrio_comunero",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_BARRIO" },
+                        { name: "id_barrio" },
                     ]
                 },
                 {
-                    name: "FK_REL_PERS_COMUNERO",
+                    name: "fk_rel_pers_comunero",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_PERSONA" },
+                        { name: "id_persona" },
                     ]
                 },
                 {
                     name: "fk_comuneros_terrenos1_idx",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_TERRENO" },
+                        { name: "id_terreno" },
                     ]
                 },
             ]

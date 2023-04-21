@@ -12,17 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.obtenerRequisitoPersona = exports.cambiarEstadoRequisito = exports.actualizarRequisito = exports.obtenerRequisitos = exports.crearRequisito = void 0;
+exports.obtenerRequisitoPersona = exports.actualizarRequisito = exports.obtenerRequisitosActivos = exports.obtenerRequisitos = exports.crearRequisito = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
+const uuid_1 = require("uuid");
 (0, init_models_1.initModels)(connection_1.default);
 //registrar requisito
 const crearRequisito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { requisito, observacion } = req.body;
         const reqCr = {
-            REQUISITO: requisito,
-            OBSERVACION: observacion,
+            id_req: 'req-' + (0, uuid_1.v4)(),
+            requisito,
+            observacion,
         };
         yield init_models_1.requisitos.create(reqCr);
         res.json({
@@ -41,7 +43,7 @@ exports.crearRequisito = crearRequisito;
 const obtenerRequisitos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const listRequisitos = yield init_models_1.requisitos.findAll({
-            attributes: ['ID_REQ', 'REQUISITO', 'OBSERVACION']
+            attributes: ['id_req', 'requisito', 'observacion', 'req_estado'],
         });
         res.json({
             listRequisitos
@@ -55,17 +57,43 @@ const obtenerRequisitos = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.obtenerRequisitos = obtenerRequisitos;
+const obtenerRequisitosActivos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const listRequisitos = yield init_models_1.requisitos.findAll({
+            attributes: ['id_req', 'requisito', 'observacion'],
+            where: {
+                req_estado: 1
+            }
+        });
+        res.json({
+            listRequisitos
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
+});
+exports.obtenerRequisitosActivos = obtenerRequisitosActivos;
 //actualizar requisito
 const actualizarRequisito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id_requisito, requisito, observacion } = req.body;
+        const { id_req } = req.body;
+        const { requisito } = req.body;
+        const { observacion } = req.body;
+        const { estado } = req.body;
+        console.log(id_req);
+        console.log(requisito);
         //actualizar requisito
         yield init_models_1.requisitos.update({
-            REQUISITO: requisito,
-            OBSERVACION: observacion
+            requisito,
+            observacion,
+            req_estado: estado
         }, {
             where: {
-                ID_REQ: id_requisito
+                id_req
             }
         });
         res.json({
@@ -80,40 +108,17 @@ const actualizarRequisito = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.actualizarRequisito = actualizarRequisito;
-//cambiar estado requisito
-const cambiarEstadoRequisito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id_requisito, estado } = req.body;
-        yield init_models_1.requisitos.update({
-            REQ_ESTADO: estado
-        }, {
-            where: {
-                ID_REQ: id_requisito
-            }
-        });
-        res.json({
-            msg: 'Estado actualizado'
-        });
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({
-            msg: 'Error inesperado'
-        });
-    }
-});
-exports.cambiarEstadoRequisito = cambiarEstadoRequisito;
 //obtener requisito por de una persona
 const obtenerRequisitoPersona = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const listRequisitos = yield connection_1.default.query("select personas.ID_PERSONA,personas.CEDULA, personas.APELLIDOS, personas.NOMBRE,requisitos.ID_REQ,requisitos.REQUISITO,requisitos.OBSERVACION,requisito_apr.FECHA_AP " +
-            " from ((personas inner join requisito_apr on personas.ID_PERSONA = requisito_apr.ID_PERSONA) " +
-            " inner join requisitos on requisito_apr.ID_REQ = requisitos.ID_REQ) where personas.ID_PERSONA = " + req.body.id_persona);
+        const listaRequisitos = yield connection_1.default.query("select personas.id_persona,personas.cedula, personas.apellidos, personas.nombre,requisitos.id_req,requisitos.requisito,requisitos.observacion,requisito_apr.fecha_ap " +
+            ",requisito_apr.observacion as observacion_ap from ((personas inner join requisito_apr on personas.id_persona = requisito_apr.id_persona) " +
+            " inner join requisitos on requisito_apr.id_req = requisitos.id_req) where requisitos.req_estado=1 && personas.id_persona = " + req.body.id_persona);
         //si no hay requisitos
-        if (listRequisitos[0].length == 0) {
-            res.status(404).json({
-                msg: 'La persona no tiene requisitos aprobados'
-            });
+        const listRequisitos = listaRequisitos[0];
+        if (listRequisitos.length == 0) {
+            //se retotna la lista vacia
+            res.json({ listRequisitos });
         }
         else {
             res.json({

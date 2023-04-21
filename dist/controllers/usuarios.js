@@ -35,47 +35,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.obtenerPerRoles = exports.obtenerPersona = exports.cambiarEstado = exports.actualizarContrasena = exports.obtenerUsuario = exports.crearUsuario = void 0;
+exports.getUserById = exports.createUsuario = exports.resetearContrasena = exports.actualizarUsuario = exports.obtenerRol = exports.obtenerUsuarios = exports.obtenerPerRoles = exports.obtenerPersona = exports.cambiarEstado = exports.actualizarContrasena = exports.verificarToken = exports.obtenerUsuario = void 0;
 const init_models_1 = require("../models/init-models");
 const init_models_2 = require("../models/init-models");
 const bcrypt = __importStar(require("bcrypt"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
 const connection_1 = __importDefault(require("../db/connection"));
+const moment_1 = __importDefault(require("moment"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+moment_1.default.suppressDeprecationWarnings = true;
+const uuid_1 = require("uuid");
+const process_1 = require("process");
 (0, init_models_1.initModels)(connection_1.default);
-const crearUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const usuarioCr = {
-            NOM_USER: req.body.usuario,
-            PASS_USER: bcrypt.hashSync(req.body.contrasena, 10),
-            EMAIL: req.body.email,
-            ID_ROL: req.body.rol,
-            ID_COMUNERO: req.body.comunero,
-            CREATED_AT_DATE: new Date().toLocaleDateString(),
-            CREATED_AT_TIME: new Date().toLocaleTimeString(),
-        };
-        yield init_models_1.usuarios.create(usuarioCr);
-        res.json({
-            msg: 'Usuario creado con exito'
-        });
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({
-            msg: 'Error inesperado'
-        });
-    }
-});
-exports.crearUsuario = crearUsuario;
 const obtenerUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log(req.body);
         //obtener usuario por usuario y contraseña
-        const { usuario, contrasena } = req.body;
+        const { username, password } = req.body;
         // buscar el usuario 
         const busUser = yield init_models_1.usuarios.findOne({
             where: {
-                NOM_USER: usuario,
+                nom_user: username,
             },
             attributes: [
-                'PASS_USER', 'ESTADO_USER'
+                'pass_user', 'estado_user'
             ]
         });
         // si no existe el usuario
@@ -85,13 +68,13 @@ const obtenerUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function*
             });
         }
         // si existe el usuario comparar contraseñas
-        const validPassword = bcrypt.compareSync(contrasena, busUser.PASS_USER);
+        const validPassword = bcrypt.compareSync(password, busUser.pass_user);
         if (!validPassword) {
             return res.status(400).json({
                 errorPass: 'Contraseña no valida'
             });
         }
-        else if (busUser.ESTADO_USER == 0) {
+        else if (busUser.estado_user == 0) {
             return res.status(404).json({
                 msg: 'El usuario esta deshabilitado'
             });
@@ -99,13 +82,13 @@ const obtenerUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function*
         else {
             const user = yield init_models_1.usuarios.findOne({
                 where: {
-                    NOM_USER: usuario
+                    nom_user: username
                 },
-                attributes: ['ID_USUARIO', 'ID_ROL', 'NOM_USER', 'ESTADO_USER', 'ID_COMUNERO'],
+                attributes: ['id_usuario', 'id_rol', 'nom_user', 'estado_user', 'id_comunero'],
                 include: {
                     model: init_models_2.rol_user,
-                    as: 'ID_ROL_rol_user',
-                    attributes: ['NOM_ROL'],
+                    as: 'id_rol_rol_user',
+                    attributes: ['nom_rol'],
                 }
             });
             //si existe el usuario 
@@ -113,19 +96,29 @@ const obtenerUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 //buscar el comunero al que pertenece este usuario
                 const comunero = yield init_models_1.comuneros.findOne({
                     where: {
-                        ID_COMUNERO: user.ID_COMUNERO
+                        id_comunero: user.id_comunero
                     },
-                    attributes: ['ID_COMUNERO'],
+                    attributes: ['id_comunero'],
                     include: {
                         model: init_models_1.personas,
-                        as: 'ID_PERSONA_persona',
-                        attributes: ['NOMBRE', 'APELLIDOS']
+                        as: 'id_persona_persona',
+                        attributes: ['nombre', 'apellidos']
                     }
                 });
+                const payload = {
+                    exp: Date.now() + 3600000,
+                    user: {
+                        id: user.id_usuario
+                    }
+                };
+                const secret = process_1.env.SECRET;
+                console.log(secret);
                 // generar el token
-                res.json({
+                const token = jsonwebtoken_1.default.sign(payload, secret);
+                res.status(200).json({
                     user,
-                    comunero
+                    comunero,
+                    token
                 });
             }
         }
@@ -138,6 +131,45 @@ const obtenerUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.obtenerUsuario = obtenerUsuario;
+//verificar el token
+const verificarToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        //obtener el token del usuario en bearer token
+        // const token = req.header('x-token')?.split(' ')[1] || '';
+        // const secret = env.SECRET as string;
+        // const payload = jwt.verify(token, secret);
+        // if(Date.now() > payload.exp){
+        //     return res.status(401).json({
+        //         msg: 'Token expirado'
+        //     })
+        // }
+        // //buscar el usuario por el id 
+        // const user = await usuarios.findOne({
+        //     where: {
+        //         id_usuario: payload.user.id
+        //     },
+        //     attributes: ['id_usuario', 'id_rol', 'nom_user', 'estado_user', 'id_comunero'],
+        // });
+        // //si existe el usuario
+        // if (user) {
+        //     return res.status(200).json({
+        //         user
+        //     })
+        // }
+        // else {
+        //     return res.status(404).json({
+        //         msg: 'Usuario no encontrado'
+        //     })
+        // }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
+});
+exports.verificarToken = verificarToken;
 //actualizar email del usuario
 const actualizarContrasena = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -145,24 +177,24 @@ const actualizarContrasena = (req, res) => __awaiter(void 0, void 0, void 0, fun
         const { contrasena } = req.body;
         const busUser = init_models_1.usuarios.findOne({
             where: {
-                EMAIL: email
+                email
             },
             attributes: [
-                'EMAIL',
+                'email',
             ]
         });
         if (!busUser) {
             return res.status(404).json({
-                msg: 'Email no encontrado'
+                msg: 'email no encontrado'
             });
         }
         else {
             //    actualizar contraseña
             yield init_models_1.usuarios.update({
-                PASS_USER: bcrypt.hashSync(contrasena, 10)
+                pass_user: bcrypt.hashSync(contrasena, 10)
             }, {
                 where: {
-                    EMAIL: email
+                    email
                 }
             });
             res.json({
@@ -184,10 +216,10 @@ const cambiarEstado = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const { nombreUsuario } = req.body;
         const userCambio = yield init_models_1.usuarios.findOne({
             where: {
-                NOM_USER: nombreUsuario
+                nom_user: nombreUsuario
             },
             attributes: [
-                'NOM_USER', 'ESTADO_USER', 'ID_USUARIO'
+                'nom_user', 'estado_user', 'id_usuario'
             ]
         });
         if (!userCambio) {
@@ -197,12 +229,12 @@ const cambiarEstado = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
         else {
             //    si el estado es 0 cambiar a 1 y viceversa
-            if (userCambio.ESTADO_USER == 0) {
+            if (userCambio.estado_user == 0) {
                 yield init_models_1.usuarios.update({
-                    ESTADO_USER: 1
+                    estado_user: 1
                 }, {
                     where: {
-                        NOM_USER: nombreUsuario
+                        nom_user: nombreUsuario
                     }
                 });
                 res.json({
@@ -211,10 +243,10 @@ const cambiarEstado = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             }
             else {
                 yield init_models_1.usuarios.update({
-                    ESTADO_USER: 0
+                    estado_user: 0
                 }, {
                     where: {
-                        NOM_USER: nombreUsuario
+                        nom_user: nombreUsuario
                     }
                 });
                 res.json({
@@ -237,13 +269,13 @@ const obtenerPersona = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const { id } = req.params;
         const persona = yield init_models_1.comuneros.findOne({
             where: {
-                ID_COMUNERO: id
+                id_comunero: id
             },
-            attributes: ['ID_COMUNERO'],
+            attributes: ['id_comunero'],
             include: {
                 model: init_models_1.personas,
-                as: 'ID_PERSONA_persona',
-                attributes: ['NOMBRE', 'APELLIDOS']
+                as: 'id_persona_persona',
+                attributes: ['nombre', 'apellidos']
             }
         });
         res.json({
@@ -261,7 +293,7 @@ exports.obtenerPersona = obtenerPersona;
 //obtener personas del cavildo comunal
 const obtenerPerRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const personasRol = yield connection_1.default.query("select rol_user.NOM_ROL, personas.NOMBRE,personas.APELLIDOS, personas.TITULO_ACADEMICO from (((usuarios inner join rol_user on usuarios.ID_ROL=rol_user.ID_ROL)inner join comuneros on usuarios.ID_COMUNERO=comuneros.ID_COMUNERO)inner join personas on comuneros.ID_PERSONA=personas.ID_PERSONA)");
+        const personasRol = yield connection_1.default.query("select rol_user.nom_rol, personas.nombre,personas.apellidos, personas.titulo_academico from (((usuarios inner join rol_user on usuarios.id_rol=rol_user.id_rol)inner join comuneros on usuarios.id_comunero=comuneros.id_comunero)inner join personas on comuneros.id_persona=personas.id_persona)");
         res.json({
             personasRol
         });
@@ -274,4 +306,278 @@ const obtenerPerRoles = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.obtenerPerRoles = obtenerPerRoles;
+//obtener todos los usuarios
+const obtenerUsuarios = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const listusuarios = yield init_models_1.usuarios.findAll({
+            attributes: ['id_usuario', 'nom_user', 'estado_user', 'id_comunero', 'email'],
+        });
+        res.json({
+            listusuarios
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
+});
+exports.obtenerUsuarios = obtenerUsuarios;
+//obtener rol de usuario
+const obtenerRol = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const rol = yield init_models_1.usuarios.findOne({
+            where: {
+                id_usuario: id
+            },
+            attributes: ['id_usuario', 'id_rol'],
+        });
+        res.json({
+            rol
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
+});
+exports.obtenerRol = obtenerRol;
+//actualizar usuario
+const actualizarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(req.body);
+        const { usuario } = req.body;
+        const id = usuario.id_usuario;
+        const nombreUsuario = usuario.nom_user;
+        const email = usuario.email;
+        const rol = usuario.id_rol;
+        const estado = usuario.estado_user;
+        const idComunero = usuario.id_comunero;
+        const busUser = yield init_models_1.usuarios.findOne({
+            where: {
+                id_usuario: id
+            },
+            attributes: [
+                'id_usuario',
+            ]
+        });
+        if (!busUser) {
+            return res.status(404).json({
+                msg: 'Usuario no encontrado'
+            });
+        }
+        else {
+            //    actualizar usuario
+            yield init_models_1.usuarios.update({
+                nom_user: nombreUsuario,
+                email: email,
+                id_rol: rol,
+                estado_user: estado,
+                id_comunero: idComunero
+            }, {
+                where: {
+                    id_usuario: id
+                }
+            });
+            res.json({
+                msg: 'el usuario fue actualizado'
+            });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
+});
+exports.actualizarUsuario = actualizarUsuario;
+// crear metodo para resetear la contraseña y que sea aleatoria y se envie al correo del usuario
+const resetearContrasena = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.body;
+        //generar contraseña aleatoria
+        const contrasena = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const busUser = yield init_models_1.usuarios.findOne({
+            where: {
+                id_usuario: id
+            },
+            attributes: [
+                'id_usuario',
+                'email'
+            ]
+        });
+        if (!busUser) {
+            return res.status(404).json({
+                msg: 'Usuario no encontrado'
+            });
+        }
+        else {
+            //    actualizar usuario
+            yield init_models_1.usuarios.update({
+                pass_user: bcrypt.hashSync(contrasena, 10)
+            }, {
+                where: {
+                    id_usuario: id
+                }
+            });
+            //enviar correo con la nueva contraseña
+            const transporter = nodemailer_1.default.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'stevenrosales31@gmail.com',
+                    pass: 'uihwfnjofqdiymii'
+                }
+            });
+            const mailOptions = {
+                from: 'stevenrosales31@gmail.com',
+                to: busUser.email,
+                subject: 'Restablecimiento de contraseña',
+                text: 'Su nueva contraseña es: ' + contrasena
+            };
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    console.log('email sent: ' + info.response);
+                }
+            });
+            res.json({
+                msg: 'el usuario fue actualizado'
+            });
+        }
+    }
+    catch (error) {
+    }
+});
+exports.resetearContrasena = resetearContrasena;
+const createUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        //crear una contraseña aleatoria
+        const contrasena = req.body.contrasena;
+        console.log(req.body);
+        console.log('LLEGO AQUI');
+        const nom_user = req.body.usuario;
+        const email = req.body.email;
+        const rol = req.body.rol;
+        const idComunero = req.body.comunero;
+        //verificar si el usuario ya existe 
+        console.log(nom_user);
+        const busUser = yield init_models_1.usuarios.findOne({
+            where: {
+                nom_user
+            }
+        });
+        if (busUser) {
+            return res.status(400).json({
+                msg: 'El usuario ya existe'
+            });
+        }
+        // //crear usuario
+        const fecha = (0, moment_1.default)().format('YYYY-MM-DD HH:mm:ss');
+        const fechaFormateada = (0, moment_1.default)(fecha).format('YYYY-MM-DD');
+        const horaFormateada = (0, moment_1.default)(fecha).format('HH:mm:ss');
+        const usuarioCr = {
+            id_usuario: 'user-' + (0, uuid_1.v4)(),
+            nom_user,
+            pass_user: bcrypt.hashSync(contrasena, 10),
+            email,
+            id_rol: rol,
+            id_comunero: idComunero,
+            created_at_date: fechaFormateada,
+            created_at_time: horaFormateada,
+        };
+        console.log(usuarioCr);
+        yield init_models_1.usuarios.create(usuarioCr);
+        //enviar correo con la nueva contraseña
+        // const transporter = nodemailer.createTransport({
+        //     service: 'gmail',
+        //     auth: {
+        //         user: 'stevenrosales31@gmail.com',
+        //         pass: 'uihwfnjofqdiymii'
+        //     }
+        // });
+        // const mailOptions = {
+        //     from: 'stevenrosales31@gmail.com',
+        //     to: usuarioCr.email,
+        //     subject: 'Creacion de usuario',
+        //     text: 'Gracias por registrarse en el sistema de la comuna Bambil Collao \n Su usuario es: ' + usuarioCr.nom_user + '\n Su contraseña es: ' + contrasena
+        // };
+        // transporter.sendMail(mailOptions, function (error, info) {
+        //     if (error) {
+        //         console.log(error);
+        //     } else {
+        //         console.log('email sent: ' + info.response);
+        //     }
+        // });
+        res.json({
+            msg: 'Usuario creado con exito'
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
+});
+exports.createUsuario = createUsuario;
+const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.body;
+    console.log(id);
+    try {
+        const usuario = yield init_models_1.usuarios.findOne({
+            where: {
+                id_usuario: id
+            },
+            attributes: [
+                'id_usuario',
+                'nom_user',
+                'email',
+                'id_rol',
+                'id_comunero',
+            ],
+            include: [
+                {
+                    model: init_models_1.comuneros,
+                    as: 'id_comunero_comunero',
+                    attributes: [
+                        'id_comunero',
+                    ],
+                    include: [
+                        {
+                            model: init_models_1.personas,
+                            as: 'id_persona_persona',
+                            attributes: [
+                                'cedula',
+                                'apellidos',
+                                'nombre',
+                            ]
+                        }
+                    ]
+                }
+            ]
+        });
+        if (!usuario) {
+            return res.status(404).json({
+                msg: 'Usuario no encontrado'
+            });
+        }
+        res.json({
+            usuario
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
+});
+exports.getUserById = getUserById;
 //# sourceMappingURL=usuarios.js.map

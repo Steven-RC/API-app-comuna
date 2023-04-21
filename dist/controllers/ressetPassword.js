@@ -24,7 +24,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         // buscar el email en los usuarios
         const busUser = yield init_models_1.usuarios.findOne({
             where: {
-                EMAIL: email
+                email
             },
             attributes: [
                 'EMAIL',

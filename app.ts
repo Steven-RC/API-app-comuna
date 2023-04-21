@@ -1,15 +1,15 @@
 import dotenv from 'dotenv'
 import Server from './server/server';
-
+//agregar socket.io
 
 
 
 dotenv.config();
 
 
-const server= new Server();
+const ExpressServer= new Server();
 
 
 
-server.listen();
+ExpressServer.listen();
 

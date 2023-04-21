@@ -5,32 +5,32 @@ const sequelize_1 = require("sequelize");
 class cuotas_factura extends sequelize_1.Model {
     static initModel(sequelize) {
         return cuotas_factura.init({
-            ID_FACTURA: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_factura: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true,
                 references: {
                     model: 'facturas',
-                    key: 'ID_FACTURA'
+                    key: 'id_factura'
                 }
             },
-            ID_CUOTA: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_cuota: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true,
                 references: {
                     model: 'cuota_anual',
-                    key: 'ID_CUOTA'
+                    key: 'id_cuota'
                 }
             },
-            ID_ANIO: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_anio: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
-                defaultValue: 1,
+                defaultValue: "1",
                 primaryKey: true,
                 references: {
                     model: 'cuota_anual',
-                    key: 'ID_ANIO'
+                    key: 'id_anio'
                 }
             }
         }, {
@@ -43,24 +43,24 @@ class cuotas_factura extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_FACTURA" },
-                        { name: "ID_CUOTA" },
-                        { name: "ID_ANIO" },
+                        { name: "id_factura" },
+                        { name: "id_cuota" },
+                        { name: "id_anio" },
                     ]
                 },
                 {
                     name: "fk_facturas_has_cuota_anual_cuota_anual1_idx",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_CUOTA" },
-                        { name: "ID_ANIO" },
+                        { name: "id_cuota" },
+                        { name: "id_anio" },
                     ]
                 },
                 {
                     name: "fk_facturas_has_cuota_anual_facturas1_idx",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_FACTURA" },
+                        { name: "id_factura" },
                     ]
                 },
             ]

@@ -1,4 +1,4 @@
-import { initModels, cuotas_factura, cuotas_facturaAttributes, cuotas_facturaCreationAttributes, cuota_anual } from "../models/init-models";
+import { initModels, cuotas_factura, cuotas_facturaCreationAttributes, cuota_anual } from "../models/init-models";
 import { Request, Response } from "express";
 import db from "../db/connection";
 
@@ -8,8 +8,8 @@ export const crearCuotaFactura = async (req: Request, res: Response) => {
     try {
         const { id_cuota, id_factura } = req.body;
         const cuotaFactura: cuotas_facturaCreationAttributes = {
-            ID_CUOTA: id_cuota,
-            ID_FACTURA: id_factura
+            id_cuota,
+            id_factura
         }
         await cuotas_factura.create(cuotaFactura);
         res.json({
@@ -34,11 +34,11 @@ export const obtenerCuotasFactura = async (req: Request, res: Response) => {
         const id_factura = req.body.id_factura;
         const listCuotas = await cuotas_factura.findAll({
             where: {
-                ID_FACTURA: id_factura
+                id_factura
             }, include: [{
                 model: cuota_anual,
-                as: 'ID_CUOTA_cuota_anual',
-                attributes: ['NOM_CUOTA', 'DESCRIPCION', 'VALOR_CUOTA']
+                as: 'id_cuota_cuota_anual',
+                attributes: ['nom_cuota', 'descripcion', 'valor_cuota']
             }]
 
         });

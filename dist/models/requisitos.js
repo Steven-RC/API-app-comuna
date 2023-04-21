@@ -5,21 +5,20 @@ const sequelize_1 = require("sequelize");
 class requisitos extends sequelize_1.Model {
     static initModel(sequelize) {
         return requisitos.init({
-            ID_REQ: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_req: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            REQUISITO: {
+            requisito: {
                 type: sequelize_1.DataTypes.STRING(255),
                 allowNull: false
             },
-            OBSERVACION: {
+            observacion: {
                 type: sequelize_1.DataTypes.STRING(255),
                 allowNull: true
             },
-            REQ_ESTADO: {
+            req_estado: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
@@ -34,7 +33,7 @@ class requisitos extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_REQ" },
+                        { name: "id_req" },
                     ]
                 },
             ]

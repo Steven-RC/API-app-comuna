@@ -4,36 +4,36 @@ import type { comuneros, comunerosId } from './comuneros';
 import type { comuneros_tipos_doc, comuneros_tipos_docId } from './comuneros_tipos_doc';
 
 export interface tipo_documentosAttributes {
-  ID_TIPO_DOC: number;
-  TIPO_DOC: string;
-  ESTADO_DOC?: number;
-  ALIAS?: string;
+  id_tipo_doc: string;
+  tipo_doc: string;
+  estado_doc?: number;
+  alias?: string;
 }
 
-export type tipo_documentosPk = "ID_TIPO_DOC";
+export type tipo_documentosPk = "id_tipo_doc";
 export type tipo_documentosId = tipo_documentos[tipo_documentosPk];
-export type tipo_documentosOptionalAttributes = "ID_TIPO_DOC" | "ESTADO_DOC" | "ALIAS";
+export type tipo_documentosOptionalAttributes = "estado_doc" | "alias";
 export type tipo_documentosCreationAttributes = Optional<tipo_documentosAttributes, tipo_documentosOptionalAttributes>;
 
 export class tipo_documentos extends Model<tipo_documentosAttributes, tipo_documentosCreationAttributes> implements tipo_documentosAttributes {
-  ID_TIPO_DOC!: number;
-  TIPO_DOC!: string;
-  ESTADO_DOC?: number;
-  ALIAS?: string;
+  id_tipo_doc!: string;
+  tipo_doc!: string;
+  estado_doc?: number;
+  alias?: string;
 
-  // tipo_documentos belongsToMany comuneros via ID_TIPO_DOC and ID_COMUNERO
-  ID_COMUNERO_comuneros!: comuneros[];
-  getID_COMUNERO_comuneros!: Sequelize.BelongsToManyGetAssociationsMixin<comuneros>;
-  setID_COMUNERO_comuneros!: Sequelize.BelongsToManySetAssociationsMixin<comuneros, comunerosId>;
-  addID_COMUNERO_comunero!: Sequelize.BelongsToManyAddAssociationMixin<comuneros, comunerosId>;
-  addID_COMUNERO_comuneros!: Sequelize.BelongsToManyAddAssociationsMixin<comuneros, comunerosId>;
-  createID_COMUNERO_comunero!: Sequelize.BelongsToManyCreateAssociationMixin<comuneros>;
-  removeID_COMUNERO_comunero!: Sequelize.BelongsToManyRemoveAssociationMixin<comuneros, comunerosId>;
-  removeID_COMUNERO_comuneros!: Sequelize.BelongsToManyRemoveAssociationsMixin<comuneros, comunerosId>;
-  hasID_COMUNERO_comunero!: Sequelize.BelongsToManyHasAssociationMixin<comuneros, comunerosId>;
-  hasID_COMUNERO_comuneros!: Sequelize.BelongsToManyHasAssociationsMixin<comuneros, comunerosId>;
-  countID_COMUNERO_comuneros!: Sequelize.BelongsToManyCountAssociationsMixin;
-  // tipo_documentos hasMany comuneros_tipos_doc via ID_TIPO_DOC
+  // tipo_documentos belongsToMany comuneros via id_tipo_doc and id_comunero
+  id_comunero_comuneros!: comuneros[];
+  getId_comunero_comuneros!: Sequelize.BelongsToManyGetAssociationsMixin<comuneros>;
+  setId_comunero_comuneros!: Sequelize.BelongsToManySetAssociationsMixin<comuneros, comunerosId>;
+  addId_comunero_comunero!: Sequelize.BelongsToManyAddAssociationMixin<comuneros, comunerosId>;
+  addId_comunero_comuneros!: Sequelize.BelongsToManyAddAssociationsMixin<comuneros, comunerosId>;
+  createId_comunero_comunero!: Sequelize.BelongsToManyCreateAssociationMixin<comuneros>;
+  removeId_comunero_comunero!: Sequelize.BelongsToManyRemoveAssociationMixin<comuneros, comunerosId>;
+  removeId_comunero_comuneros!: Sequelize.BelongsToManyRemoveAssociationsMixin<comuneros, comunerosId>;
+  hasId_comunero_comunero!: Sequelize.BelongsToManyHasAssociationMixin<comuneros, comunerosId>;
+  hasId_comunero_comuneros!: Sequelize.BelongsToManyHasAssociationsMixin<comuneros, comunerosId>;
+  countId_comunero_comuneros!: Sequelize.BelongsToManyCountAssociationsMixin;
+  // tipo_documentos hasMany comuneros_tipos_doc via id_tipo_doc
   comuneros_tipos_docs!: comuneros_tipos_doc[];
   getComuneros_tipos_docs!: Sequelize.HasManyGetAssociationsMixin<comuneros_tipos_doc>;
   setComuneros_tipos_docs!: Sequelize.HasManySetAssociationsMixin<comuneros_tipos_doc, comuneros_tipos_docId>;
@@ -48,22 +48,21 @@ export class tipo_documentos extends Model<tipo_documentosAttributes, tipo_docum
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tipo_documentos {
     return tipo_documentos.init({
-    ID_TIPO_DOC: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+    id_tipo_doc: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
-    TIPO_DOC: {
+    tipo_doc: {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    ESTADO_DOC: {
+    estado_doc: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: 1
     },
-    ALIAS: {
+    alias: {
       type: DataTypes.STRING(60),
       allowNull: true
     }
@@ -77,7 +76,7 @@ export class tipo_documentos extends Model<tipo_documentosAttributes, tipo_docum
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_TIPO_DOC" },
+          { name: "id_tipo_doc" },
         ]
       },
     ]

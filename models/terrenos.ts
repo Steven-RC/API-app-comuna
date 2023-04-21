@@ -3,34 +3,34 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { comuneros, comunerosId } from './comuneros';
 
 export interface terrenosAttributes {
-  ID_TERRENO: number;
-  LIM_NORTE?: string;
-  LIM_SUR?: string;
-  LIM_ESTE?: string;
-  LIM_OESTE?: string;
-  NORTE?: number;
-  SUR?: number;
-  ESTE?: number;
-  OESTE?: number;
+  id_terreno: string;
+  lim_norte?: string;
+  lim_sur?: string;
+  lim_este?: string;
+  lim_oeste?: string;
+  norte?: number;
+  sur?: number;
+  este?: number;
+  oeste?: number;
 }
 
-export type terrenosPk = "ID_TERRENO";
+export type terrenosPk = "id_terreno";
 export type terrenosId = terrenos[terrenosPk];
-export type terrenosOptionalAttributes = "ID_TERRENO" | "LIM_NORTE" | "LIM_SUR" | "LIM_ESTE" | "LIM_OESTE" | "NORTE" | "SUR" | "ESTE" | "OESTE";
+export type terrenosOptionalAttributes = "lim_norte" | "lim_sur" | "lim_este" | "lim_oeste" | "norte" | "sur" | "este" | "oeste";
 export type terrenosCreationAttributes = Optional<terrenosAttributes, terrenosOptionalAttributes>;
 
 export class terrenos extends Model<terrenosAttributes, terrenosCreationAttributes> implements terrenosAttributes {
-  ID_TERRENO!: number;
-  LIM_NORTE?: string;
-  LIM_SUR?: string;
-  LIM_ESTE?: string;
-  LIM_OESTE?: string;
-  NORTE?: number;
-  SUR?: number;
-  ESTE?: number;
-  OESTE?: number;
+  id_terreno!: string;
+  lim_norte?: string;
+  lim_sur?: string;
+  lim_este?: string;
+  lim_oeste?: string;
+  norte?: number;
+  sur?: number;
+  este?: number;
+  oeste?: number;
 
-  // terrenos hasMany comuneros via ID_TERRENO
+  // terrenos hasMany comuneros via id_terreno
   comuneros!: comuneros[];
   getComuneros!: Sequelize.HasManyGetAssociationsMixin<comuneros>;
   setComuneros!: Sequelize.HasManySetAssociationsMixin<comuneros, comunerosId>;
@@ -45,44 +45,43 @@ export class terrenos extends Model<terrenosAttributes, terrenosCreationAttribut
 
   static initModel(sequelize: Sequelize.Sequelize): typeof terrenos {
     return terrenos.init({
-    ID_TERRENO: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+    id_terreno: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
-    LIM_NORTE: {
+    lim_norte: {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    LIM_SUR: {
+    lim_sur: {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    LIM_ESTE: {
+    lim_este: {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    LIM_OESTE: {
+    lim_oeste: {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    NORTE: {
+    norte: {
       type: DataTypes.INTEGER,
       allowNull: true,
       defaultValue: 0
     },
-    SUR: {
+    sur: {
       type: DataTypes.INTEGER,
       allowNull: true,
       defaultValue: 0
     },
-    ESTE: {
+    este: {
       type: DataTypes.INTEGER,
       allowNull: true,
       defaultValue: 0
     },
-    OESTE: {
+    oeste: {
       type: DataTypes.INTEGER,
       allowNull: true,
       defaultValue: 0
@@ -97,15 +96,15 @@ export class terrenos extends Model<terrenosAttributes, terrenosCreationAttribut
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_TERRENO" },
+          { name: "id_terreno" },
         ]
       },
       {
-        name: "ID_TERRENO_UNIQUE",
+        name: "id_terreno_unique",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_TERRENO" },
+          { name: "id_terreno" },
         ]
       },
     ]

@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 // import multer from 'multer';
 import fileUpload from 'express-fileupload';
 
+
 import userRoutes from '../routes/usuarios';
 import cors from "cors";
 import db from '../db/connection';
@@ -22,44 +23,68 @@ import tipo_documentosRoutes from '../routes/tipo_documentos';
 import documentosRoutes from '../routes/documentos';
 import chatBotRoutes from '../routes/chat_bot';
 import uploadRoutes from '../routes/uploads';
+import terrenosRoutes from '../routes/terrenos';
+import authRoutes from '../routes/auth';
+
+
+import { createServer } from 'http';
+import  {socketController} from '../socket/controllers';
+
+
 
 
 class Server {
-    private app: Application;
+    public app: Application;
     private port: string;
     private apiPaths = {
-        usuarios: '/api/usuarios',
-        nacionalidad: '/api/nacionalidad',
-        barrios: '/api/barrios',
-        personas: '/api/personas',
-        roles: '/api/roles',
-        comuneros: '/api/comuneros',
-        contrasenia: '/api/contrasenia',
-        asociaciones:'/api/asociaciones',
-        anio:'/api/anio',
-        cuota:'/api/cuota',
-        requisitos:'/api/requisitos',
-        requisitosApr:'/api/requisitosApr',
-        facturas:'/api/facturas',
-        cuotasFactura:'/api/cuotasFactura',
-        tipo_documentos:'/api/tipodocumentos',
-        documentos:'/api/documentos',
-        chatBot:'/api/chatBot',
-        upload: '/api/upload'
+        usuarios: '/usuarios',
+        nacionalidad: '/nacionalidad',
+        barrios: '/barrios',
+        personas: '/personas',
+        roles: '/roles',
+        comuneros: '/comuneros',
+        contrasenia: '/contrasenia',
+        asociaciones:'/asociaciones',
+        anio:'/anio',
+        cuota:'/cuota',
+        requisitos:'/requisitos',
+        requisitosApr:'/requisitosApr',
+        facturas:'/facturas',
+        cuotasFactura:'/cuotasFactura',
+        tipo_documentos:'/tipodocumentos',
+        documentos:'/documentos',
+        chatBot:'/chatBot',
+        upload: '/upload',
+        terrenos: '/terrenos',
+        auth: '/auth'
 
 
     }
-
+    private server: any;
 
     constructor() {
-        this.app = express();//inicializamos express
-        
-        this.port = process.env.PORT || '8000';//puerto por defecto
+       //inicializa el servidor con express y socket.io
+        this.app = express();
+        this.port = process.env.PORT || '8000';
+
+        this.server = createServer(this.app);
+        const io = require('socket.io')(this.server,{
+            cors: {
+                origin: "*",
+                methods: ["GET", "POST"]
+            }
+        });
+        //conectar a la base de datos
+        this.conectarDB();
         //middlewares
-        this.middlewares();//llamamos a los middlewares
-        //base de datos
-        this.conectarDB();//llamamos a la base de datos
-        this.routes();//llamamos a las rutas
+        this.middlewares();
+        //rutas de mi aplicacion
+        this.routes();
+        //sockets
+        io.on('connection', 
+            socketController
+        );
+
 
 
     }
@@ -117,13 +142,15 @@ class Server {
         this.app.use(this.apiPaths.documentos, documentosRoutes);
         this.app.use(this.apiPaths.chatBot, chatBotRoutes);
         this.app.use(this.apiPaths.upload, uploadRoutes);
+        this.app.use(this.apiPaths.terrenos, terrenosRoutes);
+        this.app.use(this.apiPaths.auth, authRoutes);
     }
 
 
 
 
     listen() {
-        this.app.listen(this.port, () => {
+        this.server.listen(this.port, () => {
             console.log('Servidor corriendo en el puerto ' + this.port);
         });
 

@@ -15,12 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.actualizarRol = exports.obtenerRoles = exports.crearRol = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const init_models_1 = require("../models/init-models");
+const uuid_1 = require("uuid");
 (0, init_models_1.initModels)(connection_1.default);
 const crearRol = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //crear rol
         const rol = {
-            NOM_ROL: req.body.rol,
+            id_rol: 'rol-' + (0, uuid_1.v4)(),
+            nom_rol: req.body.rol,
         };
         yield init_models_1.rol_user.create(rol);
         res.json({
@@ -57,10 +59,10 @@ const actualizarRol = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const { id } = req.body;
         const { rol } = req.body;
         yield init_models_1.rol_user.update({
-            NOM_ROL: rol
+            nom_rol: rol
         }, {
             where: {
-                ID_ROL: id
+                id_rol: id
             }
         });
         res.json({

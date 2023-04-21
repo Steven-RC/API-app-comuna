@@ -1,21 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Asociaciones = void 0;
+exports.asociaciones = void 0;
 const sequelize_1 = require("sequelize");
-class Asociaciones extends sequelize_1.Model {
+class asociaciones extends sequelize_1.Model {
     static initModel(sequelize) {
-        return Asociaciones.init({
-            ID_ASO: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+        return asociaciones.init({
+            id_aso: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            NOM_ASOCIACION_: {
+            nom_asociacion: {
                 type: sequelize_1.DataTypes.TEXT,
                 allowNull: true
             },
-            ESTADO_ASO: {
+            estado_aso: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: true,
                 defaultValue: 1
@@ -30,12 +29,12 @@ class Asociaciones extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_ASO" },
+                        { name: "id_aso" },
                     ]
                 },
             ]
         });
     }
 }
-exports.Asociaciones = Asociaciones;
+exports.asociaciones = asociaciones;
 //# sourceMappingURL=asociaciones.js.map

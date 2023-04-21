@@ -20,8 +20,8 @@ const crearCuotaFactura = (req, res) => __awaiter(void 0, void 0, void 0, functi
     try {
         const { id_cuota, id_factura } = req.body;
         const cuotaFactura = {
-            ID_CUOTA: id_cuota,
-            ID_FACTURA: id_factura
+            id_cuota,
+            id_factura
         };
         yield init_models_1.cuotas_factura.create(cuotaFactura);
         res.json({
@@ -42,11 +42,11 @@ const obtenerCuotasFactura = (req, res) => __awaiter(void 0, void 0, void 0, fun
         const id_factura = req.body.id_factura;
         const listCuotas = yield init_models_1.cuotas_factura.findAll({
             where: {
-                ID_FACTURA: id_factura
+                id_factura
             }, include: [{
                     model: init_models_1.cuota_anual,
-                    as: 'ID_CUOTA_cuota_anual',
-                    attributes: ['NOM_CUOTA', 'DESCRIPCION', 'VALOR_CUOTA']
+                    as: 'id_cuota_cuota_anual',
+                    attributes: ['nom_cuota', 'descripcion', 'valor_cuota']
                 }]
         });
         if (listCuotas) {

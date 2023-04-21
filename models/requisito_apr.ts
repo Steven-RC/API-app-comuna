@@ -4,68 +4,67 @@ import type { personas, personasId } from './personas';
 import type { requisitos, requisitosId } from './requisitos';
 
 export interface requisito_aprAttributes {
-  ID_REQ_AP: number;
-  FECHA_AP: string;
-  OBSERVACION?: string;
-  ID_PERSONA: number;
-  ID_REQ: number;
+  id_req_ap: string;
+  fecha_ap: string;
+  observacion?: string;
+  id_persona: string;
+  id_req: string;
 }
 
-export type requisito_aprPk = "ID_REQ_AP" | "ID_REQ";
+export type requisito_aprPk = "id_req_ap" | "id_req";
 export type requisito_aprId = requisito_apr[requisito_aprPk];
-export type requisito_aprOptionalAttributes = "ID_REQ_AP" | "OBSERVACION";
+export type requisito_aprOptionalAttributes = "observacion";
 export type requisito_aprCreationAttributes = Optional<requisito_aprAttributes, requisito_aprOptionalAttributes>;
 
 export class requisito_apr extends Model<requisito_aprAttributes, requisito_aprCreationAttributes> implements requisito_aprAttributes {
-  ID_REQ_AP!: number;
-  FECHA_AP!: string;
-  OBSERVACION?: string;
-  ID_PERSONA!: number;
-  ID_REQ!: number;
+  id_req_ap!: string;
+  fecha_ap!: string;
+  observacion?: string;
+  id_persona!: string;
+  id_req!: string;
 
-  // requisito_apr belongsTo personas via ID_PERSONA
-  ID_PERSONA_persona!: personas;
-  getID_PERSONA_persona!: Sequelize.BelongsToGetAssociationMixin<personas>;
-  setID_PERSONA_persona!: Sequelize.BelongsToSetAssociationMixin<personas, personasId>;
-  createID_PERSONA_persona!: Sequelize.BelongsToCreateAssociationMixin<personas>;
-  // requisito_apr belongsTo requisitos via ID_REQ
-  ID_REQ_requisito!: requisitos;
-  getID_REQ_requisito!: Sequelize.BelongsToGetAssociationMixin<requisitos>;
-  setID_REQ_requisito!: Sequelize.BelongsToSetAssociationMixin<requisitos, requisitosId>;
-  createID_REQ_requisito!: Sequelize.BelongsToCreateAssociationMixin<requisitos>;
+  // requisito_apr belongsTo personas via id_persona
+  id_persona_persona!: personas;
+  getId_persona_persona!: Sequelize.BelongsToGetAssociationMixin<personas>;
+  setId_persona_persona!: Sequelize.BelongsToSetAssociationMixin<personas, personasId>;
+  createId_persona_persona!: Sequelize.BelongsToCreateAssociationMixin<personas>;
+  // requisito_apr belongsTo requisitos via id_req
+  id_req_requisito!: requisitos;
+  getId_req_requisito!: Sequelize.BelongsToGetAssociationMixin<requisitos>;
+  setId_req_requisito!: Sequelize.BelongsToSetAssociationMixin<requisitos, requisitosId>;
+  createId_req_requisito!: Sequelize.BelongsToCreateAssociationMixin<requisitos>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof requisito_apr {
     return requisito_apr.init({
-    ID_REQ_AP: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+    id_req_ap: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
-    FECHA_AP: {
+    fecha_ap: {
       type: DataTypes.DATEONLY,
       allowNull: false
     },
-    OBSERVACION: {
+    observacion: {
       type: DataTypes.STRING(150),
       allowNull: true,
-      defaultValue: "Ninguna"
+      defaultValue: "ninguna"
     },
-    ID_PERSONA: {
-      type: DataTypes.INTEGER,
+    id_persona: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       references: {
         model: 'personas',
-        key: 'ID_PERSONA'
+        key: 'id_persona'
       }
     },
-    ID_REQ: {
-      type: DataTypes.INTEGER,
+    id_req: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true,
       references: {
         model: 'requisitos',
-        key: 'ID_REQ'
+        key: 'id_req'
       }
     }
   }, {
@@ -78,22 +77,22 @@ export class requisito_apr extends Model<requisito_aprAttributes, requisito_aprC
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_REQ_AP" },
-          { name: "ID_REQ" },
+          { name: "id_req_ap" },
+          { name: "id_req" },
         ]
       },
       {
         name: "fk_requisito_apr_personas1_idx",
         using: "BTREE",
         fields: [
-          { name: "ID_PERSONA" },
+          { name: "id_persona" },
         ]
       },
       {
         name: "fk_requisito_apr_requisitos1_idx",
         using: "BTREE",
         fields: [
-          { name: "ID_REQ" },
+          { name: "id_req" },
         ]
       },
     ]

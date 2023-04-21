@@ -32,7 +32,7 @@ const subirPDF = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //buscar el tipo de documento
         tipoDocumento = yield init_models_1.tipo_documentos.findOne({
             where: {
-                ALIAS: tipoDoc
+                alias: tipoDoc
             }
         });
         if (!tipoDocumento) {
@@ -43,7 +43,7 @@ const subirPDF = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //buscar si existe el tipo de documento
         tipoDocumento = yield init_models_1.tipo_documentos.findOne({
             where: {
-                ALIAS: tipoDoc
+                alias: tipoDoc
             }
         });
         if (!tipoDocumento) {
@@ -54,13 +54,13 @@ const subirPDF = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //si ya existe un documento de ese tipo, borrarlo
         documentoComunero = yield init_models_1.comuneros_tipos_doc.findOne({
             where: {
-                ID_COMUNERO: parseInt(id),
-                ID_TIPO_DOC: tipoDocumento.ID_TIPO_DOC
+                id_comunero: parseInt(id),
+                id_tipo_doc: tipoDocumento.id_tipo_doc
             }
         });
         if (documentoComunero) {
             //borrar el documento
-            const pathDocumento = path_1.default.join(__dirname, '../uploads', tipoDoc, documentoComunero.DOCUMENTO);
+            const pathDocumento = path_1.default.join(__dirname, '../uploads', tipoDoc, documentoComunero.documento);
             if (fs_1.default.existsSync(pathDocumento)) {
                 fs_1.default.unlinkSync(pathDocumento);
             }
@@ -68,8 +68,8 @@ const subirPDF = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             //borrar la relacion
             yield init_models_1.comuneros_tipos_doc.destroy({
                 where: {
-                    ID_COMUNERO: parseInt(id),
-                    ID_TIPO_DOC: tipoDocumento.ID_TIPO_DOC
+                    id_comunero: parseInt(id),
+                    id_tipo_doc: tipoDocumento.id_tipo_doc
                 }
             });
         }
@@ -77,9 +77,9 @@ const subirPDF = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const nombre = String(yield subir_archivo_1.default.subirArchivo(req.files, ['pdf'], tipoDoc));
         //crear relacion comunero_tipo_doc
         const comuneroTipoDoc = {
-            ID_COMUNERO: parseInt(id),
-            ID_TIPO_DOC: tipoDocumento.ID_TIPO_DOC,
-            DOCUMENTO: nombre,
+            id_comunero: id,
+            id_tipo_doc: tipoDocumento.id_tipo_doc,
+            documento: nombre,
         };
         try {
             yield init_models_1.comuneros_tipos_doc.create(comuneroTipoDoc);
@@ -110,7 +110,7 @@ const mostrarPdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         //buscar el tipo de documento
         tipoDocumento = yield init_models_1.tipo_documentos.findOne({
             where: {
-                ALIAS: tipoDoc
+                alias: tipoDoc
             }
         });
         if (!tipoDocumento) {
@@ -121,8 +121,8 @@ const mostrarPdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         //buscar el comunero
         documentoComunero = yield init_models_1.comuneros_tipos_doc.findOne({
             where: {
-                ID_COMUNERO: parseInt(id),
-                ID_TIPO_DOC: tipoDocumento.ID_TIPO_DOC
+                id_comunero: id,
+                id_tipo_doc: tipoDocumento.id_tipo_doc
             }
         });
         if (!documentoComunero) {
@@ -131,8 +131,8 @@ const mostrarPdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
         //mostrar el documento
-        if (documentoComunero.DOCUMENTO) {
-            const pathDocumento = path_1.default.join(__dirname, '../uploads', tipoDoc, documentoComunero.DOCUMENTO);
+        if (documentoComunero.documento) {
+            const pathDocumento = path_1.default.join(__dirname, '../uploads', tipoDoc, documentoComunero.documento);
             if (fs_1.default.existsSync(pathDocumento)) {
                 return res.sendFile(pathDocumento);
             }
@@ -158,13 +158,13 @@ const obtenerComunerosTipoDoc = (req, res) => __awaiter(void 0, void 0, void 0, 
             include: [
                 {
                     model: init_models_1.comuneros,
-                    as: 'ID_COMUNERO_comunero',
-                    attributes: ['ID_COMUNERO', 'ID_PERSONA'],
+                    as: 'id_comunero_comunero',
+                    attributes: ['id_comunero', 'id_persona'],
                 },
                 {
                     model: init_models_1.tipo_documentos,
-                    as: 'ID_TIPO_DOC_tipo_documento',
-                    attributes: ['ID_TIPO_DOC', 'TIPO_DOC'],
+                    as: 'id_tipo_doc_tipo_documento',
+                    attributes: ['id_tipo_doc', 'tipo_doc'],
                 }
             ]
         });
@@ -189,11 +189,11 @@ exports.obtenerComunerosTipoDoc = obtenerComunerosTipoDoc;
 const obtenerComunerosTipoDocPorIdComunero = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.body.id);
-        const listaComunerosTipoDoc = yield connection_1.default.query("select tipo_documentos.ID_TIPO_DOC,tipo_documentos.TIPO_DOC, tipo_documentos.ALIAS from ((comuneros inner join comuneros_tipos_doc on comuneros.ID_COMUNERO = comuneros_tipos_doc.ID_COMUNERO)inner join tipo_documentos on comuneros_tipos_doc.ID_TIPO_DOC=tipo_documentos.ID_TIPO_DOC) where comuneros.ID_COMUNERO=" + req.body.id);
+        const listaComunerosTipoDoc = yield connection_1.default.query("select tipo_documentos.id_tipo_doc,tipo_documentos.tipo_doc, tipo_documentos.alias from ((comuneros inner join comuneros_tipos_doc on comuneros.id_comunero = comuneros_tipos_doc.id_comunero)inner join tipo_documentos on comuneros_tipos_doc.id_tipo_doc=tipo_documentos.id_tipo_doc) where comuneros.id_comunero=" + req.body.id);
         if (listaComunerosTipoDoc[0].length > 0) {
-            const listaComuneros = listaComunerosTipoDoc[0];
+            const documentosComunero = listaComunerosTipoDoc[0];
             res.json({
-                listaComuneros
+                documentosComunero
             });
         }
         else {

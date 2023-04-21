@@ -1,8 +1,9 @@
 import { Response, Request } from "express";
-import subirArchivo from "../helpers/subir-archivo";
+import subirArchivo from "../helpers"
 import path from 'path';
 import fs from 'fs';
-import { comuneros, usuarios } from '../models/init-models'
+import {usuarios } from '../models/init-models'
+import AuthRequest from "../interfaces/auth-request";
 //importar cloudinary v2
 
 export const cargarArchivo = async (req: Request, res: Response) => {
@@ -66,6 +67,8 @@ export const subirImagen = async (req: Request, res: Response) => {
 }
 
 export const mostrarImagen = async (req: Request, res: Response) => {
+  
+  console.log((req as unknown as AuthRequest ).uid + 'Desde mostrar imagen'  );
   try {
     const { coleccion, id } = req.params;
 
@@ -87,12 +90,18 @@ export const mostrarImagen = async (req: Request, res: Response) => {
       //hay que borrar la imagen del servidor
       const pathImagen = path.join(__dirname, '../uploads', coleccion, modelo.img);
       if (fs.existsSync(pathImagen)) {
-        return res.sendFile(pathImagen);
-      } else {
-        return res.sendFile(path.join(__dirname, '../assets/no-image.jpg'));
+        // return res.sendFile(pathImagen);
+        //retorna la imagen en base64
+        const imgBinary=fs.readFileSync(pathImagen);
+        const imgBase64=Buffer.from(imgBinary).toString('base64');
+        return res.json({
+          imgBase64
+        });
       }
+    } else {
+      return res.sendFile( path.join(__dirname, '../assets/no-image.jpg'));
     }
-
+      
 
     res.json({
       msg: 'no existe imagen'

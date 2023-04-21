@@ -3,7 +3,7 @@ import db from "../db/connection";
 import subirArchivo from "../helpers/subir-archivo";
 import path from 'path';
 import fs from 'fs';
-import { comuneros, initModels, usuarios, tipo_documentos, comuneros_tipos_doc, comuneros_tipos_docAttributes, comuneros_tipos_docCreationAttributes } from '../models/init-models'
+import { comuneros, initModels, tipo_documentos, comuneros_tipos_doc,  comuneros_tipos_docCreationAttributes } from '../models/init-models'
 //importar cloudinary v2
 initModels(db);
 
@@ -20,7 +20,7 @@ export const subirPDF = async (req: Request, res: Response) => {
         //buscar el tipo de documento
         tipoDocumento = await tipo_documentos.findOne({
             where: {
-                ALIAS: tipoDoc
+                alias: tipoDoc
             }
         });
         if (!tipoDocumento) {
@@ -31,7 +31,7 @@ export const subirPDF = async (req: Request, res: Response) => {
         //buscar si existe el tipo de documento
         tipoDocumento = await tipo_documentos.findOne({
             where: {
-                ALIAS: tipoDoc
+                alias: tipoDoc
             }
         });
         if (!tipoDocumento) {
@@ -42,13 +42,13 @@ export const subirPDF = async (req: Request, res: Response) => {
         //si ya existe un documento de ese tipo, borrarlo
         documentoComunero = await comuneros_tipos_doc.findOne({
             where: {
-                ID_COMUNERO: parseInt(id),
-                ID_TIPO_DOC: tipoDocumento.ID_TIPO_DOC
+                id_comunero: parseInt(id),
+                id_tipo_doc: tipoDocumento.id_tipo_doc
             }
         });
         if (documentoComunero) {
             //borrar el documento
-            const pathDocumento = path.join(__dirname, '../uploads', tipoDoc, documentoComunero.DOCUMENTO as string);
+            const pathDocumento = path.join(__dirname, '../uploads', tipoDoc, documentoComunero.documento as string);
             if (fs.existsSync(pathDocumento)) {
                 fs.unlinkSync(pathDocumento);
             }
@@ -56,8 +56,8 @@ export const subirPDF = async (req: Request, res: Response) => {
             //borrar la relacion
             await comuneros_tipos_doc.destroy({
                 where: {
-                    ID_COMUNERO: parseInt(id),
-                    ID_TIPO_DOC: tipoDocumento.ID_TIPO_DOC
+                    id_comunero: parseInt(id),
+                    id_tipo_doc: tipoDocumento.id_tipo_doc
                 }
             });
 
@@ -68,9 +68,9 @@ export const subirPDF = async (req: Request, res: Response) => {
         //crear relacion comunero_tipo_doc
 
         const comuneroTipoDoc: comuneros_tipos_docCreationAttributes = {
-            ID_COMUNERO: parseInt(id),
-            ID_TIPO_DOC: tipoDocumento.ID_TIPO_DOC,
-            DOCUMENTO: nombre,
+            id_comunero: id,
+            id_tipo_doc: tipoDocumento.id_tipo_doc,
+            documento: nombre,
         }
         try {
             await comuneros_tipos_doc.create(comuneroTipoDoc);
@@ -104,7 +104,7 @@ export const mostrarPdf = async (req: Request, res: Response) => {
         //buscar el tipo de documento
         tipoDocumento = await tipo_documentos.findOne({
             where: {
-                ALIAS: tipoDoc
+                alias: tipoDoc
             }
         });
         if (!tipoDocumento) {
@@ -115,8 +115,8 @@ export const mostrarPdf = async (req: Request, res: Response) => {
         //buscar el comunero
         documentoComunero = await comuneros_tipos_doc.findOne({
             where: {
-                ID_COMUNERO: parseInt(id),
-                ID_TIPO_DOC: tipoDocumento.ID_TIPO_DOC
+                id_comunero: id,
+                id_tipo_doc: tipoDocumento.id_tipo_doc
             }
         });
         if (!documentoComunero) {
@@ -125,8 +125,8 @@ export const mostrarPdf = async (req: Request, res: Response) => {
             });
         }
         //mostrar el documento
-        if (documentoComunero.DOCUMENTO) {
-            const pathDocumento = path.join(__dirname, '../uploads', tipoDoc, documentoComunero.DOCUMENTO as string);
+        if (documentoComunero.documento) {
+            const pathDocumento = path.join(__dirname, '../uploads', tipoDoc, documentoComunero.documento as string);
             if (fs.existsSync(pathDocumento)) {
                 return res.sendFile(pathDocumento);
             } else {
@@ -152,13 +152,13 @@ export const obtenerComunerosTipoDoc = async (req: Request, res: Response) => {
             include: [
                 {
                     model: comuneros,
-                    as: 'ID_COMUNERO_comunero',
-                    attributes: ['ID_COMUNERO', 'ID_PERSONA'],
+                    as: 'id_comunero_comunero',
+                    attributes: ['id_comunero', 'id_persona'],
                 },
                 {
                     model: tipo_documentos,
-                    as: 'ID_TIPO_DOC_tipo_documento',
-                    attributes: ['ID_TIPO_DOC', 'TIPO_DOC'],
+                    as: 'id_tipo_doc_tipo_documento',
+                    attributes: ['id_tipo_doc', 'tipo_doc'],
                 }
             ]
     
@@ -184,11 +184,11 @@ export const obtenerComunerosTipoDoc = async (req: Request, res: Response) => {
 export const obtenerComunerosTipoDocPorIdComunero = async (req: Request, res: Response) => {
     try {
         console.log(req.body.id);
-        const listaComunerosTipoDoc = await db.query("select tipo_documentos.ID_TIPO_DOC,tipo_documentos.TIPO_DOC, tipo_documentos.ALIAS from ((comuneros inner join comuneros_tipos_doc on comuneros.ID_COMUNERO = comuneros_tipos_doc.ID_COMUNERO)inner join tipo_documentos on comuneros_tipos_doc.ID_TIPO_DOC=tipo_documentos.ID_TIPO_DOC) where comuneros.ID_COMUNERO=" + req.body.id);
+        const listaComunerosTipoDoc = await db.query("select tipo_documentos.id_tipo_doc,tipo_documentos.tipo_doc, tipo_documentos.alias from ((comuneros inner join comuneros_tipos_doc on comuneros.id_comunero = comuneros_tipos_doc.id_comunero)inner join tipo_documentos on comuneros_tipos_doc.id_tipo_doc=tipo_documentos.id_tipo_doc) where comuneros.id_comunero=" + req.body.id);
         if (listaComunerosTipoDoc[0].length > 0) {
-            const listaComuneros = listaComunerosTipoDoc[0];
+            const documentosComunero = listaComunerosTipoDoc[0];
             res.json({
-                listaComuneros
+                documentosComunero
             });
         } else {
             return res.status(400).json({

@@ -1,7 +1,9 @@
-import { initModels, requisito_apr, requisito_aprAttributes, requisito_aprCreationAttributes } from "../models/init-models";
+import { initModels, requisito_apr,  requisito_aprCreationAttributes } from "../models/init-models";
 import { Request, Response } from "express";
 import { requisitos } from "../models/requisitos";
 import db from "../db/connection";
+
+import {v4} from 'uuid';
 
 initModels(db);
 
@@ -12,10 +14,11 @@ export const aprobarRequisito = async (req: Request, res: Response) => {
         const { id_requisito, id_persona, observacion } = req.body;
         //buscar persona    
         const reqApr: requisito_aprCreationAttributes = {
-            ID_REQ: id_requisito,
-            ID_PERSONA: id_persona,
-            OBSERVACION: observacion,
-            FECHA_AP: fechaApr
+            id_req_ap: v4(),
+            id_req: id_requisito,
+            id_persona: id_persona,
+            observacion: observacion,
+            fecha_ap: fechaApr
         }
         await requisito_apr.create(reqApr);
         res.json({
@@ -35,7 +38,7 @@ export const aprobarRequisito = async (req: Request, res: Response) => {
 export const obtenerRequisitosApr = async (req: Request, res: Response) => {
     try {
         const listRequisitosApr = await requisito_apr.findAll({
-            attributes: ['ID_REQ', 'ID_PERSONA']
+            attributes: ['id_req', 'id_persona']
         });
         res.json({
             listRequisitosApr
@@ -54,11 +57,11 @@ export const obtenerRequisitosApr = async (req: Request, res: Response) => {
 export const obtenerPersonasApr = async (req: Request, res: Response) => {
     try {
         const reqApr = await requisito_apr.findAll({
-            attributes: ['ID_PERSONA'],
+            attributes: ['id_persona'],
             include: {
                 model: requisitos,
-                as: 'ID_REQ_requisito',
-                attributes: ['ID_REQ', 'REQUISITO',],
+                as: 'id_req_requisito',
+                attributes: ['id_req', 'requisito',],
 
 
             },

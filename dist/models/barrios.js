@@ -5,16 +5,15 @@ const sequelize_1 = require("sequelize");
 class barrios extends sequelize_1.Model {
     static initModel(sequelize) {
         return barrios.init({
-            ID_BARRIO: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_barrio: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            NOM_BARRIO: {
+            nom_barrio: {
                 type: sequelize_1.DataTypes.STRING(120),
                 allowNull: false,
-                unique: "NOM_BARRIO"
+                unique: "nom_barrio"
             }
         }, {
             sequelize,
@@ -26,15 +25,15 @@ class barrios extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_BARRIO" },
+                        { name: "id_barrio" },
                     ]
                 },
                 {
-                    name: "NOM_BARRIO",
+                    name: "nom_barrio",
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "NOM_BARRIO" },
+                        { name: "nom_barrio" },
                     ]
                 },
             ]

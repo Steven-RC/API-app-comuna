@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
-import type { Asociaciones, asociacionesId } from './asociaciones';
+import type { asociaciones, asociacionesId } from './asociaciones';
 import type { barrios, barriosId } from './barrios';
 import type { comuneros_tipos_doc, comuneros_tipos_docId } from './comuneros_tipos_doc';
 import type { facturas, facturasId } from './facturas';
@@ -10,44 +10,44 @@ import type { tipo_documentos, tipo_documentosId } from './tipo_documentos';
 import type { usuarios, usuariosId } from './usuarios';
 
 export interface comunerosAttributes {
-  ID_COMUNERO: number;
-  ID_BARRIO?: number;
-  ID_ASO?: number;
-  ID_PERSONA?: number;
-  CALIFICADO?: number;
-  CREATED_DATE?: string;
-  CREATED_TIME?: string;
-  ESTADO_COM?: number;
-  ID_TERRENO?: number;
+  id_comunero: string;
+  id_barrio?: string;
+  id_aso?: string;
+  id_persona?: string;
+  calificado?: number;
+  created_date?: string;
+  created_time?: string;
+  estado_com?: number;
+  id_terreno?: string;
 }
 
-export type comunerosPk = "ID_COMUNERO";
+export type comunerosPk = "id_comunero";
 export type comunerosId = comuneros[comunerosPk];
-export type comunerosOptionalAttributes = "ID_COMUNERO" | "ID_BARRIO" | "ID_ASO" | "ID_PERSONA" | "CALIFICADO" | "CREATED_DATE" | "CREATED_TIME" | "ESTADO_COM" | "ID_TERRENO";
+export type comunerosOptionalAttributes = "id_barrio" | "id_aso" | "id_persona" | "calificado" | "created_date" | "created_time" | "estado_com" | "id_terreno";
 export type comunerosCreationAttributes = Optional<comunerosAttributes, comunerosOptionalAttributes>;
 
 export class comuneros extends Model<comunerosAttributes, comunerosCreationAttributes> implements comunerosAttributes {
-  ID_COMUNERO!: number;
-  ID_BARRIO?: number;
-  ID_ASO?: number;
-  ID_PERSONA?: number;
-  CALIFICADO?: number;
-  CREATED_DATE?: string;
-  CREATED_TIME?: string;
-  ESTADO_COM?: number;
-  ID_TERRENO?: number;
+  id_comunero!: string;
+  id_barrio?: string;
+  id_aso?: string;
+  id_persona?: string;
+  calificado?: number;
+  created_date?: string;
+  created_time?: string;
+  estado_com?: number;
+  id_terreno?: string;
 
-  // comuneros belongsTo asociaciones via ID_ASO
-  ID_ASO_asociacione!: Asociaciones;
-  getID_ASO_asociacione!: Sequelize.BelongsToGetAssociationMixin<Asociaciones>;
-  setID_ASO_asociacione!: Sequelize.BelongsToSetAssociationMixin<Asociaciones, asociacionesId>;
-  createID_ASO_asociacione!: Sequelize.BelongsToCreateAssociationMixin<Asociaciones>;
-  // comuneros belongsTo barrios via ID_BARRIO
-  ID_BARRIO_barrio!: barrios;
-  getID_BARRIO_barrio!: Sequelize.BelongsToGetAssociationMixin<barrios>;
-  setID_BARRIO_barrio!: Sequelize.BelongsToSetAssociationMixin<barrios, barriosId>;
-  createID_BARRIO_barrio!: Sequelize.BelongsToCreateAssociationMixin<barrios>;
-  // comuneros hasMany comuneros_tipos_doc via ID_COMUNERO
+  // comuneros belongsTo asociaciones via id_aso
+  id_aso_asociacione!: asociaciones;
+  getId_aso_asociacione!: Sequelize.BelongsToGetAssociationMixin<asociaciones>;
+  setId_aso_asociacione!: Sequelize.BelongsToSetAssociationMixin<asociaciones, asociacionesId>;
+  createId_aso_asociacione!: Sequelize.BelongsToCreateAssociationMixin<asociaciones>;
+  // comuneros belongsTo barrios via id_barrio
+  id_barrio_barrio!: barrios;
+  getId_barrio_barrio!: Sequelize.BelongsToGetAssociationMixin<barrios>;
+  setId_barrio_barrio!: Sequelize.BelongsToSetAssociationMixin<barrios, barriosId>;
+  createId_barrio_barrio!: Sequelize.BelongsToCreateAssociationMixin<barrios>;
+  // comuneros hasMany comuneros_tipos_doc via id_comunero
   comuneros_tipos_docs!: comuneros_tipos_doc[];
   getComuneros_tipos_docs!: Sequelize.HasManyGetAssociationsMixin<comuneros_tipos_doc>;
   setComuneros_tipos_docs!: Sequelize.HasManySetAssociationsMixin<comuneros_tipos_doc, comuneros_tipos_docId>;
@@ -59,7 +59,7 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
   hasComuneros_tipos_doc!: Sequelize.HasManyHasAssociationMixin<comuneros_tipos_doc, comuneros_tipos_docId>;
   hasComuneros_tipos_docs!: Sequelize.HasManyHasAssociationsMixin<comuneros_tipos_doc, comuneros_tipos_docId>;
   countComuneros_tipos_docs!: Sequelize.HasManyCountAssociationsMixin;
-  // comuneros hasMany facturas via ID_COMUNERO
+  // comuneros hasMany facturas via id_comunero
   facturas!: facturas[];
   getFacturas!: Sequelize.HasManyGetAssociationsMixin<facturas>;
   setFacturas!: Sequelize.HasManySetAssociationsMixin<facturas, facturasId>;
@@ -71,19 +71,19 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
   hasFactura!: Sequelize.HasManyHasAssociationMixin<facturas, facturasId>;
   hasFacturas!: Sequelize.HasManyHasAssociationsMixin<facturas, facturasId>;
   countFacturas!: Sequelize.HasManyCountAssociationsMixin;
-  // comuneros belongsToMany tipo_documentos via ID_COMUNERO and ID_TIPO_DOC
-  ID_TIPO_DOC_tipo_documentos!: tipo_documentos[];
-  getID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManyGetAssociationsMixin<tipo_documentos>;
-  setID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManySetAssociationsMixin<tipo_documentos, tipo_documentosId>;
-  addID_TIPO_DOC_tipo_documento!: Sequelize.BelongsToManyAddAssociationMixin<tipo_documentos, tipo_documentosId>;
-  addID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManyAddAssociationsMixin<tipo_documentos, tipo_documentosId>;
-  createID_TIPO_DOC_tipo_documento!: Sequelize.BelongsToManyCreateAssociationMixin<tipo_documentos>;
-  removeID_TIPO_DOC_tipo_documento!: Sequelize.BelongsToManyRemoveAssociationMixin<tipo_documentos, tipo_documentosId>;
-  removeID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManyRemoveAssociationsMixin<tipo_documentos, tipo_documentosId>;
-  hasID_TIPO_DOC_tipo_documento!: Sequelize.BelongsToManyHasAssociationMixin<tipo_documentos, tipo_documentosId>;
-  hasID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManyHasAssociationsMixin<tipo_documentos, tipo_documentosId>;
-  countID_TIPO_DOC_tipo_documentos!: Sequelize.BelongsToManyCountAssociationsMixin;
-  // comuneros hasMany usuarios via ID_COMUNERO
+  // comuneros belongsToMany tipo_documentos via id_comunero and id_tipo_doc
+  id_tipo_doc_tipo_documentos!: tipo_documentos[];
+  getId_tipo_doc_tipo_documentos!: Sequelize.BelongsToManyGetAssociationsMixin<tipo_documentos>;
+  setId_tipo_doc_tipo_documentos!: Sequelize.BelongsToManySetAssociationsMixin<tipo_documentos, tipo_documentosId>;
+  addId_tipo_doc_tipo_documento!: Sequelize.BelongsToManyAddAssociationMixin<tipo_documentos, tipo_documentosId>;
+  addId_tipo_doc_tipo_documentos!: Sequelize.BelongsToManyAddAssociationsMixin<tipo_documentos, tipo_documentosId>;
+  createId_tipo_doc_tipo_documento!: Sequelize.BelongsToManyCreateAssociationMixin<tipo_documentos>;
+  removeId_tipo_doc_tipo_documento!: Sequelize.BelongsToManyRemoveAssociationMixin<tipo_documentos, tipo_documentosId>;
+  removeId_tipo_doc_tipo_documentos!: Sequelize.BelongsToManyRemoveAssociationsMixin<tipo_documentos, tipo_documentosId>;
+  hasId_tipo_doc_tipo_documento!: Sequelize.BelongsToManyHasAssociationMixin<tipo_documentos, tipo_documentosId>;
+  hasId_tipo_doc_tipo_documentos!: Sequelize.BelongsToManyHasAssociationsMixin<tipo_documentos, tipo_documentosId>;
+  countId_tipo_doc_tipo_documentos!: Sequelize.BelongsToManyCountAssociationsMixin;
+  // comuneros hasMany usuarios via id_comunero
   usuarios!: usuarios[];
   getUsuarios!: Sequelize.HasManyGetAssociationsMixin<usuarios>;
   setUsuarios!: Sequelize.HasManySetAssociationsMixin<usuarios, usuariosId>;
@@ -95,73 +95,72 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
   hasUsuario!: Sequelize.HasManyHasAssociationMixin<usuarios, usuariosId>;
   hasUsuarios!: Sequelize.HasManyHasAssociationsMixin<usuarios, usuariosId>;
   countUsuarios!: Sequelize.HasManyCountAssociationsMixin;
-  // comuneros belongsTo personas via ID_PERSONA
-  ID_PERSONA_persona!: personas;
-  getID_PERSONA_persona!: Sequelize.BelongsToGetAssociationMixin<personas>;
-  setID_PERSONA_persona!: Sequelize.BelongsToSetAssociationMixin<personas, personasId>;
-  createID_PERSONA_persona!: Sequelize.BelongsToCreateAssociationMixin<personas>;
-  // comuneros belongsTo terrenos via ID_TERRENO
-  ID_TERRENO_terreno!: terrenos;
-  getID_TERRENO_terreno!: Sequelize.BelongsToGetAssociationMixin<terrenos>;
-  setID_TERRENO_terreno!: Sequelize.BelongsToSetAssociationMixin<terrenos, terrenosId>;
-  createID_TERRENO_terreno!: Sequelize.BelongsToCreateAssociationMixin<terrenos>;
+  // comuneros belongsTo personas via id_persona
+  id_persona_persona!: personas;
+  getId_persona_persona!: Sequelize.BelongsToGetAssociationMixin<personas>;
+  setId_persona_persona!: Sequelize.BelongsToSetAssociationMixin<personas, personasId>;
+  createId_persona_persona!: Sequelize.BelongsToCreateAssociationMixin<personas>;
+  // comuneros belongsTo terrenos via id_terreno
+  id_terreno_terreno!: terrenos;
+  getId_terreno_terreno!: Sequelize.BelongsToGetAssociationMixin<terrenos>;
+  setId_terreno_terreno!: Sequelize.BelongsToSetAssociationMixin<terrenos, terrenosId>;
+  createId_terreno_terreno!: Sequelize.BelongsToCreateAssociationMixin<terrenos>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof comuneros {
     return comuneros.init({
-    ID_COMUNERO: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+    id_comunero: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
-    ID_BARRIO: {
-      type: DataTypes.INTEGER,
+    id_barrio: {
+      type: DataTypes.STRING(50),
       allowNull: true,
       references: {
         model: 'barrios',
-        key: 'ID_BARRIO'
+        key: 'id_barrio'
       }
     },
-    ID_ASO: {
-      type: DataTypes.INTEGER,
+    id_aso: {
+      type: DataTypes.STRING(50),
       allowNull: true,
       references: {
         model: 'asociaciones',
-        key: 'ID_ASO'
+        key: 'id_aso'
       }
     },
-    ID_PERSONA: {
-      type: DataTypes.INTEGER,
+    id_persona: {
+      type: DataTypes.STRING(50),
       allowNull: true,
       references: {
         model: 'personas',
-        key: 'ID_PERSONA'
+        key: 'id_persona'
       }
     },
-    CALIFICADO: {
+    calificado: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: 0
     },
-    CREATED_DATE: {
+    created_date: {
       type: DataTypes.DATEONLY,
       allowNull: true
     },
-    CREATED_TIME: {
+    created_time: {
       type: DataTypes.TIME,
       allowNull: true
     },
-    ESTADO_COM: {
+    estado_com: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: 1
     },
-    ID_TERRENO: {
-      type: DataTypes.INTEGER,
+    id_terreno: {
+      type: DataTypes.STRING(50),
       allowNull: true,
       references: {
         model: 'terrenos',
-        key: 'ID_TERRENO'
+        key: 'id_terreno'
       }
     }
   }, {
@@ -174,35 +173,35 @@ export class comuneros extends Model<comunerosAttributes, comunerosCreationAttri
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_COMUNERO" },
+          { name: "id_comunero" },
         ]
       },
       {
-        name: "FK_REL_ASOCIACION_COMUNERO",
+        name: "fk_rel_asociacion_comunero",
         using: "BTREE",
         fields: [
-          { name: "ID_ASO" },
+          { name: "id_aso" },
         ]
       },
       {
-        name: "FK_REL_BARRIO_COMUNERO",
+        name: "fk_rel_barrio_comunero",
         using: "BTREE",
         fields: [
-          { name: "ID_BARRIO" },
+          { name: "id_barrio" },
         ]
       },
       {
-        name: "FK_REL_PERS_COMUNERO",
+        name: "fk_rel_pers_comunero",
         using: "BTREE",
         fields: [
-          { name: "ID_PERSONA" },
+          { name: "id_persona" },
         ]
       },
       {
         name: "fk_comuneros_terrenos1_idx",
         using: "BTREE",
         fields: [
-          { name: "ID_TERRENO" },
+          { name: "id_terreno" },
         ]
       },
     ]

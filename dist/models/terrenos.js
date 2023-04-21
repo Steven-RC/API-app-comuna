@@ -5,44 +5,43 @@ const sequelize_1 = require("sequelize");
 class terrenos extends sequelize_1.Model {
     static initModel(sequelize) {
         return terrenos.init({
-            ID_TERRENO: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_terreno: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            LIM_NORTE: {
+            lim_norte: {
                 type: sequelize_1.DataTypes.TEXT,
                 allowNull: true
             },
-            LIM_SUR: {
+            lim_sur: {
                 type: sequelize_1.DataTypes.TEXT,
                 allowNull: true
             },
-            LIM_ESTE: {
+            lim_este: {
                 type: sequelize_1.DataTypes.TEXT,
                 allowNull: true
             },
-            LIM_OESTE: {
+            lim_oeste: {
                 type: sequelize_1.DataTypes.TEXT,
                 allowNull: true
             },
-            NORTE: {
+            norte: {
                 type: sequelize_1.DataTypes.INTEGER,
                 allowNull: true,
                 defaultValue: 0
             },
-            SUR: {
+            sur: {
                 type: sequelize_1.DataTypes.INTEGER,
                 allowNull: true,
                 defaultValue: 0
             },
-            ESTE: {
+            este: {
                 type: sequelize_1.DataTypes.INTEGER,
                 allowNull: true,
                 defaultValue: 0
             },
-            OESTE: {
+            oeste: {
                 type: sequelize_1.DataTypes.INTEGER,
                 allowNull: true,
                 defaultValue: 0
@@ -57,15 +56,15 @@ class terrenos extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_TERRENO" },
+                        { name: "id_terreno" },
                     ]
                 },
                 {
-                    name: "ID_TERRENO_UNIQUE",
+                    name: "id_terreno_unique",
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_TERRENO" },
+                        { name: "id_terreno" },
                     ]
                 },
             ]

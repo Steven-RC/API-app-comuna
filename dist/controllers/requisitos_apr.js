@@ -16,6 +16,7 @@ exports.obtenerPersonasApr = exports.obtenerRequisitosApr = exports.aprobarRequi
 const init_models_1 = require("../models/init-models");
 const requisitos_1 = require("../models/requisitos");
 const connection_1 = __importDefault(require("../db/connection"));
+const uuid_1 = require("uuid");
 (0, init_models_1.initModels)(connection_1.default);
 //aprobar requisito
 const aprobarRequisito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -24,10 +25,11 @@ const aprobarRequisito = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const { id_requisito, id_persona, observacion } = req.body;
         //buscar persona    
         const reqApr = {
-            ID_REQ: id_requisito,
-            ID_PERSONA: id_persona,
-            OBSERVACION: observacion,
-            FECHA_AP: fechaApr
+            id_req_ap: (0, uuid_1.v4)(),
+            id_req: id_requisito,
+            id_persona: id_persona,
+            observacion: observacion,
+            fecha_ap: fechaApr
         };
         yield init_models_1.requisito_apr.create(reqApr);
         res.json({
@@ -46,7 +48,7 @@ exports.aprobarRequisito = aprobarRequisito;
 const obtenerRequisitosApr = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const listRequisitosApr = yield init_models_1.requisito_apr.findAll({
-            attributes: ['ID_REQ', 'ID_PERSONA']
+            attributes: ['id_req', 'id_persona']
         });
         res.json({
             listRequisitosApr
@@ -64,11 +66,11 @@ exports.obtenerRequisitosApr = obtenerRequisitosApr;
 const obtenerPersonasApr = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const reqApr = yield init_models_1.requisito_apr.findAll({
-            attributes: ['ID_PERSONA'],
+            attributes: ['id_persona'],
             include: {
                 model: requisitos_1.requisitos,
-                as: 'ID_REQ_requisito',
-                attributes: ['ID_REQ', 'REQUISITO',],
+                as: 'id_req_requisito',
+                attributes: ['id_req', 'requisito',],
             },
         });
         res.json({

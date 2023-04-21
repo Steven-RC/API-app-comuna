@@ -1,7 +1,8 @@
 import db from '../db/connection';
 import { Request, Response } from "express";
 import { initModels, nacionalidadCreationAttributes, nacionalidadAttributes } from "../models/init-models";
-import { Nacionalidad } from '../models/nacionalidad';
+import { nacionalidad } from '../models/nacionalidad';
+import { v4 } from 'uuid';
 
 initModels(db);
 
@@ -10,9 +11,9 @@ export const crearNacionalidad = async (req: Request, res: Response) => {
     // const {nacionalidad}=req.body;
     try {
         
-        const encontrarNacionalidad = await Nacionalidad.findOne({
+        const encontrarNacionalidad = await nacionalidad.findOne({
             where: {
-                NACIONALIDAD: req.body.nacionalidad
+                nacionalidad: req.body.nacionalidad
             }
         })
         if (encontrarNacionalidad) {
@@ -21,10 +22,11 @@ export const crearNacionalidad = async (req: Request, res: Response) => {
             })
         } else {
             const nacionalidadcr: nacionalidadCreationAttributes = {
-                NACIONALIDAD: req.body.nacionalidad,
+                id_nacionalidad: 'nac-'+v4(),
+                nacionalidad: req.body.nacionalidad,
             }
     
-            await Nacionalidad.create(nacionalidadcr);
+            await nacionalidad.create(nacionalidadcr);
     
             res.status(200).json({
                 msg: 'Nacionalidad creada '
@@ -47,13 +49,13 @@ export const crear = async (req: Request, res: Response) => {
 
     try {
 
-        const nacionalidad = await Nacionalidad.findOne({
+        const nacionalidadEnc = await nacionalidad.findOne({
             where: {
-                NACIONALIDAD: req.body.nacionalidad
+                nacionalidad: req.body.nacionalidad
             }
         })
 
-        if (nacionalidad) {
+        if (nacionalidadEnc) {
 
             return res.status(400).json({
                 msg: 'La nacionalidad ya existe'
@@ -62,9 +64,10 @@ export const crear = async (req: Request, res: Response) => {
 
 
         const nacionalidadcr: nacionalidadCreationAttributes = {
-            NACIONALIDAD: req.body.nacionalidad,
+            id_nacionalidad: v4(),
+            nacionalidad: req.body.nacionalidad,
         }
-        await Nacionalidad.create(nacionalidadcr);
+        await nacionalidad.create(nacionalidadcr);
         res.json({
             msg: 'Nacionalidad creada '
         })
@@ -89,7 +92,7 @@ export const crear = async (req: Request, res: Response) => {
 //crear metodo para retornar todas las nacionalidades
 export const getNacionalidades = async (req: Request, res: Response) => {
     try{
-        const listNacionalidades = await Nacionalidad.findAll();
+        const listNacionalidades = await nacionalidad.findAll();
         if (listNacionalidades) {
             res.json({ listNacionalidades });
         } else {
@@ -110,8 +113,8 @@ export const getNacionalidades = async (req: Request, res: Response) => {
 export const getNombresNacionalidades = async (req: Request, res: Response) => {
     try {
         
-        const listNacionalidades = await Nacionalidad.findAll({
-            attributes: ['NACIONALIDAD']
+        const listNacionalidades = await nacionalidad.findAll({
+            attributes: ['nacionalidad']
         });
         if (listNacionalidades) {
             res.json({ listNacionalidades });
@@ -133,9 +136,9 @@ export const getNombresNacionalidades = async (req: Request, res: Response) => {
 export const getNacionalidad = async (req: Request, res: Response) => {
     try {
         const { nombre } = req.params;
-        const encontrarNacionalidad = await Nacionalidad.findOne({
+        const encontrarNacionalidad = await nacionalidad.findOne({
             where: {
-                NACIONALIDAD: nombre
+                nacionalidad: nombre
             }
         })
         if (encontrarNacionalidad) {
@@ -160,14 +163,15 @@ export const actualizarNacionalidad = async (req: Request, res: Response) => {
     try{
         const { id } = req.body;
         const { nomNacionalidad } = req.body;
-        const nacionalidadAct = await Nacionalidad.findByPk(id);
+        const nacionalidadAct = await nacionalidad.findByPk(id);
         if (!nacionalidadAct) {
             return res.status(404).json({
                 msg: 'Nacionalidad no encontrada '
             })
         } else {
             await nacionalidadAct.update({
-                NACIONALIDAD: nomNacionalidad
+                id_nacionalidad: id,
+                nacionalidad: nomNacionalidad
             })
             res.json({
                 msg: 'Nacionalidad actualizada'

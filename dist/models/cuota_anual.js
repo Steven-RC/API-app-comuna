@@ -5,35 +5,34 @@ const sequelize_1 = require("sequelize");
 class cuota_anual extends sequelize_1.Model {
     static initModel(sequelize) {
         return cuota_anual.init({
-            ID_CUOTA: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+            id_cuota: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            NOM_CUOTA: {
+            nom_cuota: {
                 type: sequelize_1.DataTypes.STRING(100),
                 allowNull: false
             },
-            VALOR_CUOTA: {
+            valor_cuota: {
                 type: sequelize_1.DataTypes.FLOAT,
                 allowNull: false
             },
-            ESTADO_CUOTA: {
+            estado_cuota: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: 1
             },
-            ID_ANIO: {
-                type: sequelize_1.DataTypes.INTEGER,
+            id_anio: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true,
                 references: {
                     model: 'anio',
-                    key: 'ID_ANIO'
+                    key: 'id_anio'
                 }
             },
-            DESCRIPCION: {
+            descripcion: {
                 type: sequelize_1.DataTypes.STRING(255),
                 allowNull: true
             }
@@ -47,15 +46,15 @@ class cuota_anual extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_CUOTA" },
-                        { name: "ID_ANIO" },
+                        { name: "id_cuota" },
+                        { name: "id_anio" },
                     ]
                 },
                 {
                     name: "fk_cuota_anual_table11_idx",
                     using: "BTREE",
                     fields: [
-                        { name: "ID_ANIO" },
+                        { name: "id_anio" },
                     ]
                 },
             ]

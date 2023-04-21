@@ -1,6 +1,8 @@
 import db from '../db/connection';
 import { Request, Response } from "express";
-import { initModels, tipo_documentos, tipo_documentosAttributes, tipo_documentosCreationAttributes } from "../models/init-models";
+import { initModels, tipo_documentos,  tipo_documentosCreationAttributes } from "../models/init-models";
+
+import { v4 } from 'uuid';
 
 initModels(db);
 
@@ -12,7 +14,8 @@ export const crearTipoDocumento = async (req: Request, res: Response) => {
         const alias = tipoDocumento.replace(/\s/g, '').toLowerCase();
         console.log(alias);
         const tipoDocument: tipo_documentosCreationAttributes = {
-            TIPO_DOC: tipoDocumento,
+            id_tipo_doc: v4(),
+            tipo_doc: tipoDocumento,
         }
         await tipo_documentos.create(tipoDocument);
         res.json({
@@ -51,11 +54,11 @@ export const actualizarTipoDocumento = async (req: Request, res: Response) => {
         const { tipoDocumento } = req.body;
         const alias = tipoDocumento.replace(/\s/g, '').toLowerCase();
         await tipo_documentos.update({
-            TIPO_DOC: tipoDocumento,
-            ALIAS: alias
+            tipo_doc: tipoDocumento,
+            alias: alias
         }, {
             where: {
-                ID_TIPO_DOC: id
+                id_tipo_doc: id
             }
         });
         res.json({

@@ -1,12 +1,11 @@
 import db from '../db/connection';
 import { Request, Response } from "express";
 import {
-    initModels, comuneros, requisitos, requisito_apr, personas, facturas,
-    cuotas_factura, cuota_anual, personasAttributes, personasCreationAttributes, barrios
+    initModels, comuneros, requisitos, requisito_apr, personas, personasCreationAttributes, barrios
 } from "../models/init-models";
 
-
-
+import {v4} from 'uuid';
+ 
 initModels(db);
 export const crearPersona = async (req: Request, res: Response) => {
     try {
@@ -14,32 +13,33 @@ export const crearPersona = async (req: Request, res: Response) => {
         //si existe una persona con la misma cedula
         const encontrarPersona = await personas.findOne({
             where: {
-                CEDULA: req.body.cedula
+                cedula: req.body.cedula 
             }
         })
         if (encontrarPersona) {
             return res.status(400).json({
-                msg: 'La persona ya existe'
+                msg: 'la persona ya existe'
             })
         } else {
             const persona: personasCreationAttributes = {
-                CEDULA: req.body.cedula,
-                APELLIDOS: req.body.apellidos,
-                NOMBRE: req.body.nombre,
-                FECHA_DE_NACIMIENTO: req.body.fecha_nacimiento,
-                GENERO: req.body.genero,
-                CELULAR_PER: req.body.celular,
-                ID_NACIONALIDAD: req.body.nacionalidad,
+                id_persona: 'per-'+v4(),
+                cedula: req.body.cedula,
+                apellidos: req.body.apellidos,
+                nombre: req.body.nombre,
+                fecha_de_nacimiento: req.body.fecha_nacimiento,
+                genero: req.body.genero,
+                celular_per: req.body.celular,
+                id_nacionalidad: req.body.nacionalidad,
             }
             await personas.create(persona);
             res.json({
-                msg: 'Persona creada'
+                msg: 'persona creada'
             })
         }
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         })
 
     }
@@ -52,7 +52,7 @@ export const obtenerPersonas = async (req: Request, res: Response) => {
             res.json({ listPersonas });
         } else {
             res.status(404).json({
-                msg: 'No hay personas'
+                msg: 'no hay personas'
 
             })
         }
@@ -60,7 +60,7 @@ export const obtenerPersonas = async (req: Request, res: Response) => {
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         })
 
     }
@@ -72,18 +72,18 @@ export const eliminarPersona = async (req: Request, res: Response) => {
         const encontrarPersona = await personas.findByPk(id);
         if (!encontrarPersona) {
             return res.status(404).json({
-                msg: 'Persona no encontrada'
+                msg: 'persona no encontrada'
             })
         }
         await encontrarPersona.destroy();
         res.json({
-            msg: 'Persona eliminada'
+            msg: 'persona eliminada'
         })
 
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         })
 
     }
@@ -98,24 +98,24 @@ export const actualizarPersona = async (req: Request, res: Response) => {
         //si no existe la persona
         if (!encontrarPersona) {
             return res.status(404).json({
-                msg: 'Persona no encontrada'
+                msg: 'persona no encontrada'
             })
         }
         //actualizar el nombre de la persona
         await encontrarPersona.update({
-            NOMBRE: req.body.nombre,
-            APELLIDOS: req.body.apellidos,
-            FECHA_DE_NACIMIENTO: req.body.fecha_nacimiento,
-            CELULAR_PER: req.body.celular,
+            nombre: req.body.nombre,
+            apellidos: req.body.apellidos,
+            fecha_de_nacimiento: req.body.fecha_nacimiento,
+            celular_per: req.body.celular,
         })
         res.json({
-            msg: 'Persona actualizada'
+            msg: 'persona actualizada'
         })
 
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         })
 
 
@@ -132,32 +132,32 @@ export const cambiarEstadoPersona = async (req: Request, res: Response) => {
         //si no existe la persona
         if (!encontrarPersona) {
             return res.status(404).json({
-                msg: 'Persona no encontrada'
+                msg: 'persona no encontrada'
             })
         }
         if (encontrarPersona) {
-            const estado = encontrarPersona.ESTADO;
+            const estado = encontrarPersona.estado;
             if (estado == 1) {
-                encontrarPersona.ESTADO = 0;
+                encontrarPersona.estado = 0;
             } else {
-                encontrarPersona.ESTADO = 1;
+                encontrarPersona.estado = 1;
             }
             await encontrarPersona.save();
             res.json({
-                msg: 'Estado actualizado'
+                msg: 'estado actualizado'
             })
 
 
         } else {
             res.status(404).json({
-                msg: 'No se pudo actualizar el estado'
+                msg: 'no se pudo actualizar el estado'
             })
         }
 
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            msg: 'Error inesperado'
+            msg: 'error inesperado'
         })
 
 
@@ -175,7 +175,7 @@ export const obtenerPersonasRequisitosAprobados = async (req: Request, res: Resp
                 include: [
                     {
                         model: requisitos,
-                        as: 'ID_REQ_requisito'
+                        as: 'id_req_requisito'
                     }
                 ]
             }
@@ -185,7 +185,7 @@ export const obtenerPersonasRequisitosAprobados = async (req: Request, res: Resp
         res.json({ listPersonas });
     } else {
         res.status(404).json({
-            msg: 'No hay personas'
+            msg: 'no hay personas'
 
         })
     }
@@ -197,33 +197,33 @@ export const buscarComunerosPorCedula = async (req: Request, res: Response) => {
     const { cedula } = req.body;
     console.log(cedula);
 
-    const listComuneros = await personas.findOne({
+    const comunero = await personas.findOne({
         where: {
-            CEDULA: cedula,
+            cedula: cedula,
         },
-        attributes: ['APELLIDOS', 'NOMBRE', 'CELULAR_PER', 'ESTADO'],
+        attributes: ['apellidos', 'nombre', 'celular_per', 'estado'],
 
         include: [
             {
                 model: comuneros,
                 as: 'comuneros',
-                attributes: ['ID_COMUNERO'],
+                attributes: ['id_comunero','id_terreno'],
                 include: [
                     {
                         model: barrios,
-                        as: 'ID_BARRIO_barrio',
-                        attributes: ['NOM_BARRIO']
+                        as: 'id_barrio_barrio',
+                        attributes: ['nom_barrio']
                     },
                 ]
             },
 
         ]
     });
-    if (listComuneros) {
-        res.json({ listComuneros });
+    if (comunero) {
+        res.json({ comunero });
     } else {
         res.status(404).json({
-            msg: 'El numero de cedula no existe'
+            msg: 'el numero de cedula no existe'
         })
     }
 }

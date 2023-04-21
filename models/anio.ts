@@ -3,20 +3,20 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { cuota_anual, cuota_anualId } from './cuota_anual';
 
 export interface anioAttributes {
-  ID_ANIO: number;
-  ANIO?: number;
+  id_anio: string;
+  anio?: string;
 }
 
-export type anioPk = "ID_ANIO";
-export type anioId = Anio[anioPk];
-export type anioOptionalAttributes = "ID_ANIO" | "ANIO";
+export type anioPk = "id_anio";
+export type anioId = anio[anioPk];
+export type anioOptionalAttributes = "anio";
 export type anioCreationAttributes = Optional<anioAttributes, anioOptionalAttributes>;
 
-export class Anio extends Model<anioAttributes, anioCreationAttributes> implements anioAttributes {
-  ID_ANIO!: number;
-  ANIO?: number;
+export class anio extends Model<anioAttributes, anioCreationAttributes> implements anioAttributes {
+  id_anio!: string;
+  anio?: string;
 
-  // anio hasMany cuota_anual via ID_ANIO
+  // anio hasMany cuota_anual via id_anio
   cuota_anuals!: cuota_anual[];
   getCuota_anuals!: Sequelize.HasManyGetAssociationsMixin<cuota_anual>;
   setCuota_anuals!: Sequelize.HasManySetAssociationsMixin<cuota_anual, cuota_anualId>;
@@ -29,18 +29,17 @@ export class Anio extends Model<anioAttributes, anioCreationAttributes> implemen
   hasCuota_anuals!: Sequelize.HasManyHasAssociationsMixin<cuota_anual, cuota_anualId>;
   countCuota_anuals!: Sequelize.HasManyCountAssociationsMixin;
 
-  static initModel(sequelize: Sequelize.Sequelize): typeof Anio {
-    return Anio.init({
-    ID_ANIO: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+  static initModel(sequelize: Sequelize.Sequelize): typeof anio {
+    return anio.init({
+    id_anio: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
-    ANIO: {
-      type: DataTypes.INTEGER,
+    anio: {
+      type: DataTypes.STRING(50),
       allowNull: true,
-      unique: "AÑO_UNIQUE"
+      unique: "año_unique"
     }
   }, {
     sequelize,
@@ -52,23 +51,23 @@ export class Anio extends Model<anioAttributes, anioCreationAttributes> implemen
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_ANIO" },
+          { name: "id_anio" },
         ]
       },
       {
-        name: "ID_AÑO_UNIQUE",
+        name: "id_año_unique",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_ANIO" },
+          { name: "id_anio" },
         ]
       },
       {
-        name: "AÑO_UNIQUE",
+        name: "año_unique",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ANIO" },
+          { name: "anio" },
         ]
       },
     ]

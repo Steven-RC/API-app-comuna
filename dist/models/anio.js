@@ -1,20 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Anio = void 0;
+exports.anio = void 0;
 const sequelize_1 = require("sequelize");
-class Anio extends sequelize_1.Model {
+class anio extends sequelize_1.Model {
     static initModel(sequelize) {
-        return Anio.init({
-            ID_ANIO: {
-                autoIncrement: true,
-                type: sequelize_1.DataTypes.INTEGER,
+        return anio.init({
+            id_anio: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false,
                 primaryKey: true
             },
-            ANIO: {
-                type: sequelize_1.DataTypes.INTEGER,
+            anio: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: true,
-                unique: "AÑO_UNIQUE"
+                unique: "año_unique"
             }
         }, {
             sequelize,
@@ -26,28 +25,28 @@ class Anio extends sequelize_1.Model {
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_ANIO" },
+                        { name: "id_anio" },
                     ]
                 },
                 {
-                    name: "ID_AÑO_UNIQUE",
+                    name: "id_año_unique",
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ID_ANIO" },
+                        { name: "id_anio" },
                     ]
                 },
                 {
-                    name: "AÑO_UNIQUE",
+                    name: "año_unique",
                     unique: true,
                     using: "BTREE",
                     fields: [
-                        { name: "ANIO" },
+                        { name: "anio" },
                     ]
                 },
             ]
         });
     }
 }
-exports.Anio = Anio;
+exports.anio = anio;
 //# sourceMappingURL=anio.js.map

@@ -1,6 +1,8 @@
 import db from '../db/connection';
 import { Request, Response } from "express";
-import { initModels, rol_user, rol_userAttributes, rol_userCreationAttributes } from "../models/init-models";
+import { initModels, rol_user, rol_userCreationAttributes } from "../models/init-models";
+
+import { v4 } from 'uuid';
 
 initModels(db);
 
@@ -8,7 +10,8 @@ export const crearRol = async (req: Request, res: Response) => {
     try {
         //crear rol
         const rol: rol_userCreationAttributes = {
-            NOM_ROL: req.body.rol,
+            id_rol: 'rol-'+v4(),
+            nom_rol: req.body.rol,
         }
         await rol_user.create(rol);
         res.json({
@@ -48,10 +51,10 @@ export const actualizarRol = async (req: Request, res: Response) => {
         const { id } = req.body;
         const { rol } = req.body;
         await rol_user.update({
-            NOM_ROL: rol
+            nom_rol: rol
         }, {
             where: {
-                ID_ROL: id
+                id_rol: id
             }
         });
         res.json({

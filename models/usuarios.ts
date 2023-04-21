@@ -4,92 +4,91 @@ import type { comuneros, comunerosId } from './comuneros';
 import type { rol_user, rol_userId } from './rol_user';
 
 export interface usuariosAttributes {
-  ID_USUARIO: number;
-  ID_COMUNERO?: number;
-  ID_ROL?: number;
-  EMAIL: string;
-  CREATED_AT_DATE: string;
-  CREATED_AT_TIME: string;
-  NOM_USER: string;
-  PASS_USER: string;
-  ESTADO_USER?: number;
+  id_usuario: string;
+  id_comunero?: string;
+  id_rol?: string;
+  email: string;
+  created_at_date: string;
+  created_at_time: string;
+  nom_user: string;
+  pass_user: string;
+  estado_user?: number;
   img?: string;
 }
 
-export type usuariosPk = "ID_USUARIO";
+export type usuariosPk = "id_usuario";
 export type usuariosId = usuarios[usuariosPk];
-export type usuariosOptionalAttributes = "ID_USUARIO" | "ID_COMUNERO" | "ID_ROL" | "ESTADO_USER" | "img";
+export type usuariosOptionalAttributes = "id_comunero" | "id_rol" | "estado_user" | "img";
 export type usuariosCreationAttributes = Optional<usuariosAttributes, usuariosOptionalAttributes>;
 
 export class usuarios extends Model<usuariosAttributes, usuariosCreationAttributes> implements usuariosAttributes {
-  ID_USUARIO!: number;
-  ID_COMUNERO?: number;
-  ID_ROL?: number;
-  EMAIL!: string;
-  CREATED_AT_DATE!: string;
-  CREATED_AT_TIME!: string;
-  NOM_USER!: string;
-  PASS_USER!: string;
-  ESTADO_USER?: number;
+  id_usuario!: string;
+  id_comunero?: string;
+  id_rol?: string;
+  email!: string;
+  created_at_date!: string;
+  created_at_time!: string;
+  nom_user!: string;
+  pass_user!: string;
+  estado_user?: number;
   img?: string;
 
-  // usuarios belongsTo comuneros via ID_COMUNERO
-  ID_COMUNERO_comunero!: comuneros;
-  getID_COMUNERO_comunero!: Sequelize.BelongsToGetAssociationMixin<comuneros>;
-  setID_COMUNERO_comunero!: Sequelize.BelongsToSetAssociationMixin<comuneros, comunerosId>;
-  createID_COMUNERO_comunero!: Sequelize.BelongsToCreateAssociationMixin<comuneros>;
-  // usuarios belongsTo rol_user via ID_ROL
-  ID_ROL_rol_user!: rol_user;
-  getID_ROL_rol_user!: Sequelize.BelongsToGetAssociationMixin<rol_user>;
-  setID_ROL_rol_user!: Sequelize.BelongsToSetAssociationMixin<rol_user, rol_userId>;
-  createID_ROL_rol_user!: Sequelize.BelongsToCreateAssociationMixin<rol_user>;
+  // usuarios belongsTo comuneros via id_comunero
+  id_comunero_comunero!: comuneros;
+  getId_comunero_comunero!: Sequelize.BelongsToGetAssociationMixin<comuneros>;
+  setId_comunero_comunero!: Sequelize.BelongsToSetAssociationMixin<comuneros, comunerosId>;
+  createId_comunero_comunero!: Sequelize.BelongsToCreateAssociationMixin<comuneros>;
+  // usuarios belongsTo rol_user via id_rol
+  id_rol_rol_user!: rol_user;
+  getId_rol_rol_user!: Sequelize.BelongsToGetAssociationMixin<rol_user>;
+  setId_rol_rol_user!: Sequelize.BelongsToSetAssociationMixin<rol_user, rol_userId>;
+  createId_rol_rol_user!: Sequelize.BelongsToCreateAssociationMixin<rol_user>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof usuarios {
     return usuarios.init({
-    ID_USUARIO: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+    id_usuario: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
-    ID_COMUNERO: {
-      type: DataTypes.INTEGER,
+    id_comunero: {
+      type: DataTypes.STRING(50),
       allowNull: true,
       references: {
         model: 'comuneros',
-        key: 'ID_COMUNERO'
+        key: 'id_comunero'
       }
     },
-    ID_ROL: {
-      type: DataTypes.INTEGER,
+    id_rol: {
+      type: DataTypes.STRING(50),
       allowNull: true,
       references: {
         model: 'rol_user',
-        key: 'ID_ROL'
+        key: 'id_rol'
       }
     },
-    EMAIL: {
+    email: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      unique: "EMAIL"
+      unique: "email"
     },
-    CREATED_AT_DATE: {
+    created_at_date: {
       type: DataTypes.DATEONLY,
       allowNull: false
     },
-    CREATED_AT_TIME: {
+    created_at_time: {
       type: DataTypes.TIME,
       allowNull: false
     },
-    NOM_USER: {
+    nom_user: {
       type: DataTypes.STRING(12),
       allowNull: false
     },
-    PASS_USER: {
+    pass_user: {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    ESTADO_USER: {
+    estado_user: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: 1
@@ -108,32 +107,38 @@ export class usuarios extends Model<usuariosAttributes, usuariosCreationAttribut
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_USUARIO" },
+          { name: "id_usuario" },
         ]
       },
       {
-        name: "EMAIL",
+        name: "email",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "EMAIL" },
+          { name: "email" },
         ]
       },
       {
-        name: "FK_REL_COMUNERO_USUARIO",
+        name: "fk_rel_comunero_usuario",
         using: "BTREE",
         fields: [
-          { name: "ID_COMUNERO" },
+          { name: "id_comunero" },
         ]
       },
       {
-        name: "FK_REL_USER_ROL",
+        name: "fk_rel_user_rol",
         using: "BTREE",
         fields: [
-          { name: "ID_ROL" },
+          { name: "id_rol" },
         ]
       },
     ]
   });
   }
+}
+
+//evitar que la contraseña se envie al cliente
+usuarios.prototype.toJSON = function () {
+  const { pass_user, ...object } = this.get();
+  return object;
 }

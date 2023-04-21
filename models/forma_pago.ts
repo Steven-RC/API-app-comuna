@@ -3,20 +3,19 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { facturas, facturasId } from './facturas';
 
 export interface forma_pagoAttributes {
-  ID_FORMA_PAGO: number;
-  FORMA_PAGO: string;
+  id_forma_pago: string;
+  forma_pago: string;
 }
 
-export type forma_pagoPk = "ID_FORMA_PAGO";
+export type forma_pagoPk = "id_forma_pago";
 export type forma_pagoId = forma_pago[forma_pagoPk];
-export type forma_pagoOptionalAttributes = "ID_FORMA_PAGO";
-export type forma_pagoCreationAttributes = Optional<forma_pagoAttributes, forma_pagoOptionalAttributes>;
+export type forma_pagoCreationAttributes = forma_pagoAttributes;
 
 export class forma_pago extends Model<forma_pagoAttributes, forma_pagoCreationAttributes> implements forma_pagoAttributes {
-  ID_FORMA_PAGO!: number;
-  FORMA_PAGO!: string;
+  id_forma_pago!: string;
+  forma_pago!: string;
 
-  // forma_pago hasMany facturas via ID_FORMA_PAGO
+  // forma_pago hasMany facturas via id_forma_pago
   facturas!: facturas[];
   getFacturas!: Sequelize.HasManyGetAssociationsMixin<facturas>;
   setFacturas!: Sequelize.HasManySetAssociationsMixin<facturas, facturasId>;
@@ -31,13 +30,12 @@ export class forma_pago extends Model<forma_pagoAttributes, forma_pagoCreationAt
 
   static initModel(sequelize: Sequelize.Sequelize): typeof forma_pago {
     return forma_pago.init({
-    ID_FORMA_PAGO: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+    id_forma_pago: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true
     },
-    FORMA_PAGO: {
+    forma_pago: {
       type: DataTypes.STRING(20),
       allowNull: false
     }
@@ -51,7 +49,7 @@ export class forma_pago extends Model<forma_pagoAttributes, forma_pagoCreationAt
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID_FORMA_PAGO" },
+          { name: "id_forma_pago" },
         ]
       },
     ]
