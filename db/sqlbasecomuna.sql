@@ -11,19 +11,19 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- Schema mydb
 -- -----------------------------------------------------
 -- -----------------------------------------------------
--- Schema sql9613433
+-- Schema heroku_830548e2ce4b702
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema sql9613433
+-- Schema heroku_830548e2ce4b702
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `sql9613433` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
-USE `sql9613433` ;
+-- CREATE SCHEMA IF NOT EXISTS `heroku_830548e2ce4b702` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
+USE `heroku_830548e2ce4b702` ;
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`anio`
+-- Table `heroku_830548e2ce4b702`.`anio`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`anio` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`anio` (
   `id_anio` VARCHAR(50) NOT NULL,
   `anio` VARCHAR(50) NULL DEFAULT NULL,
   PRIMARY KEY (`id_anio`),
@@ -35,9 +35,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`asociaciones`
+-- Table `heroku_830548e2ce4b702`.`asociaciones`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`asociaciones` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`asociaciones` (
   `id_aso` VARCHAR(50) NOT NULL,
   `nom_asociacion` TEXT NULL DEFAULT NULL,
   `estado_aso` TINYINT(1) NULL DEFAULT '1',
@@ -48,9 +48,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`barrios`
+-- Table `heroku_830548e2ce4b702`.`barrios`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`barrios` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`barrios` (
   `id_barrio` VARCHAR(50) NOT NULL,
   `nom_barrio` VARCHAR(120) NOT NULL,
   PRIMARY KEY (`id_barrio`),
@@ -61,9 +61,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`terrenos`
+-- Table `heroku_830548e2ce4b702`.`terrenos`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`terrenos` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`terrenos` (
   `id_terreno` VARCHAR(50) NOT NULL,
   `lim_norte` MEDIUMTEXT NULL DEFAULT NULL,
   `lim_sur` MEDIUMTEXT NULL DEFAULT NULL,
@@ -81,9 +81,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`nacionalidad`
+-- Table `heroku_830548e2ce4b702`.`nacionalidad`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`nacionalidad` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`nacionalidad` (
   `id_nacionalidad` VARCHAR(50) NOT NULL,
   `nacionalidad` VARCHAR(100) NULL DEFAULT NULL,
   `estado_nac` TINYINT(1) NULL DEFAULT '1',
@@ -95,9 +95,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`personas`
+-- Table `heroku_830548e2ce4b702`.`personas`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`personas` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`personas` (
   `id_persona` VARCHAR(50) NOT NULL,
   `id_nacionalidad` VARCHAR(50) NULL DEFAULT NULL,
   `cedula` VARCHAR(10) NOT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `sql9613433`.`personas` (
   INDEX `fk_rel_nacionalidad_person` (`id_nacionalidad` ASC) ,
   CONSTRAINT `fk_rel_nacionalidad_person`
     FOREIGN KEY (`id_nacionalidad`)
-    REFERENCES `sql9613433`.`nacionalidad` (`id_nacionalidad`)
+    REFERENCES `heroku_830548e2ce4b702`.`nacionalidad` (`id_nacionalidad`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -122,9 +122,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`comuneros`
+-- Table `heroku_830548e2ce4b702`.`comuneros`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`comuneros` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`comuneros` (
   `id_comunero` VARCHAR(50) NOT NULL,
   `id_barrio` VARCHAR(50) NULL DEFAULT NULL,
   `id_aso` VARCHAR(50) NULL DEFAULT NULL,
@@ -141,20 +141,20 @@ CREATE TABLE IF NOT EXISTS `sql9613433`.`comuneros` (
   INDEX `fk_comuneros_terrenos1_idx` (`id_terreno` ASC) ,
   CONSTRAINT `fk_comuneros_terrenos1`
     FOREIGN KEY (`id_terreno`)
-    REFERENCES `sql9613433`.`terrenos` (`id_terreno`),
+    REFERENCES `heroku_830548e2ce4b702`.`terrenos` (`id_terreno`),
   CONSTRAINT `fk_rel_asociacion_comunero`
     FOREIGN KEY (`id_aso`)
-    REFERENCES `sql9613433`.`asociaciones` (`id_aso`)
+    REFERENCES `heroku_830548e2ce4b702`.`asociaciones` (`id_aso`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `fk_rel_barrio_comunero`
     FOREIGN KEY (`id_barrio`)
-    REFERENCES `sql9613433`.`barrios` (`id_barrio`)
+    REFERENCES `heroku_830548e2ce4b702`.`barrios` (`id_barrio`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `fk_rel_pers_comunero`
     FOREIGN KEY (`id_persona`)
-    REFERENCES `sql9613433`.`personas` (`id_persona`)
+    REFERENCES `heroku_830548e2ce4b702`.`personas` (`id_persona`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -163,9 +163,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`tipo_documentos`
+-- Table `heroku_830548e2ce4b702`.`tipo_documentos`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`tipo_documentos` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`tipo_documentos` (
   `id_tipo_doc` VARCHAR(50) NOT NULL,
   `tipo_doc` LONGTEXT NOT NULL,
   `estado_doc` TINYINT(1) NULL DEFAULT '1',
@@ -177,9 +177,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`comuneros_tipos_doc`
+-- Table `heroku_830548e2ce4b702`.`comuneros_tipos_doc`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`comuneros_tipos_doc` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`comuneros_tipos_doc` (
   `id_comunero` VARCHAR(50) NOT NULL,
   `id_tipo_doc` VARCHAR(50) NOT NULL,
   `documento` MEDIUMTEXT NULL DEFAULT NULL,
@@ -188,19 +188,19 @@ CREATE TABLE IF NOT EXISTS `sql9613433`.`comuneros_tipos_doc` (
   INDEX `fk_comuneros_has_tipo_documentos_comuneros1_idx` (`id_comunero` ASC) ,
   CONSTRAINT `fk_comuneros_has_tipo_documentos_comuneros1`
     FOREIGN KEY (`id_comunero`)
-    REFERENCES `sql9613433`.`comuneros` (`id_comunero`),
+    REFERENCES `heroku_830548e2ce4b702`.`comuneros` (`id_comunero`),
   CONSTRAINT `fk_comuneros_has_tipo_documentos_tipo_documentos1`
     FOREIGN KEY (`id_tipo_doc`)
-    REFERENCES `sql9613433`.`tipo_documentos` (`id_tipo_doc`))
+    REFERENCES `heroku_830548e2ce4b702`.`tipo_documentos` (`id_tipo_doc`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`cuota_anual`
+-- Table `heroku_830548e2ce4b702`.`cuota_anual`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`cuota_anual` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`cuota_anual` (
   `id_cuota` VARCHAR(50) NOT NULL,
   `nom_cuota` VARCHAR(100) NOT NULL,
   `valor_cuota` FLOAT NOT NULL,
@@ -211,16 +211,16 @@ CREATE TABLE IF NOT EXISTS `sql9613433`.`cuota_anual` (
   INDEX `fk_cuota_anual_table11_idx` (`id_anio` ASC) ,
   CONSTRAINT `fk_cuota_anual_table11`
     FOREIGN KEY (`id_anio`)
-    REFERENCES `sql9613433`.`anio` (`id_anio`))
+    REFERENCES `heroku_830548e2ce4b702`.`anio` (`id_anio`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`forma_pago`
+-- Table `heroku_830548e2ce4b702`.`forma_pago`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`forma_pago` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`forma_pago` (
   `id_forma_pago` VARCHAR(50) NOT NULL,
   `forma_pago` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id_forma_pago`))
@@ -230,9 +230,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`facturas`
+-- Table `heroku_830548e2ce4b702`.`facturas`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`facturas` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`facturas` (
   `id_factura` VARCHAR(50) NOT NULL,
   `id_comunero` VARCHAR(50) NULL DEFAULT NULL,
   `fecha` DATE NOT NULL,
@@ -247,10 +247,10 @@ CREATE TABLE IF NOT EXISTS `sql9613433`.`facturas` (
   INDEX `fk_facturas_forma_pago1_idx` (`id_forma_pago` ASC) ,
   CONSTRAINT `fk_facturas_forma_pago1`
     FOREIGN KEY (`id_forma_pago`)
-    REFERENCES `sql9613433`.`forma_pago` (`id_forma_pago`),
+    REFERENCES `heroku_830548e2ce4b702`.`forma_pago` (`id_forma_pago`),
   CONSTRAINT `fk_rel_comunero_fact`
     FOREIGN KEY (`id_comunero`)
-    REFERENCES `sql9613433`.`comuneros` (`id_comunero`)
+    REFERENCES `heroku_830548e2ce4b702`.`comuneros` (`id_comunero`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -259,9 +259,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`cuotas_factura`
+-- Table `heroku_830548e2ce4b702`.`cuotas_factura`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`cuotas_factura` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`cuotas_factura` (
   `id_factura` VARCHAR(50) NOT NULL,
   `id_cuota` VARCHAR(50) NOT NULL,
   `id_anio` VARCHAR(50) NOT NULL DEFAULT '1',
@@ -270,19 +270,19 @@ CREATE TABLE IF NOT EXISTS `sql9613433`.`cuotas_factura` (
   INDEX `fk_facturas_has_cuota_anual_facturas1_idx` (`id_factura` ASC) ,
   CONSTRAINT `fk_facturas_has_cuota_anual_cuota_anual1`
     FOREIGN KEY (`id_cuota` , `id_anio`)
-    REFERENCES `sql9613433`.`cuota_anual` (`id_cuota` , `id_anio`),
+    REFERENCES `heroku_830548e2ce4b702`.`cuota_anual` (`id_cuota` , `id_anio`),
   CONSTRAINT `fk_facturas_has_cuota_anual_facturas1`
     FOREIGN KEY (`id_factura`)
-    REFERENCES `sql9613433`.`facturas` (`id_factura`))
+    REFERENCES `heroku_830548e2ce4b702`.`facturas` (`id_factura`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`requisitos`
+-- Table `heroku_830548e2ce4b702`.`requisitos`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`requisitos` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`requisitos` (
   `id_req` VARCHAR(50) NOT NULL,
   `requisito` VARCHAR(255) NOT NULL,
   `observacion` VARCHAR(255) NULL DEFAULT NULL,
@@ -294,9 +294,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`requisito_apr`
+-- Table `heroku_830548e2ce4b702`.`requisito_apr`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`requisito_apr` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`requisito_apr` (
   `id_req_ap` VARCHAR(50) NOT NULL,
   `fecha_ap` DATE NOT NULL,
   `observacion` VARCHAR(150) NULL DEFAULT 'ninguna',
@@ -308,19 +308,19 @@ CREATE TABLE IF NOT EXISTS `sql9613433`.`requisito_apr` (
   INDEX `fk_requisito_apr_requisitos1_idx` (`id_req` ASC) ,
   CONSTRAINT `fk_requisito_apr_personas1`
     FOREIGN KEY (`id_persona`)
-    REFERENCES `sql9613433`.`personas` (`id_persona`),
+    REFERENCES `heroku_830548e2ce4b702`.`personas` (`id_persona`),
   CONSTRAINT `fk_requisito_apr_requisitos1`
     FOREIGN KEY (`id_req`)
-    REFERENCES `sql9613433`.`requisitos` (`id_req`))
+    REFERENCES `heroku_830548e2ce4b702`.`requisitos` (`id_req`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`rol_user`
+-- Table `heroku_830548e2ce4b702`.`rol_user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`rol_user` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`rol_user` (
   `id_rol` VARCHAR(50) NOT NULL,
   `nom_rol` VARCHAR(50) NOT NULL,
   `estado_rol` TINYINT(1) NULL DEFAULT '1',
@@ -331,9 +331,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `sql9613433`.`usuarios`
+-- Table `heroku_830548e2ce4b702`.`usuarios`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sql9613433`.`usuarios` (
+CREATE TABLE IF NOT EXISTS `heroku_830548e2ce4b702`.`usuarios` (
   `id_usuario` VARCHAR(50) NOT NULL,
   `id_comunero` VARCHAR(50) NULL DEFAULT NULL,
   `id_rol` VARCHAR(50) NULL DEFAULT NULL,
@@ -350,12 +350,12 @@ CREATE TABLE IF NOT EXISTS `sql9613433`.`usuarios` (
   INDEX `fk_rel_user_rol` (`id_rol` ASC) ,
   CONSTRAINT `fk_rel_comunero_usuario`
     FOREIGN KEY (`id_comunero`)
-    REFERENCES `sql9613433`.`comuneros` (`id_comunero`)
+    REFERENCES `heroku_830548e2ce4b702`.`comuneros` (`id_comunero`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `fk_rel_user_rol`
     FOREIGN KEY (`id_rol`)
-    REFERENCES `sql9613433`.`rol_user` (`id_rol`)
+    REFERENCES `heroku_830548e2ce4b702`.`rol_user` (`id_rol`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
