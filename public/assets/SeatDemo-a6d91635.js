@@ -1,0 +1,1 @@
+import{_ as t,d as s,e as o,f as e}from"./index-a6ecdcae.js";const c={},n={class:"flex align-items-center py-5 px-3"},a=e("i",{class:"pi pi-fw pi-ticket mr-2 text-2xl"},null,-1),i=e("p",{class:"m-0 text-lg"},"Seat Component Content via Child Route",-1),_=[a,i];function l(r,d){return s(),o("div",n,_)}const f=t(c,[["render",l]]);export{f as default};

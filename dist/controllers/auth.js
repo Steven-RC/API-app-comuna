@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUsuario = exports.login = void 0;
+exports.updatePassword = exports.getUsuario = exports.login = void 0;
 const usuarios_1 = require("../models/usuarios");
 const bcrypt = __importStar(require("bcrypt"));
 const generar_jwt_1 = __importDefault(require("../helpers/generar-jwt"));
@@ -47,7 +47,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //si no existe el email o el password
     if (!req.body.email || !req.body.password) {
         return res.status(400).json({
-            msg: 'email o password no son correctos'
+            msg: 'Debe ingresar su Correo y Contraseña'
         });
     }
     const { email, password } = req.body;
@@ -55,7 +55,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //verificar si el email existe
         const usuario = yield usuarios_1.usuarios.findOne({
             where: { email },
-            attributes: ['id_usuario', 'nom_user', 'id_rol', 'email', 'img', 'pass_user', 'estado_user'],
+            attributes: ['id_usuario', 'nom_user', 'id_rol', 'email', 'img', 'pass_user', 'estado_user', 'theme'],
             include: [{
                     model: rol_user_1.rol_user,
                     as: 'id_rol_rol_user',
@@ -70,7 +70,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                             as: 'id_persona_persona',
                             attributes: ['apellidos', 'nombre']
                         }],
-                }
+                },
             ]
         });
         if (!usuario) {
@@ -112,7 +112,7 @@ const getUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const { uid } = req;
     try {
         const usuario = yield usuarios_1.usuarios.findByPk(uid, {
-            attributes: ['id_usuario', 'nom_user', 'id_rol', 'email', 'img', 'pass_user', 'estado_user'],
+            attributes: ['id_usuario', 'nom_user', 'id_rol', 'email', 'img', 'pass_user', 'estado_user', 'theme'],
             include: [{
                     model: rol_user_1.rol_user,
                     as: 'id_rol_rol_user',
@@ -149,4 +149,45 @@ const getUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getUsuario = getUsuario;
+const updatePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.uid + ' Desde mostrar Actualizar contraseña');
+    const id_usuario = req.uid;
+    const { lastPassword } = req.body;
+    const { newPassword } = req.body;
+    console.log({
+        lastPassword,
+        newPassword
+    });
+    try {
+        const usuario = yield usuarios_1.usuarios.findByPk(id_usuario);
+        if (!usuario) {
+            return res.status(400).json({
+                msg: 'El usuario no existe con ese id'
+            });
+        }
+        //verificar la contraseña
+        const validPassword = bcrypt.compareSync(lastPassword, usuario.pass_user);
+        if (!validPassword) {
+            return res.status(400).json({
+                msg: 'Contraseña no es correcta'
+            });
+        }
+        //actualizar la contraseña
+        usuario.pass_user = bcrypt.hashSync(newPassword, 10);
+        yield usuario.save();
+        //generar el JWT
+        const token = yield (0, generar_jwt_1.default)(usuario.id_usuario);
+        return res.json({
+            usuario,
+            token
+        });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            msg: 'Hable con el administrador: ' + error
+        });
+    }
+});
+exports.updatePassword = updatePassword;
 //# sourceMappingURL=auth.js.map

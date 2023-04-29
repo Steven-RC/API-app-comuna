@@ -66,6 +66,11 @@ class usuarios extends sequelize_1.Model {
             img: {
                 type: sequelize_1.DataTypes.TEXT,
                 allowNull: true
+            },
+            theme: {
+                type: sequelize_1.DataTypes.STRING(6),
+                allowNull: true,
+                defaultValue: "light"
             }
         }, {
             sequelize,
@@ -107,9 +112,10 @@ class usuarios extends sequelize_1.Model {
     }
 }
 exports.usuarios = usuarios;
-//evitar que la contraseña se envie al cliente
+//evitar  que la contraseña se envie en la respuesta
 usuarios.prototype.toJSON = function () {
-    const _a = this.get(), { pass_user } = _a, object = __rest(_a, ["pass_user"]);
-    return object;
+    var values = Object.assign({}, this.get());
+    var { pass_user } = values, newValues = __rest(values, ["pass_user"]);
+    return newValues;
 };
 //# sourceMappingURL=usuarios.js.map

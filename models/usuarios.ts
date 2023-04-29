@@ -14,11 +14,12 @@ export interface usuariosAttributes {
   pass_user: string;
   estado_user?: number;
   img?: string;
+  theme?: string;
 }
 
 export type usuariosPk = "id_usuario";
 export type usuariosId = usuarios[usuariosPk];
-export type usuariosOptionalAttributes = "id_comunero" | "id_rol" | "estado_user" | "img";
+export type usuariosOptionalAttributes = "id_comunero" | "id_rol" | "estado_user" | "img" | "theme";
 export type usuariosCreationAttributes = Optional<usuariosAttributes, usuariosOptionalAttributes>;
 
 export class usuarios extends Model<usuariosAttributes, usuariosCreationAttributes> implements usuariosAttributes {
@@ -32,6 +33,7 @@ export class usuarios extends Model<usuariosAttributes, usuariosCreationAttribut
   pass_user!: string;
   estado_user?: number;
   img?: string;
+  theme?: string;
 
   // usuarios belongsTo comuneros via id_comunero
   id_comunero_comunero!: comuneros;
@@ -96,6 +98,11 @@ export class usuarios extends Model<usuariosAttributes, usuariosCreationAttribut
     img: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    theme: {
+      type: DataTypes.STRING(6),
+      allowNull: true,
+      defaultValue: "light"
     }
   }, {
     sequelize,
@@ -137,8 +144,11 @@ export class usuarios extends Model<usuariosAttributes, usuariosCreationAttribut
   }
 }
 
-//evitar que la contraseña se envie al cliente
+//evitar  que la contraseña se envie en la respuesta
+
 usuarios.prototype.toJSON = function () {
-  const { pass_user, ...object } = this.get();
-  return object;
+  var values = Object.assign({}, this.get());
+
+  var{pass_user, ...newValues} = values;
+  return newValues;
 }

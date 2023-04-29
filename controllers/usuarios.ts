@@ -12,6 +12,7 @@ moment.suppressDeprecationWarnings = true;
 
 import { v4 } from 'uuid';
 import { env } from "process";
+import AuthRequest from '../interfaces/auth-request';
 
 
 initModels(db);
@@ -388,12 +389,12 @@ export const actualizarUsuario = async (req: Request, res: Response) => {
 // crear metodo para resetear la contraseña y que sea aleatoria y se envie al correo del usuario
 export const resetearContrasena = async (req: Request, res: Response) => {
     try {
-        const { id } = req.body;
+        const { email } = req.body;
         //generar contraseña aleatoria
         const contrasena = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         const busUser = await usuarios.findOne({
             where: {
-                id_usuario: id
+                email
             },
             attributes: [
                 'id_usuario',
@@ -412,22 +413,22 @@ export const resetearContrasena = async (req: Request, res: Response) => {
                 pass_user: bcrypt.hashSync(contrasena, 10)
             }, {
                 where: {
-                    id_usuario: id
+                    id_usuario: busUser.id_usuario
                 }
             });
             //enviar correo con la nueva contraseña
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: 'stevenrosales31@gmail.com',
-                    pass: 'uihwfnjofqdiymii'
+                    user: 'rosalessteven2001@gmail.com',
+                    pass: 'mvbdwdpcsiioibbf'
                 }
             });
             const mailOptions = {
-                from: 'stevenrosales31@gmail.com',
+                from: 'rosalessteven2001@gmail.com',
                 to: busUser.email,
-                subject: 'Restablecimiento de contraseña',
-                text: 'Su nueva contraseña es: ' + contrasena
+                subject: 'Sistema de gestion Comunal',
+                text: 'Estimado'+ busUser.nom_user+' atendiendo a su solicitud se le ha generado una nueva contraseña para el ingreso al sistema de gestion comunal, su nueva contraseña es: '+contrasena
             };
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
@@ -443,7 +444,7 @@ export const resetearContrasena = async (req: Request, res: Response) => {
 
         }
     } catch (error) {
-
+        console.log(error)
     }
 }
 
@@ -488,27 +489,6 @@ export const createUsuario = async (req: Request, res: Response) => {
         }
         console.log(usuarioCr)
         await usuarios.create(usuarioCr);
-        //enviar correo con la nueva contraseña
-        // const transporter = nodemailer.createTransport({
-        //     service: 'gmail',
-        //     auth: {
-        //         user: 'stevenrosales31@gmail.com',
-        //         pass: 'uihwfnjofqdiymii'
-        //     }
-        // });
-        // const mailOptions = {
-        //     from: 'stevenrosales31@gmail.com',
-        //     to: usuarioCr.email,
-        //     subject: 'Creacion de usuario',
-        //     text: 'Gracias por registrarse en el sistema de la comuna Bambil Collao \n Su usuario es: ' + usuarioCr.nom_user + '\n Su contraseña es: ' + contrasena
-        // };
-        // transporter.sendMail(mailOptions, function (error, info) {
-        //     if (error) {
-        //         console.log(error);
-        //     } else {
-        //         console.log('email sent: ' + info.response);
-        //     }
-        // });
         res.json({
             msg: 'Usuario creado con exito'
         })
@@ -568,6 +548,78 @@ export const getUserById = async (req: Request, res: Response) => {
         res.json({
             usuario
         })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            msg: 'Error inesperado'
+        })
+
+    }
+}
+
+//actualizar el tema del usuario
+export const updateTema = async (req: Request, res: Response) => {
+    const { id, tema } = req.body;
+    try {
+        const busUser = await usuarios.findOne({
+            where: {
+                id_usuario: id
+            }
+        });
+        if (!busUser) {
+            return res.status(404).json({
+                msg: 'Usuario no encontrado'
+            })
+        }
+        else {
+            //    actualizar usuario
+            await usuarios.update({
+                theme: tema
+            }, {
+                where: {
+                    id_usuario: id
+                }
+            });
+            res.json({
+                msg: 'el usuario fue actualizado'
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            msg: 'Error inesperado'
+        })
+
+    }
+}
+
+export const updateImageUser = async (req: Request, res: Response) => {
+    const { imagen } = req.body;
+    const id = (req as unknown as AuthRequest).uid;
+    try {
+        const busUser = await usuarios.findOne({
+            where: {
+                id_usuario: id
+            }
+        });
+        if (!busUser) {
+            return res.status(404).json({
+                msg: 'Usuario no encontrado'
+            })
+        }
+        else {
+            //    actualizar usuario
+            await usuarios.update({
+                img: imagen
+            }, {
+                where: {
+                    id_usuario: id
+                }
+            });
+            res.json({
+                msg: 'el usuario fue actualizado'
+            })
+        }
     } catch (error) {
         console.log(error)
         res.status(500).json({

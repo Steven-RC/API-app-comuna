@@ -10,5 +10,6 @@ const router = (0, express_1.Router)();
 router.post('/login', auth_1.login);
 //ruta para obtener la informacion del usuario por el token
 router.get('/user', validar_jwt_1.default, auth_1.getUsuario);
+router.patch('/updatepassword', validar_jwt_1.default, auth_1.updatePassword);
 exports.default = router;
 //# sourceMappingURL=auth.js.map

@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.createUsuario = exports.resetearContrasena = exports.actualizarUsuario = exports.obtenerRol = exports.obtenerUsuarios = exports.obtenerPerRoles = exports.obtenerPersona = exports.cambiarEstado = exports.actualizarContrasena = exports.verificarToken = exports.obtenerUsuario = void 0;
+exports.updateImageUser = exports.updateTema = exports.getUserById = exports.createUsuario = exports.resetearContrasena = exports.actualizarUsuario = exports.obtenerRol = exports.obtenerUsuarios = exports.obtenerPerRoles = exports.obtenerPersona = exports.cambiarEstado = exports.actualizarContrasena = exports.verificarToken = exports.obtenerUsuario = void 0;
 const init_models_1 = require("../models/init-models");
 const init_models_2 = require("../models/init-models");
 const bcrypt = __importStar(require("bcrypt"));
@@ -399,12 +399,12 @@ exports.actualizarUsuario = actualizarUsuario;
 // crear metodo para resetear la contraseña y que sea aleatoria y se envie al correo del usuario
 const resetearContrasena = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id } = req.body;
+        const { email } = req.body;
         //generar contraseña aleatoria
         const contrasena = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         const busUser = yield init_models_1.usuarios.findOne({
             where: {
-                id_usuario: id
+                email
             },
             attributes: [
                 'id_usuario',
@@ -422,22 +422,22 @@ const resetearContrasena = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 pass_user: bcrypt.hashSync(contrasena, 10)
             }, {
                 where: {
-                    id_usuario: id
+                    id_usuario: busUser.id_usuario
                 }
             });
             //enviar correo con la nueva contraseña
             const transporter = nodemailer_1.default.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: 'stevenrosales31@gmail.com',
-                    pass: 'uihwfnjofqdiymii'
+                    user: 'rosalessteven2001@gmail.com',
+                    pass: 'mvbdwdpcsiioibbf'
                 }
             });
             const mailOptions = {
-                from: 'stevenrosales31@gmail.com',
+                from: 'rosalessteven2001@gmail.com',
                 to: busUser.email,
-                subject: 'Restablecimiento de contraseña',
-                text: 'Su nueva contraseña es: ' + contrasena
+                subject: 'Sistema de gestion Comunal',
+                text: 'Estimado' + busUser.nom_user + ' atendiendo a su solicitud se le ha generado una nueva contraseña para el ingreso al sistema de gestion comunal, su nueva contraseña es: ' + contrasena
             };
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
@@ -453,6 +453,7 @@ const resetearContrasena = (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
     }
     catch (error) {
+        console.log(error);
     }
 });
 exports.resetearContrasena = resetearContrasena;
@@ -494,27 +495,6 @@ const createUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         };
         console.log(usuarioCr);
         yield init_models_1.usuarios.create(usuarioCr);
-        //enviar correo con la nueva contraseña
-        // const transporter = nodemailer.createTransport({
-        //     service: 'gmail',
-        //     auth: {
-        //         user: 'stevenrosales31@gmail.com',
-        //         pass: 'uihwfnjofqdiymii'
-        //     }
-        // });
-        // const mailOptions = {
-        //     from: 'stevenrosales31@gmail.com',
-        //     to: usuarioCr.email,
-        //     subject: 'Creacion de usuario',
-        //     text: 'Gracias por registrarse en el sistema de la comuna Bambil Collao \n Su usuario es: ' + usuarioCr.nom_user + '\n Su contraseña es: ' + contrasena
-        // };
-        // transporter.sendMail(mailOptions, function (error, info) {
-        //     if (error) {
-        //         console.log(error);
-        //     } else {
-        //         console.log('email sent: ' + info.response);
-        //     }
-        // });
         res.json({
             msg: 'Usuario creado con exito'
         });
@@ -580,4 +560,76 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUserById = getUserById;
+//actualizar el tema del usuario
+const updateTema = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id, tema } = req.body;
+    try {
+        const busUser = yield init_models_1.usuarios.findOne({
+            where: {
+                id_usuario: id
+            }
+        });
+        if (!busUser) {
+            return res.status(404).json({
+                msg: 'Usuario no encontrado'
+            });
+        }
+        else {
+            //    actualizar usuario
+            yield init_models_1.usuarios.update({
+                theme: tema
+            }, {
+                where: {
+                    id_usuario: id
+                }
+            });
+            res.json({
+                msg: 'el usuario fue actualizado'
+            });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
+});
+exports.updateTema = updateTema;
+const updateImageUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { imagen } = req.body;
+    const id = req.uid;
+    try {
+        const busUser = yield init_models_1.usuarios.findOne({
+            where: {
+                id_usuario: id
+            }
+        });
+        if (!busUser) {
+            return res.status(404).json({
+                msg: 'Usuario no encontrado'
+            });
+        }
+        else {
+            //    actualizar usuario
+            yield init_models_1.usuarios.update({
+                img: imagen
+            }, {
+                where: {
+                    id_usuario: id
+                }
+            });
+            res.json({
+                msg: 'el usuario fue actualizado'
+            });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error inesperado'
+        });
+    }
+});
+exports.updateImageUser = updateImageUser;
 //# sourceMappingURL=usuarios.js.map
